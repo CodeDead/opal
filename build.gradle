@@ -1,27 +1,61 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
 plugins {
     id 'java'
     id 'idea'
     id 'eclipse'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'org.beryx.jlink' version '2.23.1'
 }
 
 group 'com.codedead'
 version '1.0-SNAPSHOT'
 
-targetCompatibility = '15'
-sourceCompatibility = '15'
+java {
+    modularity.inferModulePath = true
+    targetCompatibility = JavaVersion.VERSION_15
+    sourceCompatibility = JavaVersion.VERSION_15
+}
 
-javafx {
-    version = '15.0.1'
-    modules = [ 'javafx.controls' ]
+application {
+    mainModule = 'Opal'
+    mainClass = 'com.codedead.opal.OpalApplication'
+}
+
+jlink {
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+    forceMerge('log4j-api')
+    launcher {
+        name = 'Opal'
+    }
+}
+
+clean.doFirst {
+    delete 'default.properties'
+    delete 'license.pdf'
 }
 
 repositories {
     mavenCentral()
 }
 
+def currentOS = DefaultNativePlatform.currentOperatingSystem;
+def platform
+if (currentOS.isWindows()) {
+    platform = 'win'
+} else if (currentOS.isLinux()) {
+    platform = 'linux'
+} else if (currentOS.isMacOsX()) {
+    platform = 'mac'
+}
+
 dependencies {
+    implementation "org.openjfx:javafx-base:15.0.1:${platform}"
+    implementation "org.openjfx:javafx-controls:15.0.1:${platform}"
+    implementation "org.openjfx:javafx-graphics:15.0.1:${platform}"
+    implementation "org.openjfx:javafx-fxml:15.0.1:${platform}"
+    implementation "org.openjfx:javafx-media:15.0.1:${platform}"
+    implementation "org.apache.logging.log4j:log4j-core:2.14.0"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }

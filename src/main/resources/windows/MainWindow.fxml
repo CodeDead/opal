@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.ColumnConstraints?>
+
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Label?>
+<?import com.codedead.opal.domain.SoundPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<GridPane prefHeight="370" prefWidth="560"
+          xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.codedead.opal.controller.MainWindowController">
+
+    <rowConstraints>
+        <RowConstraints/>
+        <RowConstraints vgrow="ALWAYS"/>
+    </rowConstraints>
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <MenuBar GridPane.rowIndex="0">
+        <Menu text="_File">
+            <MenuItem fx:id="mniReset" onAction="#resetAction" text="%Reset"/>
+            <SeparatorMenuItem/>
+            <MenuItem onAction="#exitAction" fx:id="mniExit" text="%Exit"/>
+        </Menu>
+        <Menu text="_Tools">
+            <MenuItem fx:id="mniSettings" onAction="#settingsAction" text="%Settings"/>
+        </Menu>
+        <Menu text="_Help">
+            <MenuItem fx:id="mniHelp" onAction="#helpAction" text="%Help"/>
+            <SeparatorMenuItem/>
+            <MenuItem fx:id="mniUpdate" text="%CheckForUpdates"/>
+            <SeparatorMenuItem/>
+            <MenuItem fx:id="mniHomepage" onAction="#homepageAction" text="%Homepage"/>
+            <MenuItem fx:id="mniLicense" onAction="#licenseAction" text="%License"/>
+            <SeparatorMenuItem/>
+            <MenuItem fx:id="mniDonate" onAction="#donateAction" text="%Donate"/>
+            <MenuItem fx:id="mniAbout" onAction="#aboutAction" text="%About"/>
+        </Menu>
+    </MenuBar>
+
+    <ScrollPane GridPane.rowIndex="1" fitToHeight="true" fitToWidth="true" style="-fx-background-color:transparent;">
+        <GridPane>
+            <rowConstraints>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+            </rowConstraints>
+
+            <columnConstraints>
+                <ColumnConstraints percentWidth="15"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints percentWidth="15"/>
+            </columnConstraints>
+
+            <Label GridPane.rowIndex="0" GridPane.columnIndex="1" text="%Nature">
+                <font>
+                    <Font name="System Bold" size="14"/>
+                </font>
+                <GridPane.margin>
+                    <Insets left="5" right="5" bottom="10" top="10"/>
+                </GridPane.margin>
+            </Label>
+
+            <GridPane GridPane.rowIndex="1" GridPane.columnIndex="1"
+                      style="-fx-background-color: white;-fx-background-radius: 10px;">
+                <rowConstraints>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
+                </rowConstraints>
+
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <SoundPane fx:id="snpRain" GridPane.rowIndex="0" volume="0" name="%Rain"
+                           image="/images/rain.png"/>
+                <SoundPane fx:id="snpWind" GridPane.rowIndex="1" volume="0" name="%Wind"
+                           image="/images/wind.png"/>
+                <SoundPane fx:id="snpThunder" GridPane.rowIndex="2" volume="0" name="%Thunder"
+                           image="/images/thunder.png"/>
+            </GridPane>
+
+            <Label GridPane.rowIndex="2" GridPane.columnIndex="1" text="%Office">
+                <font>
+                    <Font name="System Bold" size="14"/>
+                </font>
+                <GridPane.margin>
+                    <Insets left="5" right="5" bottom="10" top="10"/>
+                </GridPane.margin>
+            </Label>
+
+            <GridPane GridPane.rowIndex="3" GridPane.columnIndex="1"
+                      style="-fx-background-color: white;-fx-background-radius: 10px;">
+                <rowConstraints>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
+                </rowConstraints>
+
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <SoundPane fx:id="snpTyping" GridPane.rowIndex="0" volume="0" name="%Typing"
+                           image="/images/keyboard.png"/>
+                <SoundPane fx:id="snpTelephone" GridPane.rowIndex="1" volume="0" name="%Phone"
+                           image="/images/phone.png"/>
+                <SoundPane fx:id="snpChatter" GridPane.rowIndex="2" volume="0" name="%Chatter"
+                           image="/images/group.png"/>
+                <SoundPane fx:id="snpTraffic" GridPane.rowIndex="3" volume="0" name="%Traffic"
+                           image="/images/car.png"/>
+            </GridPane>
+
+            <Label GridPane.rowIndex="4" GridPane.columnIndex="1" text="%Home">
+                <font>
+                    <Font name="System Bold" size="14"/>
+                </font>
+                <GridPane.margin>
+                    <Insets left="5" right="5" bottom="10" top="10"/>
+                </GridPane.margin>
+            </Label>
+
+            <GridPane GridPane.rowIndex="5" GridPane.columnIndex="1"
+                      style="-fx-background-color: white;-fx-background-radius: 10px;">
+                <rowConstraints>
+                    <RowConstraints vgrow="ALWAYS"/>
+                </rowConstraints>
+
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <SoundPane fx:id="snpFireplace" GridPane.rowIndex="0" volume="0" name="%Fireplace"
+                           image="/images/fire.png"/>
+            </GridPane>
+        </GridPane>
+    </ScrollPane>
+</GridPane>
