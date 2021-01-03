@@ -99,7 +99,7 @@ public final class AudioController {
         if (rainVolume > 1)
             throw new IllegalArgumentException("Rain volume cannot be larger than 1!");
 
-        logger.info(String.format("Setting rain volume to %s", rainVolume));
+        logger.debug(String.format("Setting rain volume to %s", rainVolume));
         rainPlayer.setVolume(rainVolume);
     }
 
@@ -132,7 +132,7 @@ public final class AudioController {
         if (windVolume > 1)
             throw new IllegalArgumentException("Wind volume cannot be larger than 1!");
 
-        logger.info(String.format("Setting wind volume to %s", windVolume));
+        logger.debug(String.format("Setting wind volume to %s", windVolume));
         windPlayer.setVolume(windVolume);
     }
 
@@ -165,7 +165,7 @@ public final class AudioController {
         if (thunderVolume > 1)
             throw new IllegalArgumentException("Thunder volume cannot be larger than 1!");
 
-        logger.info(String.format("Setting thunder volume to %s", thunderVolume));
+        logger.debug(String.format("Setting thunder volume to %s", thunderVolume));
         thunderPlayer.setVolume(thunderVolume);
     }
 
@@ -198,7 +198,7 @@ public final class AudioController {
         if (keyboardVolume > 1)
             throw new IllegalArgumentException("Keyboard volume cannot be larger than 1!");
 
-        logger.info(String.format("Setting keyboard volume to %s", keyboardVolume));
+        logger.debug(String.format("Setting keyboard volume to %s", keyboardVolume));
         keyboardPlayer.setVolume(keyboardVolume);
     }
 
@@ -231,7 +231,7 @@ public final class AudioController {
         if (phoneVolume > 1)
             throw new IllegalArgumentException("Telephone volume cannot be larger than 1!");
 
-        logger.info(String.format("Setting telephone volume to %s", phoneVolume));
+        logger.debug(String.format("Setting telephone volume to %s", phoneVolume));
         phonePlayer.setVolume(phoneVolume);
     }
 
@@ -264,7 +264,7 @@ public final class AudioController {
         if (chatterVolume > 1)
             throw new IllegalArgumentException("Chatter volume cannot be larger than 1!");
 
-        logger.info(String.format("Setting chatter volume to %s", chatterVolume));
+        logger.debug(String.format("Setting chatter volume to %s", chatterVolume));
         chatterPlayer.setVolume(chatterVolume);
     }
 
@@ -297,7 +297,7 @@ public final class AudioController {
         if (trafficVolume > 1)
             throw new IllegalArgumentException("Traffic volume cannot be larger than 1!");
 
-        logger.info(String.format("Setting traffic volume to %s", trafficVolume));
+        logger.debug(String.format("Setting traffic volume to %s", trafficVolume));
         trafficPlayer.setVolume(trafficVolume);
     }
 
@@ -330,7 +330,7 @@ public final class AudioController {
         if (fireplaceVolume > 1)
             throw new IllegalArgumentException("Fireplace volume cannot be larger than 1!");
 
-        logger.info(String.format("Setting fireplace volume to %s", fireplaceVolume));
+        logger.debug(String.format("Setting fireplace volume to %s", fireplaceVolume));
         fireplacePlayer.setVolume(fireplaceVolume);
     }
 }

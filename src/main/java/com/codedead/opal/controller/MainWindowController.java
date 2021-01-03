@@ -85,7 +85,7 @@ public final class MainWindowController {
      *
      * @return The SettingsController
      */
-    public SettingsController getSettingsController() {
+    public final SettingsController getSettingsController() {
         return settingsController;
     }
 
@@ -94,7 +94,7 @@ public final class MainWindowController {
      *
      * @param settingsController The SettingsController
      */
-    public void setSettingsController(final SettingsController settingsController) {
+    public final void setSettingsController(final SettingsController settingsController) {
         if (settingsController == null)
             throw new NullPointerException("SettingsController cannot be null!");
 
@@ -112,7 +112,7 @@ public final class MainWindowController {
      * Method that is invoked to initialize the FXML window
      */
     @FXML
-    public void initialize() {
+    private void initialize() {
         logger.info("Initializing MainWindow");
 
         mniReset.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/refresh.png"))));
@@ -203,7 +203,7 @@ public final class MainWindowController {
      * Method that is called when all players should be reset
      */
     @FXML
-    public void resetAction() {
+    private void resetAction() {
         logger.info("Resetting all audio sliders");
 
         snpRain.getSlider().setValue(0);
@@ -220,7 +220,7 @@ public final class MainWindowController {
      * Method that is called when the application should quit
      */
     @FXML
-    public void exitAction() {
+    private void exitAction() {
         logger.info("Exiting the application");
 
         System.exit(0);
@@ -230,15 +230,35 @@ public final class MainWindowController {
      * Method that is called when the SettingsWindow should be opened
      */
     @FXML
-    public void settingsAction() {
+    private void settingsAction() {
+        logger.info("Attempting to open the SettingsWindow");
 
+        try {
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/windows/SettingsWindow.fxml"), translationBundle);
+            final Parent root = loader.load();
+
+            final SettingsWindowController settingsWindowController = loader.getController();
+            settingsWindowController.setSettingsController(getSettingsController());
+
+            final Stage primaryStage = new Stage();
+
+            primaryStage.setTitle(translationBundle.getString("SettingsWindowTitle"));
+            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/opal.png")));
+            primaryStage.setScene(new Scene(root));
+
+            logger.info("Showing the SettingsWindow");
+            primaryStage.show();
+        } catch (final IOException | NumberFormatException ex) {
+            logger.error("Unable to open the SettingsWindow", ex);
+            FxUtils.showErrorAlert(translationBundle.getString("SettingsWindowError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+        }
     }
 
     /**
      * Method that is called when the help file should be opened
      */
     @FXML
-    public void helpAction() {
+    private void helpAction() {
         logger.info("Attempting to open the help file");
 
         try {
@@ -269,7 +289,7 @@ public final class MainWindowController {
      * Method that is called when the homepage should be opened
      */
     @FXML
-    public void homepageAction() {
+    private void homepageAction() {
         logger.info("Opening the CodeDead website");
 
         final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com", new IRunnableHelper() {
@@ -297,7 +317,7 @@ public final class MainWindowController {
      * Method that is called when the license should be opened
      */
     @FXML
-    public void licenseAction() {
+    private void licenseAction() {
         logger.info("Attempting to open the license file");
 
         try {
@@ -328,7 +348,7 @@ public final class MainWindowController {
      * Method that is called when the donate website should be opened
      */
     @FXML
-    public void donateAction() {
+    private void donateAction() {
         logger.info("Opening the CodeDead donation website");
 
         final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com/?page_id=302", new IRunnableHelper() {
@@ -356,7 +376,7 @@ public final class MainWindowController {
      * Method that is called when the AboutWindow should be opened
      */
     @FXML
-    public void aboutAction() {
+    private void aboutAction() {
         logger.info("Attempting to open the AboutWindow");
 
         try {

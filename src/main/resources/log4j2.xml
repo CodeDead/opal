@@ -33,7 +33,7 @@
     </Appenders>
     <Loggers>
         <Logger name="com.codedead" level="debug" additivity="true">
-            <appender-ref ref="fileLogger" level="debug"/>
+            <appender-ref ref="fileLogger" />
         </Logger>
 
         <Root level="debug" additivity="false">
