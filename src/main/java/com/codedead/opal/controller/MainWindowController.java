@@ -1,8 +1,12 @@
 package com.codedead.opal.controller;
 
 import com.codedead.opal.domain.SoundPane;
+import com.codedead.opal.interfaces.IRunnableHelper;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.HelpUtils;
+import com.codedead.opal.utils.RunnableFileOpener;
+import com.codedead.opal.utils.RunnableSiteOpener;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -238,7 +242,23 @@ public final class MainWindowController {
         logger.info("Attempting to open the help file");
 
         try {
-            helpUtils.openFileFromResources("help.pdf", "/documents/help.pdf");
+            helpUtils.openFileFromResources(new RunnableFileOpener("help.pdf", new IRunnableHelper() {
+                @Override
+                public final void executed() {
+                    Platform.runLater(() -> logger.info("Successfully opened the help file"));
+                }
+
+                @Override
+                public final void exceptionOccurred(final Exception ex) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public final void run() {
+                            logger.error("Error opening the help file", ex);
+                            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+                        }
+                    });
+                }
+            }), "/documents/help.pdf");
         } catch (final IOException ex) {
             logger.error("Error opening the help file", ex);
             FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
@@ -252,7 +272,25 @@ public final class MainWindowController {
     public void homepageAction() {
         logger.info("Opening the CodeDead website");
 
-        helpUtils.openWebsite("https://codedead.com/");
+        final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com", new IRunnableHelper() {
+            @Override
+            public final void executed() {
+                Platform.runLater(() -> logger.info("Successfully opened website"));
+            }
+
+            @Override
+            public final void exceptionOccurred(final Exception ex) {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public final void run() {
+                        logger.error("Error opening the CodeDead website", ex);
+                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+                    }
+                });
+            }
+        });
+
+        new Thread(runnableSiteOpener).start();
     }
 
     /**
@@ -263,7 +301,23 @@ public final class MainWindowController {
         logger.info("Attempting to open the license file");
 
         try {
-            helpUtils.openFileFromResources("license.pdf", "/documents/license.pdf");
+            helpUtils.openFileFromResources(new RunnableFileOpener("license.pdf", new IRunnableHelper() {
+                @Override
+                public final void executed() {
+                    Platform.runLater(() -> logger.info("Successfully opened the license file"));
+                }
+
+                @Override
+                public final void exceptionOccurred(final Exception ex) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public final void run() {
+                            logger.error("Error opening the license file", ex);
+                            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+                        }
+                    });
+                }
+            }), "/documents/license.pdf");
         } catch (final IOException ex) {
             logger.error("Error opening the license file", ex);
             FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
@@ -277,7 +331,25 @@ public final class MainWindowController {
     public void donateAction() {
         logger.info("Opening the CodeDead donation website");
 
-        helpUtils.openWebsite("https://codedead.com/?page_id=302");
+        final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com/?page_id=302", new IRunnableHelper() {
+            @Override
+            public final void executed() {
+                Platform.runLater(() -> logger.info("Successfully opened website"));
+            }
+
+            @Override
+            public final void exceptionOccurred(final Exception ex) {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public final void run() {
+                        logger.error("Error opening the CodeDead donation website", ex);
+                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+                    }
+                });
+            }
+        });
+
+        new Thread(runnableSiteOpener).start();
     }
 
     /**

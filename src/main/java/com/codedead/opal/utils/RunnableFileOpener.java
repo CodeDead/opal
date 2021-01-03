@@ -4,6 +4,7 @@ import com.codedead.opal.interfaces.IRunnableHelper;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 
 public final class RunnableFileOpener implements Runnable {
 
@@ -19,11 +20,20 @@ public final class RunnableFileOpener implements Runnable {
     public RunnableFileOpener(final String fileLocation, final IRunnableHelper iRunnableHelper) {
         if (fileLocation == null)
             throw new NullPointerException("File location cannot be null!");
-        if (fileLocation.trim().length() == 0)
+        if (fileLocation.isEmpty())
             throw new IllegalArgumentException("File location cannot be empty!");
 
         this.fileLocation = fileLocation;
         this.iRunnableHelper = iRunnableHelper;
+    }
+
+    /**
+     * Get the file location
+     *
+     * @return The file location
+     */
+    public final String getFileLocation() {
+        return fileLocation;
     }
 
     @Override
@@ -33,7 +43,7 @@ public final class RunnableFileOpener implements Runnable {
             if (iRunnableHelper != null) {
                 iRunnableHelper.executed();
             }
-        } catch (Exception ex) {
+        } catch (final IOException | UnsupportedOperationException ex) {
             if (iRunnableHelper != null) {
                 iRunnableHelper.exceptionOccurred(ex);
             }

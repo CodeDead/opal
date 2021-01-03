@@ -3,8 +3,12 @@ package com.codedead.opal.utils;
 import com.codedead.opal.interfaces.IRunnableHelper;
 
 import java.awt.*;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
+// Unfortunately, this class is needed to circumvent Linux errors involving the Desktop class and browsing websites
+// See https://stackoverflow.com/a/27880944 for more information
 public final class RunnableSiteOpener implements Runnable {
 
     private final String url;
@@ -26,12 +30,26 @@ public final class RunnableSiteOpener implements Runnable {
         this.iRunnableHelper = iRunnableHelper;
     }
 
+    /**
+     * Get the URL
+     *
+     * @return The URL
+     */
+    public final String getUrl() {
+        return url;
+    }
+
     @Override
     public final void run() {
         try {
             Desktop.getDesktop().browse(new URI(url));
-        } catch (Exception ex) {
-            iRunnableHelper.exceptionOccurred(ex);
+            if (iRunnableHelper != null) {
+                iRunnableHelper.executed();
+            }
+        } catch (final IOException | URISyntaxException | UnsupportedOperationException ex) {
+            if (iRunnableHelper != null) {
+                iRunnableHelper.exceptionOccurred(ex);
+            }
         }
     }
 }
