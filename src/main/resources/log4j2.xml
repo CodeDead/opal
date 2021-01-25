@@ -1,12 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="INFO">
+    <Properties>
+        <Property name="basePath">logs</Property>
+    </Properties>
+
     <Appenders>
+        <RollingFile name="fileLogger" fileName="${basePath}/opal-info.log"
+                     filePattern="${basePath}/opal-info-%d{yyyy-MM-dd}.log.gz"
+                     ignoreExceptions="false">
+            <PatternLayout>
+                <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1}\t-\t%msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${basePath}/" maxDepth="1">
+                    <IfFileName glob="opal-info-????-??-??.log.gz">
+                        <IfAny>
+                            <IfAccumulatedFileSize exceeds="10 MB" />
+                            <IfAccumulatedFileCount exceeds="5" />
+                        </IfAny>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout
                     pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1}\t-\t%msg%n"/>
         </Console>
     </Appenders>
     <Loggers>
+        <Logger name="com.codedead" level="debug" additivity="true">
+            <appender-ref ref="fileLogger" level="debug"/>
+        </Logger>
+
         <Root level="debug" additivity="false">
             <AppenderRef ref="console"/>
         </Root>

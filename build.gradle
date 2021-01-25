@@ -33,6 +33,7 @@ jlink {
 clean.doFirst {
     delete 'default.properties'
     delete 'license.pdf'
+    delete 'logs'
 }
 
 repositories {
