@@ -2,7 +2,7 @@ package com.codedead.opal.domain;
 
 import java.util.List;
 
-public class PlatformUpdate {
+public final class PlatformUpdate {
 
     private String platformName;
     private int majorVersion;
@@ -25,7 +25,7 @@ public class PlatformUpdate {
      *
      * @return The platform name
      */
-    public String getPlatformName() {
+    public final String getPlatformName() {
         return platformName;
     }
 
@@ -34,7 +34,7 @@ public class PlatformUpdate {
      *
      * @param platformName The platform name
      */
-    public void setPlatformName(final String platformName) {
+    public final void setPlatformName(final String platformName) {
         this.platformName = platformName;
     }
 
@@ -43,7 +43,7 @@ public class PlatformUpdate {
      *
      * @return The major version
      */
-    public int getMajorVersion() {
+    public final int getMajorVersion() {
         return majorVersion;
     }
 
@@ -52,7 +52,7 @@ public class PlatformUpdate {
      *
      * @param majorVersion The major version
      */
-    public void setMajorVersion(final int majorVersion) {
+    public final void setMajorVersion(final int majorVersion) {
         this.majorVersion = majorVersion;
     }
 
@@ -61,7 +61,7 @@ public class PlatformUpdate {
      *
      * @return The minor version
      */
-    public int getMinorVersion() {
+    public final int getMinorVersion() {
         return minorVersion;
     }
 
@@ -70,7 +70,7 @@ public class PlatformUpdate {
      *
      * @param minorVersion The minor version
      */
-    public void setMinorVersion(final int minorVersion) {
+    public final void setMinorVersion(final int minorVersion) {
         this.minorVersion = minorVersion;
     }
 
@@ -79,7 +79,7 @@ public class PlatformUpdate {
      *
      * @return The build version
      */
-    public int getBuildVersion() {
+    public final int getBuildVersion() {
         return buildVersion;
     }
 
@@ -88,7 +88,7 @@ public class PlatformUpdate {
      *
      * @param buildVersion The build version
      */
-    public void setBuildVersion(final int buildVersion) {
+    public final void setBuildVersion(final int buildVersion) {
         this.buildVersion = buildVersion;
     }
 
@@ -97,7 +97,7 @@ public class PlatformUpdate {
      *
      * @return The revision version
      */
-    public int getRevisionVersion() {
+    public final int getRevisionVersion() {
         return revisionVersion;
     }
 
@@ -106,7 +106,7 @@ public class PlatformUpdate {
      *
      * @param revisionVersion The revision version
      */
-    public void setRevisionVersion(final int revisionVersion) {
+    public final void setRevisionVersion(final int revisionVersion) {
         this.revisionVersion = revisionVersion;
     }
 
@@ -115,7 +115,7 @@ public class PlatformUpdate {
      *
      * @return The download URL
      */
-    public String getDownloadUrl() {
+    public final String getDownloadUrl() {
         return downloadUrl;
     }
 
@@ -124,7 +124,7 @@ public class PlatformUpdate {
      *
      * @param downloadUrl The download URL
      */
-    public void setDownloadUrl(final String downloadUrl) {
+    public final void setDownloadUrl(final String downloadUrl) {
         this.downloadUrl = downloadUrl;
     }
 
@@ -133,7 +133,7 @@ public class PlatformUpdate {
      *
      * @return The List of {@link com.codedead.opal.domain.ExtraAttribute} objects
      */
-    public List<ExtraAttribute> getExtraAttributes() {
+    public final List<ExtraAttribute> getExtraAttributes() {
         return extraAttributes;
     }
 
@@ -142,7 +142,7 @@ public class PlatformUpdate {
      *
      * @param extraAttributes The List of {@link com.codedead.opal.domain.ExtraAttribute} objects
      */
-    public void setExtraAttributes(final List<ExtraAttribute> extraAttributes) {
+    public final void setExtraAttributes(final List<ExtraAttribute> extraAttributes) {
         this.extraAttributes = extraAttributes;
     }
 }

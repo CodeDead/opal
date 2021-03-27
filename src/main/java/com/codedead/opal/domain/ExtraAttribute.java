@@ -1,6 +1,6 @@
 package com.codedead.opal.domain;
 
-public class ExtraAttribute {
+public final class ExtraAttribute {
 
     private String key;
     private String value;
@@ -17,7 +17,7 @@ public class ExtraAttribute {
      *
      * @return The key
      */
-    public String getKey() {
+    public final String getKey() {
         return key;
     }
 
@@ -26,7 +26,7 @@ public class ExtraAttribute {
      *
      * @param key The key
      */
-    public void setKey(final String key) {
+    public final void setKey(final String key) {
         this.key = key;
     }
 
@@ -35,7 +35,7 @@ public class ExtraAttribute {
      *
      * @return The value
      */
-    public String getValue() {
+    public final String getValue() {
         return value;
     }
 
@@ -44,7 +44,7 @@ public class ExtraAttribute {
      *
      * @param value The value
      */
-    public void setValue(final String value) {
+    public final void setValue(final String value) {
         this.value = value;
     }
 }

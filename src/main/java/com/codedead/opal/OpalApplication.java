@@ -31,13 +31,20 @@ public class OpalApplication extends Application {
         launch(args);
     }
 
+    /**
+     * Method that is called by the JavaFX runtime
+     *
+     * @param primaryStage The initial Stage object
+     * @throws IOException When the {@link com.codedead.opal.controller.SettingsController} object could not be initialized
+     */
     @Override
-    public void start(final Stage primaryStage) throws Exception {
+    public void start(final Stage primaryStage) throws IOException {
         logger.info("Creating the SettingsController");
         final SettingsController settingsController = new SettingsController(PROPERTIES_LOCATION, PROPERTIES_LOCATION);
         final Properties properties = settingsController.getProperties();
 
         final String languageTag = properties.getProperty("locale", "en-US");
+
         if (logger.isInfoEnabled()) {
             logger.info(String.format("Attempting to load the ResourceBundle for locale %s", languageTag));
         }

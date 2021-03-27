@@ -9,8 +9,7 @@ module Opal {
     requires com.fasterxml.jackson.databind;
 
     opens com.codedead.opal.controller to javafx.fxml;
-    opens com.codedead.opal.domain to javafx.fxml;
+    opens com.codedead.opal.domain to javafx.fxml, com.fasterxml.jackson.databind;
 
     exports com.codedead.opal;
-    exports com.codedead.opal.domain;
 }
