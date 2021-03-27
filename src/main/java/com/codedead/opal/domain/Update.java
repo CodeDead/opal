@@ -1,5 +1,7 @@
 package com.codedead.opal.domain;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 import java.util.List;
 
 public class Update {
@@ -18,6 +20,7 @@ public class Update {
      *
      * @return The List of {@link com.codedead.opal.domain.PlatformUpdate} objects
      */
+    @JsonGetter
     public List<PlatformUpdate> getPlatformUpdates() {
         return platformUpdates;
     }

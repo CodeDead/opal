@@ -1,12 +1,18 @@
 package com.codedead.opal.controller;
 
+import com.codedead.opal.domain.SoundPreset;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public final class AudioController {
 
@@ -21,12 +27,26 @@ public final class AudioController {
     private final MediaPlayer trafficPlayer;
     private final MediaPlayer fireplacePlayer;
 
+    private final ObjectMapper objectMapper;
+
+    private SoundPreset soundPreset;
+
     /**
      * Initialize a new AudioController
      *
      * @throws URISyntaxException When the URI syntax is incorrect
      */
     public AudioController() throws URISyntaxException {
+        this(new SoundPreset());
+    }
+
+    /**
+     * Initialize a new AudioController
+     *
+     * @param soundPreset The {@link com.codedead.opal.domain.SoundPreset} object that contains volume levels
+     * @throws URISyntaxException When the URI syntax is incorrect
+     */
+    public AudioController(final SoundPreset soundPreset) throws URISyntaxException {
         logger.info("Initializing new AudioController object");
 
         logger.info("Loading rain MediaPlayer");
@@ -68,6 +88,9 @@ public final class AudioController {
         final Media fireplace = new Media(getClass().getResource("/audio/fireplace.mp3").toURI().toString());
         fireplacePlayer = new MediaPlayer(fireplace);
         fireplacePlayer.setOnEndOfMedia(() -> fireplacePlayer.seek(Duration.ZERO));
+
+        objectMapper = new ObjectMapper();
+        setSoundPreset(soundPreset);
     }
 
     /**
@@ -99,8 +122,12 @@ public final class AudioController {
         if (rainVolume > 1)
             throw new IllegalArgumentException("Rain volume cannot be larger than 1!");
 
-        logger.debug(String.format("Setting rain volume to %s", rainVolume));
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Setting rain volume to %s", rainVolume));
+        }
+
         rainPlayer.setVolume(rainVolume);
+        soundPreset.setRainVolume(rainVolume);
     }
 
     /**
@@ -132,8 +159,12 @@ public final class AudioController {
         if (windVolume > 1)
             throw new IllegalArgumentException("Wind volume cannot be larger than 1!");
 
-        logger.debug(String.format("Setting wind volume to %s", windVolume));
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Setting wind volume to %s", windVolume));
+        }
+
         windPlayer.setVolume(windVolume);
+        soundPreset.setWindVolume(windVolume);
     }
 
     /**
@@ -165,8 +196,12 @@ public final class AudioController {
         if (thunderVolume > 1)
             throw new IllegalArgumentException("Thunder volume cannot be larger than 1!");
 
-        logger.debug(String.format("Setting thunder volume to %s", thunderVolume));
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Setting thunder volume to %s", thunderVolume));
+        }
+
         thunderPlayer.setVolume(thunderVolume);
+        soundPreset.setThunderVolume(thunderVolume);
     }
 
     /**
@@ -198,8 +233,12 @@ public final class AudioController {
         if (keyboardVolume > 1)
             throw new IllegalArgumentException("Keyboard volume cannot be larger than 1!");
 
-        logger.debug(String.format("Setting keyboard volume to %s", keyboardVolume));
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Setting keyboard volume to %s", keyboardVolume));
+        }
+
         keyboardPlayer.setVolume(keyboardVolume);
+        soundPreset.setKeyboardVolume(keyboardVolume);
     }
 
     /**
@@ -231,8 +270,12 @@ public final class AudioController {
         if (phoneVolume > 1)
             throw new IllegalArgumentException("Telephone volume cannot be larger than 1!");
 
-        logger.debug(String.format("Setting telephone volume to %s", phoneVolume));
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Setting telephone volume to %s", phoneVolume));
+        }
+
         phonePlayer.setVolume(phoneVolume);
+        soundPreset.setPhoneVolume(phoneVolume);
     }
 
     /**
@@ -264,8 +307,12 @@ public final class AudioController {
         if (chatterVolume > 1)
             throw new IllegalArgumentException("Chatter volume cannot be larger than 1!");
 
-        logger.debug(String.format("Setting chatter volume to %s", chatterVolume));
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Setting chatter volume to %s", chatterVolume));
+        }
+
         chatterPlayer.setVolume(chatterVolume);
+        soundPreset.setChatterVolume(chatterVolume);
     }
 
     /**
@@ -297,8 +344,12 @@ public final class AudioController {
         if (trafficVolume > 1)
             throw new IllegalArgumentException("Traffic volume cannot be larger than 1!");
 
-        logger.debug(String.format("Setting traffic volume to %s", trafficVolume));
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Setting traffic volume to %s", trafficVolume));
+        }
+
         trafficPlayer.setVolume(trafficVolume);
+        soundPreset.setTrafficVolume(trafficVolume);
     }
 
     /**
@@ -330,7 +381,134 @@ public final class AudioController {
         if (fireplaceVolume > 1)
             throw new IllegalArgumentException("Fireplace volume cannot be larger than 1!");
 
-        logger.debug(String.format("Setting fireplace volume to %s", fireplaceVolume));
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Setting fireplace volume to %s", fireplaceVolume));
+        }
+
         fireplacePlayer.setVolume(fireplaceVolume);
+        soundPreset.setFirePlaceVolume(fireplaceVolume);
+    }
+
+    /**
+     * Get the {@link com.codedead.opal.domain.SoundPreset} object
+     *
+     * @return The {@link com.codedead.opal.domain.SoundPreset} object
+     */
+    public SoundPreset getSoundPreset() {
+        return soundPreset;
+    }
+
+    /**
+     * Set the {@link com.codedead.opal.domain.SoundPreset} object
+     *
+     * @param soundPreset The {@link com.codedead.opal.domain.SoundPreset} object
+     */
+    public void setSoundPreset(final SoundPreset soundPreset) {
+        logger.debug("Setting the SoundPreset object");
+        this.soundPreset = soundPreset;
+
+        if (soundPreset != null) {
+            setRainVolume(soundPreset.getRainVolume());
+            if (soundPreset.getRainVolume() <= 0) {
+                stopRain();
+            } else {
+                playRain();
+            }
+
+            setWindVolume(soundPreset.getWindVolume());
+            if (soundPreset.getWindVolume() <= 0) {
+                stopWind();
+            } else {
+                playWind();
+            }
+
+            setThunderVolume(soundPreset.getThunderVolume());
+            if (soundPreset.getThunderVolume() <= 0) {
+                stopThunder();
+            } else {
+                playThunder();
+            }
+
+            setKeyboardVolume(soundPreset.getKeyboardVolume());
+            if (soundPreset.getKeyboardVolume() <= 0) {
+                stopKeyboard();
+            } else {
+                playKeyboard();
+            }
+
+            setPhoneVolume(soundPreset.getPhoneVolume());
+            if (soundPreset.getPhoneVolume() <= 0) {
+                stopPhone();
+            } else {
+                playPhone();
+            }
+
+            setChatterVolume(soundPreset.getChatterVolume());
+            if (soundPreset.getChatterVolume() <= 0) {
+                stopChatter();
+            } else {
+                playChatter();
+            }
+
+            setTrafficVolume(soundPreset.getTrafficVolume());
+            if (soundPreset.getTrafficVolume() <= 0) {
+                stopTraffic();
+            } else {
+                playTraffic();
+            }
+
+            setFireplaceVolume(soundPreset.getFirePlaceVolume());
+            if (soundPreset.getFirePlaceVolume() <= 0) {
+                stopFireplace();
+            } else {
+                playFireplace();
+            }
+        }
+    }
+
+    /**
+     * Load a {@link com.codedead.opal.domain.SoundPreset} object from disk
+     *
+     * @param path The full path where the {@link com.codedead.opal.domain.SoundPreset} object is stored on disk
+     * @return The {@link com.codedead.opal.domain.SoundPreset} object that could be parsed or null if the file is not a valid {@link com.codedead.opal.domain.SoundPreset} object
+     * @throws IOException When the file could not be read or the data inside the file is not a {@link com.codedead.opal.domain.SoundPreset} object
+     */
+    public final SoundPreset loadSoundPreset(final String path) throws IOException {
+        if (path == null)
+            throw new NullPointerException("Path cannot be null!");
+        if (path.isEmpty())
+            throw new IllegalArgumentException("Path cannot be empty!");
+
+        if (logger.isInfoEnabled()) {
+            logger.info(String.format("Loading SoundPreset from %s", path));
+        }
+
+        final Path filePath = Path.of(path);
+        final String actual = Files.readString(filePath);
+
+        if (actual == null || actual.isEmpty()) return null;
+        return objectMapper.readValue(actual, SoundPreset.class);
+    }
+
+    /**
+     * Save a {@link com.codedead.opal.domain.SoundPreset} object to disk
+     *
+     * @param soundPreset The {@link com.codedead.opal.domain.SoundPreset} object that should be stored to disk
+     * @param path        The full path where the {@link com.codedead.opal.domain.SoundPreset} object should be stored on disk
+     * @throws IOException When the {@link com.codedead.opal.domain.SoundPreset} object could not be stored to disk
+     */
+    public final void saveSoundPreset(final SoundPreset soundPreset, final String path) throws IOException {
+        if (soundPreset == null)
+            throw new NullPointerException("SoundPreset cannot be null!");
+        if (path == null)
+            throw new NullPointerException("Path cannot be null!");
+        if (path.isEmpty())
+            throw new IllegalArgumentException("Path cannot be empty!");
+
+        if (logger.isInfoEnabled()) {
+            logger.info(String.format("Saving SoundPreset to %s", path));
+        }
+
+        objectMapper.writeValue(new File(path), soundPreset);
     }
 }

@@ -31,9 +31,12 @@
 
     <MenuBar GridPane.rowIndex="0">
         <Menu text="_File">
+            <MenuItem fx:id="mniOpenSoundPreset" onAction="#openSoundPresetAction" text="%OpenSoundPreset"/>
+            <MenuItem fx:id="mniSaveSoundPreset" onAction="#saveSoundPresetAction" text="%SaveSoundPreset"/>
+            <SeparatorMenuItem/>
             <MenuItem fx:id="mniReset" onAction="#resetAction" text="%Reset"/>
             <SeparatorMenuItem/>
-            <MenuItem onAction="#exitAction" fx:id="mniExit" text="%Exit"/>
+            <MenuItem fx:id="mniExit" onAction="#exitAction" text="%Exit"/>
         </Menu>
         <Menu text="_Tools">
             <MenuItem fx:id="mniSettings" onAction="#settingsAction" text="%Settings"/>

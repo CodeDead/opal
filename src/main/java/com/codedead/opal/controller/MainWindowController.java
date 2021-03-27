@@ -1,6 +1,7 @@
 package com.codedead.opal.controller;
 
 import com.codedead.opal.domain.SoundPane;
+import com.codedead.opal.domain.SoundPreset;
 import com.codedead.opal.interfaces.IRunnableHelper;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.HelpUtils;
@@ -14,10 +15,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Locale;
@@ -62,6 +65,10 @@ public final class MainWindowController {
     private MenuItem mniExit;
     @FXML
     private MenuItem mniReset;
+    @FXML
+    private MenuItem mniSaveSoundPreset;
+    @FXML
+    private MenuItem mniOpenSoundPreset;
 
     private final AudioController audioController;
     private SettingsController settingsController;
@@ -103,7 +110,10 @@ public final class MainWindowController {
         final Properties properties = settingsController.getProperties();
         final String languageTag = properties.getProperty("locale", "en-US");
 
-        logger.info(String.format("Attempting to load the ResourceBundle for locale %s", languageTag));
+        if (logger.isInfoEnabled()) {
+            logger.info(String.format("Attempting to load the ResourceBundle for locale %s", languageTag));
+        }
+
         final Locale locale = Locale.forLanguageTag(languageTag);
         translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
     }
@@ -115,6 +125,8 @@ public final class MainWindowController {
     private void initialize() {
         logger.info("Initializing MainWindow");
 
+        mniOpenSoundPreset.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/open.png"))));
+        mniSaveSoundPreset.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/save.png"))));
         mniReset.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/refresh.png"))));
         mniExit.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/remove.png"))));
         mniSettings.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/settings.png"))));
@@ -197,6 +209,73 @@ public final class MainWindowController {
                 audioController.playFireplace();
             }
         });
+    }
+
+    /**
+     * Open a {@link com.codedead.opal.domain.SoundPreset} object
+     */
+    @FXML
+    private void openSoundPresetAction() {
+        logger.info("Attempting to open a SoundPreset");
+        final FileChooser chooser = new FileChooser();
+
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON (*.json)", "*.json");
+        chooser.getExtensionFilters().add(extFilter);
+
+        final File file = chooser.showOpenDialog(new Stage());
+
+        if (file != null && file.exists()) {
+            try {
+                final SoundPreset soundPreset = audioController.loadSoundPreset(file.getAbsolutePath());
+
+                if (soundPreset != null) {
+                    snpRain.getSlider().setValue(soundPreset.getRainVolume() * 100);
+                    snpWind.getSlider().setValue(soundPreset.getWindVolume() * 100);
+                    snpThunder.getSlider().setValue(soundPreset.getThunderVolume() * 100);
+                    snpTyping.getSlider().setValue(soundPreset.getKeyboardVolume() * 100);
+                    snpTelephone.getSlider().setValue(soundPreset.getPhoneVolume() * 100);
+                    snpChatter.getSlider().setValue(soundPreset.getChatterVolume() * 100);
+                    snpTraffic.getSlider().setValue(soundPreset.getTrafficVolume() * 100);
+                    snpFireplace.getSlider().setValue(soundPreset.getFirePlaceVolume() * 100);
+
+                    audioController.setSoundPreset(soundPreset);
+                }
+            } catch (final IOException ex) {
+                logger.error(String.format("Unable to open the SoundPreset from %s", file.getAbsolutePath()), ex);
+                FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+            }
+        } else {
+            logger.info("Cancelled opening a SoundPreset");
+        }
+    }
+
+    /**
+     * Save the {@link com.codedead.opal.domain.SoundPreset} object to disk
+     */
+    @FXML
+    private void saveSoundPresetAction() {
+        logger.info("Attempting to save a SoundPreset");
+        final FileChooser fileChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON (*.json)", "*.json");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        final File file = fileChooser.showSaveDialog(new Stage());
+
+        if (file != null) {
+            String filePath = file.getAbsolutePath();
+            try {
+                if (!filePath.toLowerCase().contains(".json")) {
+                    filePath += ".json";
+                }
+                audioController.saveSoundPreset(audioController.getSoundPreset(), filePath);
+            } catch (IOException ex) {
+                logger.error(String.format("Unable to save the SoundPreset to %s", filePath), ex);
+                FxUtils.showErrorAlert(translationBundle.getString("SaveSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+            }
+        } else {
+            logger.info("Cancelled saving a SoundPreset");
+        }
     }
 
     /**
@@ -351,7 +430,7 @@ public final class MainWindowController {
     private void donateAction() {
         logger.info("Opening the CodeDead donation website");
 
-        final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com/?page_id=302", new IRunnableHelper() {
+        final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com/donate", new IRunnableHelper() {
             @Override
             public final void executed() {
                 Platform.runLater(() -> logger.info("Successfully opened website"));

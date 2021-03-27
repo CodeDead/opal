@@ -56,7 +56,9 @@ public final class SettingsController {
 
         try (final InputStream is = getClass().getClassLoader().getResourceAsStream(getPropertiesResourceLocation())) {
             if (is != null) {
-                logger.info(String.format("Creating default properties file at %s", getPropertiesFileLocation()));
+                if (logger.isInfoEnabled()) {
+                    logger.info(String.format("Creating default properties file at %s", getPropertiesFileLocation()));
+                }
                 Files.copy(is, propertiesPath);
                 logger.info("Default properties file created");
             } else {

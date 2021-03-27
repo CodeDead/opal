@@ -44,7 +44,9 @@ public final class SettingsWindowController {
         final Properties properties = settingsController.getProperties();
         final String languageTag = properties.getProperty("locale", "en-US");
 
-        logger.info(String.format("Attempting to load the ResourceBundle for locale %s", languageTag));
+        if (logger.isInfoEnabled()) {
+            logger.info(String.format("Attempting to load the ResourceBundle for locale %s", languageTag));
+        }
         final Locale locale = Locale.forLanguageTag(languageTag);
         translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
     }
