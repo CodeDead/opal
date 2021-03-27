@@ -10,7 +10,7 @@ Opal is a free and open-source JavaFX application that plays relaxing music in t
 
 A couple of dependencies are required in order to build Opal:
 
-* [JDK15](https://openjdk.java.net/projects/jdk/15/)
+* [JDK16](https://openjdk.java.net/projects/jdk/16/)
 * [JavaFX](https://openjfx.io/)
 * [Gradle](https://gradle.org)
 * [FasterXML/jackson](https://github.com/FasterXML/jackson)
