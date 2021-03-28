@@ -5,6 +5,7 @@ public final class SoundPreset {
     private double rainVolume;
     private double windVolume;
     private double thunderVolume;
+    private double birdsVolume;
     private double keyboardVolume;
     private double phoneVolume;
     private double chatterVolume;
@@ -70,6 +71,24 @@ public final class SoundPreset {
      */
     public final void setThunderVolume(final double thunderVolume) {
         this.thunderVolume = thunderVolume;
+    }
+
+    /**
+     * Get the birds volume
+     *
+     * @return The birds volume
+     */
+    public final double getBirdsVolume() {
+        return birdsVolume;
+    }
+
+    /**
+     * Set the birds volume
+     *
+     * @param birdsVolume The birds volume
+     */
+    public final void setBirdsVolume(final double birdsVolume) {
+        this.birdsVolume = birdsVolume;
     }
 
     /**

@@ -86,6 +86,7 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -98,6 +99,8 @@
                            image="/images/wind.png"/>
                 <SoundPane fx:id="snpThunder" GridPane.rowIndex="2" volume="0" name="%Thunder"
                            image="/images/thunder.png"/>
+                <SoundPane fx:id="snpBird" GridPane.rowIndex="3" volume="0" name="%Birds"
+                           image="/images/bird.png"/>
             </GridPane>
 
             <Label GridPane.rowIndex="2" GridPane.columnIndex="1" text="%Office">

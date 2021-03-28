@@ -21,6 +21,7 @@ public final class AudioController {
     private final MediaPlayer rainPlayer;
     private final MediaPlayer windPlayer;
     private final MediaPlayer thunderPlayer;
+    private final MediaPlayer birdPlayer;
     private final MediaPlayer keyboardPlayer;
     private final MediaPlayer phonePlayer;
     private final MediaPlayer chatterPlayer;
@@ -63,6 +64,11 @@ public final class AudioController {
         final Media thunder = new Media(getClass().getResource("/audio/thunder.mp3").toURI().toString());
         thunderPlayer = new MediaPlayer(thunder);
         thunderPlayer.setOnEndOfMedia(() -> thunderPlayer.seek(Duration.ZERO));
+
+        logger.info("Loading bird MediaPlayer");
+        final Media birds = new Media(getClass().getResource("/audio/birds.mp3").toURI().toString());
+        birdPlayer = new MediaPlayer(birds);
+        birdPlayer.setOnEndOfMedia(() -> birdPlayer.seek(Duration.ZERO));
 
         logger.info("Loading keyboard MediaPlayer");
         final Media typing = new Media(getClass().getResource("/audio/typing.mp3").toURI().toString());
@@ -202,6 +208,43 @@ public final class AudioController {
 
         thunderPlayer.setVolume(thunderVolume);
         soundPreset.setThunderVolume(thunderVolume);
+    }
+
+    /**
+     * Play bird sounds
+     */
+    public final void playBirds() {
+        if (!birdPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)) {
+            logger.info("Playing bird sounds");
+            birdPlayer.play();
+        }
+    }
+
+    /**
+     * Stop bird sounds
+     */
+    public final void stopBirds() {
+        logger.info("Stopping bird sounds");
+        birdPlayer.stop();
+    }
+
+    /**
+     * Set the volume of the bird sounds
+     *
+     * @param birdsVolume The volume of the bird sounds (between 0 and 1)
+     */
+    public final void setBirdsVolume(final double birdsVolume) {
+        if (birdsVolume < 0)
+            throw new IllegalArgumentException("Bird volume cannot be smaller than 0!");
+        if (birdsVolume > 1)
+            throw new IllegalArgumentException("Bird volume cannot be larger than 1!");
+
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Setting bird volume to %s", birdsVolume));
+        }
+
+        birdPlayer.setVolume(birdsVolume);
+        soundPreset.setBirdsVolume(birdsVolume);
     }
 
     /**
@@ -427,6 +470,13 @@ public final class AudioController {
                 stopThunder();
             } else {
                 playThunder();
+            }
+
+            setBirdsVolume(soundPreset.getBirdsVolume());
+            if (soundPreset.getBirdsVolume() <= 0) {
+                stopBirds();
+            } else {
+                playBirds();
             }
 
             setKeyboardVolume(soundPreset.getKeyboardVolume());

@@ -42,6 +42,8 @@ public final class MainWindowController {
     @FXML
     private SoundPane snpTyping;
     @FXML
+    private SoundPane snpBird;
+    @FXML
     private SoundPane snpThunder;
     @FXML
     private SoundPane snpWind;
@@ -165,6 +167,15 @@ public final class MainWindowController {
             }
         });
 
+        snpBird.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (newValue.doubleValue() == 0) {
+                audioController.stopBirds();
+            } else {
+                audioController.setBirdsVolume(newValue.doubleValue() / 100);
+                audioController.playBirds();
+            }
+        });
+
         snpTyping.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue.doubleValue() == 0) {
                 audioController.stopKeyboard();
@@ -232,6 +243,7 @@ public final class MainWindowController {
                     snpRain.getSlider().setValue(soundPreset.getRainVolume() * 100);
                     snpWind.getSlider().setValue(soundPreset.getWindVolume() * 100);
                     snpThunder.getSlider().setValue(soundPreset.getThunderVolume() * 100);
+                    snpBird.getSlider().setValue(soundPreset.getBirdsVolume() * 100);
                     snpTyping.getSlider().setValue(soundPreset.getKeyboardVolume() * 100);
                     snpTelephone.getSlider().setValue(soundPreset.getPhoneVolume() * 100);
                     snpChatter.getSlider().setValue(soundPreset.getChatterVolume() * 100);
