@@ -1,17 +1,18 @@
 package com.codedead.opal.domain;
 
-import java.util.List;
+import java.util.Map;
 
 public final class PlatformUpdate {
 
     private String platformName;
+    private boolean portable;
     private int majorVersion;
     private int minorVersion;
     private int buildVersion;
     private int revisionVersion;
 
     private String downloadUrl;
-    private List<ExtraAttribute> extraAttributes;
+    private Map<String, String> extraAttributes;
 
     /**
      * Initialize a new PlatformUpdate
@@ -36,6 +37,24 @@ public final class PlatformUpdate {
      */
     public final void setPlatformName(final String platformName) {
         this.platformName = platformName;
+    }
+
+    /**
+     * Get whether the version is portable or not
+     *
+     * @return True if the version is portable, otherwise false
+     */
+    public final boolean isPortable() {
+        return portable;
+    }
+
+    /**
+     * Set whether the version is portable or not
+     *
+     * @param portable True if the version is portable, otherwise false
+     */
+    public final void setPortable(final boolean portable) {
+        this.portable = portable;
     }
 
     /**
@@ -129,20 +148,20 @@ public final class PlatformUpdate {
     }
 
     /**
-     * Get the List of {@link com.codedead.opal.domain.ExtraAttribute} objects
+     * Get the extra attributes
      *
-     * @return The List of {@link com.codedead.opal.domain.ExtraAttribute} objects
+     * @return The Map that contains the extra attributes
      */
-    public final List<ExtraAttribute> getExtraAttributes() {
+    public final Map<String, String> getExtraAttributes() {
         return extraAttributes;
     }
 
     /**
-     * Set the List of {@link com.codedead.opal.domain.ExtraAttribute} objects
+     * Set the extra attributes
      *
-     * @param extraAttributes The List of {@link com.codedead.opal.domain.ExtraAttribute} objects
+     * @param extraAttributes The Map that contains the extra attributes
      */
-    public final void setExtraAttributes(final List<ExtraAttribute> extraAttributes) {
+    public final void setExtraAttributes(final Map<String, String> extraAttributes) {
         this.extraAttributes = extraAttributes;
     }
 }
