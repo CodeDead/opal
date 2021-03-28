@@ -38,7 +38,8 @@
                         <ColumnConstraints/>
                     </columnConstraints>
 
-                    <CheckBox fx:id="chbAutoUpdate" GridPane.columnSpan="2" GridPane.rowIndex="0" GridPane.columnIndex="0" text="%AutoUpdate">
+                    <CheckBox fx:id="chbAutoUpdate" GridPane.columnSpan="2" GridPane.rowIndex="0"
+                              GridPane.columnIndex="0" text="%AutoUpdate">
                         <GridPane.margin>
                             <Insets bottom="3" left="3" right="3" top="3"/>
                         </GridPane.margin>
@@ -51,9 +52,9 @@
                     <ComboBox fx:id="cboLanguage" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="English" />
-                                <String fx:value="Français" />
-                                <String fx:value="Nederlands" />
+                                <String fx:value="English"/>
+                                <String fx:value="Français"/>
+                                <String fx:value="Nederlands"/>
                             </FXCollections>
                         </items>
                     </ComboBox>
@@ -74,7 +75,8 @@
                 <Insets bottom="3" left="3" right="3" top="3"/>
             </GridPane.margin>
         </Button>
-        <Button GridPane.columnIndex="1" GridPane.halignment="RIGHT" minWidth="100" text="%Save" onAction="#saveSettingsAction">
+        <Button GridPane.columnIndex="1" GridPane.halignment="RIGHT" minWidth="100" text="%Save"
+                onAction="#saveSettingsAction">
             <GridPane.margin>
                 <Insets bottom="3" left="3" right="3" top="3"/>
             </GridPane.margin>
