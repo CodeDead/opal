@@ -119,6 +119,15 @@ public final class SettingsController {
     }
 
     /**
+     * Set the Properties object
+     *
+     * @param properties The properties object
+     */
+    public final void setProperties(final Properties properties) {
+        this.properties = properties;
+    }
+
+    /**
      * Save the properties
      *
      * @throws IOException When the Properties object could not be stored
