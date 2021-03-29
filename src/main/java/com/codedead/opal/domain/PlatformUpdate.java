@@ -2,7 +2,7 @@ package com.codedead.opal.domain;
 
 import java.util.Map;
 
-public final class PlatformUpdate {
+public final class PlatformUpdate implements Comparable<PlatformUpdate> {
 
     private String platformName;
     private boolean portable;
@@ -163,5 +163,39 @@ public final class PlatformUpdate {
      */
     public final void setExtraAttributes(final Map<String, String> extraAttributes) {
         this.extraAttributes = extraAttributes;
+    }
+
+    /**
+     * Check if a {@link com.codedead.opal.domain.PlatformUpdate} is more recent than another
+     *
+     * @param o The platform update that should be compared
+     * @return 1 if the {@link com.codedead.opal.domain.PlatformUpdate} object that is passed as a parameter is more recent than the given {@link com.codedead.opal.domain.PlatformUpdate}, otherwise 0
+     */
+    @Override
+    public int compareTo(final PlatformUpdate o) {
+        if (getMajorVersion() < o.getMajorVersion()) {
+            return 1;
+        }  else if (getMajorVersion() > o.getMajorVersion()) {
+            return 0;
+        } else {
+            if (getMinorVersion() < o.getMinorVersion()) {
+                return 1;
+            } else if (getMajorVersion() < o.getMinorVersion()) {
+                return 0;
+            } else {
+                if (getBuildVersion() < o.getBuildVersion()) {
+                    return 1;
+                } else if (getBuildVersion() > o.getBuildVersion()) {
+                    return 0;
+                } else {
+                    if (getRevisionVersion() < o.getRevisionVersion()) {
+                        return 1;
+                    } else if (getRevisionVersion() > o.getRevisionVersion()) {
+                        return 0;
+                    }
+                }
+            }
+        }
+        return 0;
     }
 }

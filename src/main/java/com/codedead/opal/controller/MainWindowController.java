@@ -1,7 +1,6 @@
 package com.codedead.opal.controller;
 
 import com.codedead.opal.domain.SoundPane;
-import com.codedead.opal.domain.SoundPreset;
 import com.codedead.opal.interfaces.IRunnableHelper;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.HelpUtils;
@@ -24,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -139,95 +139,23 @@ public final class MainWindowController {
         mniUpdate.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/update.png"))));
         mniHelp.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/help.png"))));
 
-        // Set volume before playing for better user-experience
-        snpRain.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (newValue.doubleValue() == 0) {
-                audioController.stopRain();
-            } else {
-                audioController.setRainVolume(newValue.doubleValue() / 100);
-                audioController.playRain();
-            }
-        });
-
-        snpWind.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (newValue.doubleValue() == 0) {
-                audioController.stopWind();
-            } else {
-                audioController.setWindVolume(newValue.doubleValue() / 100);
-                audioController.playWind();
-            }
-        });
-
-        snpThunder.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (newValue.doubleValue() == 0) {
-                audioController.stopThunder();
-            } else {
-                audioController.setThunderVolume(newValue.doubleValue() / 100);
-                audioController.playThunder();
-            }
-        });
-
-        snpBird.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (newValue.doubleValue() == 0) {
-                audioController.stopBirds();
-            } else {
-                audioController.setBirdsVolume(newValue.doubleValue() / 100);
-                audioController.playBirds();
-            }
-        });
-
-        snpTyping.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (newValue.doubleValue() == 0) {
-                audioController.stopKeyboard();
-            } else {
-                audioController.setKeyboardVolume(newValue.doubleValue() / 100);
-                audioController.playKeyboard();
-            }
-        });
-
-        snpTelephone.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (newValue.doubleValue() == 0) {
-                audioController.stopPhone();
-            } else {
-                audioController.setPhoneVolume(newValue.doubleValue() / 100);
-                audioController.playPhone();
-            }
-        });
-
-        snpChatter.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (newValue.doubleValue() == 0) {
-                audioController.stopChatter();
-            } else {
-                audioController.setChatterVolume(newValue.doubleValue() / 100);
-                audioController.playChatter();
-            }
-        });
-
-        snpTraffic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (newValue.doubleValue() == 0) {
-                audioController.stopTraffic();
-            } else {
-                audioController.setTrafficVolume(newValue.doubleValue() / 100);
-                audioController.playTraffic();
-            }
-        });
-
-        snpFireplace.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (newValue.doubleValue() == 0) {
-                audioController.stopFireplace();
-            } else {
-                audioController.setFireplaceVolume(newValue.doubleValue() / 100);
-                audioController.playFireplace();
-            }
-        });
+        snpRain.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("rain", newValue.doubleValue() / 100));
+        snpWind.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("wind", newValue.doubleValue() / 100));
+        snpThunder.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("thunder", newValue.doubleValue() / 100));
+        snpBird.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("birds", newValue.doubleValue() / 100));
+        snpTyping.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("keyboard", newValue.doubleValue() / 100));
+        snpTelephone.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("telephone", newValue.doubleValue() / 100));
+        snpChatter.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("officeChatter", newValue.doubleValue() / 100));
+        snpTraffic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("traffic", newValue.doubleValue() / 100));
+        snpFireplace.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fireplace", newValue.doubleValue() / 100));
     }
 
     /**
-     * Open a {@link com.codedead.opal.domain.SoundPreset} object
+     * Open a sound preset
      */
     @FXML
     private void openSoundPresetAction() {
-        logger.info("Attempting to open a SoundPreset");
+        logger.info("Attempting to open a sound preset");
         final FileChooser chooser = new FileChooser();
 
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON (*.json)", "*.json");
@@ -237,36 +165,40 @@ public final class MainWindowController {
 
         if (file != null && file.exists()) {
             try {
-                final SoundPreset soundPreset = audioController.loadSoundPreset(file.getAbsolutePath());
-
-                if (soundPreset != null) {
-                    snpRain.getSlider().setValue(soundPreset.getRainVolume() * 100);
-                    snpWind.getSlider().setValue(soundPreset.getWindVolume() * 100);
-                    snpThunder.getSlider().setValue(soundPreset.getThunderVolume() * 100);
-                    snpBird.getSlider().setValue(soundPreset.getBirdsVolume() * 100);
-                    snpTyping.getSlider().setValue(soundPreset.getKeyboardVolume() * 100);
-                    snpTelephone.getSlider().setValue(soundPreset.getPhoneVolume() * 100);
-                    snpChatter.getSlider().setValue(soundPreset.getChatterVolume() * 100);
-                    snpTraffic.getSlider().setValue(soundPreset.getTrafficVolume() * 100);
-                    snpFireplace.getSlider().setValue(soundPreset.getFirePlaceVolume() * 100);
-
-                    audioController.setSoundPreset(soundPreset);
+                audioController.loadSoundPreset(file.getAbsolutePath());
+                for (Map.Entry<String, Double> entry : audioController.getVolumes()) {
+                    switch (entry.getKey()) {
+                        case "rain" -> snpRain.getSlider().setValue(entry.getValue() * 100);
+                        case "wind" -> snpWind.getSlider().setValue(entry.getValue() * 100);
+                        case "thunder" -> snpThunder.getSlider().setValue(entry.getValue() * 100);
+                        case "birds" -> snpBird.getSlider().setValue(entry.getValue() * 100);
+                        case "keyboard" -> snpTyping.getSlider().setValue(entry.getValue() * 100);
+                        case "telephone" -> snpTelephone.getSlider().setValue(entry.getValue() * 100);
+                        case "officeChatter" -> snpChatter.getSlider().setValue(entry.getValue() * 100);
+                        case "traffic" -> snpTraffic.getSlider().setValue(entry.getValue() * 100);
+                        case "fireplace" -> snpFireplace.getSlider().setValue(entry.getValue() * 100);
+                        default -> {
+                            if (logger.isInfoEnabled()) {
+                                logger.info(String.format("Unknown key found: %s", entry.getKey()));
+                            }
+                        }
+                    }
                 }
             } catch (final IOException ex) {
-                logger.error(String.format("Unable to open the SoundPreset from %s", file.getAbsolutePath()), ex);
+                logger.error(String.format("Unable to open the sound preset from %s", file.getAbsolutePath()), ex);
                 FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
             }
         } else {
-            logger.info("Cancelled opening a SoundPreset");
+            logger.info("Cancelled opening a sound preset");
         }
     }
 
     /**
-     * Save the {@link com.codedead.opal.domain.SoundPreset} object to disk
+     * Save the sound settings to disk
      */
     @FXML
     private void saveSoundPresetAction() {
-        logger.info("Attempting to save a SoundPreset");
+        logger.info("Attempting to save sound settings");
         final FileChooser fileChooser = new FileChooser();
 
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON (*.json)", "*.json");
@@ -280,13 +212,13 @@ public final class MainWindowController {
                 if (!filePath.toLowerCase().contains(".json")) {
                     filePath += ".json";
                 }
-                audioController.saveSoundPreset(audioController.getSoundPreset(), filePath);
+                audioController.saveSoundPreset(filePath);
             } catch (IOException ex) {
-                logger.error(String.format("Unable to save the SoundPreset to %s", filePath), ex);
+                logger.error(String.format("Unable to save the sound settings to %s", filePath), ex);
                 FxUtils.showErrorAlert(translationBundle.getString("SaveSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
             }
         } else {
-            logger.info("Cancelled saving a SoundPreset");
+            logger.info("Cancelled saving a sound settings");
         }
     }
 
