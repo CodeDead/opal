@@ -169,7 +169,7 @@ public final class MainWindowController {
         if (file != null && file.exists()) {
             try {
                 audioController.loadSoundPreset(file.getAbsolutePath());
-                for (Map.Entry<String, Double> entry : audioController.getVolumes()) {
+                for (final Map.Entry<String, Double> entry : audioController.getVolumes()) {
                     switch (entry.getKey()) {
                         case "rain" -> snpRain.getSlider().setValue(entry.getValue() * 100);
                         case "wind" -> snpWind.getSlider().setValue(entry.getValue() * 100);
