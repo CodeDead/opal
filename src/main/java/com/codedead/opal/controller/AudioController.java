@@ -121,8 +121,8 @@ public final class AudioController {
         if (newVolume > 1)
             throw new IllegalArgumentException("Volume cannot be higher than 1!");
 
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("Setting volume for MediaPlayer with key %1$s to %2$s", key, newVolume));
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Setting volume for MediaPlayer with key %1$s to %2$s", key, newVolume));
         }
 
         final MediaPlayer player = mediaPlayers.get(key);
