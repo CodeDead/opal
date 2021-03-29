@@ -30,7 +30,7 @@
     </columnConstraints>
 
     <MenuBar GridPane.rowIndex="0">
-        <Menu text="_File">
+        <Menu text="%File">
             <MenuItem fx:id="mniOpenSoundPreset" onAction="#openSoundPresetAction" text="%OpenSoundPreset"/>
             <MenuItem fx:id="mniSaveSoundPreset" onAction="#saveSoundPresetAction" text="%SaveSoundPreset"/>
             <SeparatorMenuItem/>
@@ -38,10 +38,10 @@
             <SeparatorMenuItem/>
             <MenuItem fx:id="mniExit" onAction="#exitAction" text="%Exit"/>
         </Menu>
-        <Menu text="_Tools">
+        <Menu text="%Tools">
             <MenuItem fx:id="mniSettings" onAction="#settingsAction" text="%Settings"/>
         </Menu>
-        <Menu text="_Help">
+        <Menu text="%HelpMenu">
             <MenuItem fx:id="mniHelp" onAction="#helpAction" text="%Help"/>
             <SeparatorMenuItem/>
             <MenuItem fx:id="mniUpdate" text="%CheckForUpdates"/>

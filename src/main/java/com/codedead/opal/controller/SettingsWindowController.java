@@ -92,8 +92,12 @@ public final class SettingsWindowController {
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.YES) {
+            showAlertIfLanguageMismatch("en-US");
+
             try {
                 settingsController.createDefaultProperties();
+                settingsController.setProperties(settingsController.readPropertiesFile());
+
                 setSettingsController(settingsController);
             } catch (final IOException ex) {
                 logger.error("Unable to reset all settings", ex);
@@ -108,6 +112,9 @@ public final class SettingsWindowController {
     @FXML
     private void saveSettingsAction() {
         properties.setProperty("autoUpdate", Boolean.toString(chbAutoUpdate.isSelected()));
+
+        showAlertIfLanguageMismatch(properties.getProperty("locale", "en-US"));
+
         switch (cboLanguage.getSelectionModel().getSelectedIndex()) {
             case 1 -> properties.setProperty("locale", "fr-FR");
             case 2 -> properties.setProperty("locale", "nl-NL");
@@ -123,5 +130,24 @@ public final class SettingsWindowController {
         }
 
         setSettingsController(settingsController);
+    }
+
+    /**
+     * Show an information alert if a restart is required
+     *
+     * @param languageToMatch The language that needs to be matched to the combobox
+     */
+    private void showAlertIfLanguageMismatch(final String languageToMatch) {
+        String newLanguage;
+        switch (cboLanguage.getSelectionModel().getSelectedIndex()) {
+            case 1 -> newLanguage = "fr-FR";
+            case 2 -> newLanguage = "nl-NL";
+            default -> newLanguage = "en-US";
+        }
+
+        if (!languageToMatch.equals(newLanguage)) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, translationBundle.getString("RestartRequired"), ButtonType.OK);
+            alert.showAndWait();
+        }
     }
 }

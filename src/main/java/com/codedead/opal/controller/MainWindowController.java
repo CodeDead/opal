@@ -72,9 +72,11 @@ public final class MainWindowController {
     @FXML
     private MenuItem mniOpenSoundPreset;
 
+    private final UpdateController updateController;
     private final AudioController audioController;
-    private SettingsController settingsController;
     private final HelpUtils helpUtils;
+
+    private SettingsController settingsController;
     private ResourceBundle translationBundle;
 
     /**
@@ -85,8 +87,9 @@ public final class MainWindowController {
     public MainWindowController() throws URISyntaxException {
         logger.info("Initializing new MainWindowController object");
 
-        helpUtils = new HelpUtils();
+        updateController = new UpdateController();
         audioController = new AudioController();
+        helpUtils = new HelpUtils();
     }
 
     /**

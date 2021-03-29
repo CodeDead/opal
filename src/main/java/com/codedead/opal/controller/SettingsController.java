@@ -146,7 +146,7 @@ public final class SettingsController {
      * @return The Properties object
      * @throws IOException When the properties file could not be loaded
      */
-    private Properties readPropertiesFile() throws IOException {
+    public Properties readPropertiesFile() throws IOException {
         logger.info("Attempting to load the Properties object");
         try (final FileInputStream fis = new FileInputStream(getPropertiesFileLocation())) {
             final Properties prop = new Properties();
