@@ -1,16 +1,16 @@
 package com.codedead.opal.controller;
 
+import com.codedead.opal.domain.PlatformUpdate;
 import com.codedead.opal.domain.SoundPane;
 import com.codedead.opal.interfaces.IRunnableHelper;
-import com.codedead.opal.utils.FxUtils;
-import com.codedead.opal.utils.HelpUtils;
-import com.codedead.opal.utils.RunnableFileOpener;
-import com.codedead.opal.utils.RunnableSiteOpener;
+import com.codedead.opal.utils.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -22,10 +22,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public final class MainWindowController {
 
@@ -72,12 +69,14 @@ public final class MainWindowController {
     @FXML
     private MenuItem mniOpenSoundPreset;
 
-    private final UpdateController updateController;
+    private final String platformName;
     private final AudioController audioController;
     private final HelpUtils helpUtils;
 
     private SettingsController settingsController;
+    private UpdateController updateController;
     private ResourceBundle translationBundle;
+    private boolean isPortable;
 
     /**
      * Initialize a new MainWindowController
@@ -87,33 +86,41 @@ public final class MainWindowController {
     public MainWindowController() throws URISyntaxException {
         logger.info("Initializing new MainWindowController object");
 
-        updateController = new UpdateController();
+        platformName = System.getProperty("os.name");
         audioController = new AudioController();
         helpUtils = new HelpUtils();
     }
 
     /**
-     * Get the SettingsController
+     * Get the {@link SettingsController} object
      *
-     * @return The SettingsController
+     * @return The {@link SettingsController} object
      */
     public final SettingsController getSettingsController() {
         return settingsController;
     }
 
     /**
-     * Set the SettingsController
+     * Set the controllers
      *
-     * @param settingsController The SettingsController
+     * @param settingsController The {@link SettingsController} object
+     * @param updateController   The {@link UpdateController} object
      */
-    public final void setSettingsController(final SettingsController settingsController) {
+    public final void setControllers(final SettingsController settingsController, final UpdateController updateController) {
         if (settingsController == null)
             throw new NullPointerException("SettingsController cannot be null!");
+        if (updateController == null)
+            throw new NullPointerException("UpdateController cannot be null!");
 
         this.settingsController = settingsController;
+        this.updateController = updateController;
 
         final Properties properties = settingsController.getProperties();
+
         final String languageTag = properties.getProperty("locale", "en-US");
+
+        final boolean shouldUpdate = Boolean.parseBoolean(properties.getProperty("autoUpdate", "true"));
+        isPortable = Boolean.parseBoolean(properties.getProperty("portable", "false"));
 
         if (logger.isInfoEnabled()) {
             logger.info(String.format("Attempting to load the ResourceBundle for locale %s", languageTag));
@@ -121,6 +128,109 @@ public final class MainWindowController {
 
         final Locale locale = Locale.forLanguageTag(languageTag);
         translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
+
+        if (shouldUpdate) {
+            checkForUpdates(false);
+        }
+    }
+
+    /**
+     * Check for application updates
+     *
+     * @param showNoUpdates Show an {@link Alert} when no updates are available
+     */
+    private void checkForUpdates(final boolean showNoUpdates) {
+        logger.info("Attempting to check for updates");
+
+        try {
+            final Optional<PlatformUpdate> platformUpdate = updateController.checkForUpdates(platformName, isPortable);
+            if (platformUpdate.isPresent()) {
+                final PlatformUpdate update = platformUpdate.get();
+
+                if (logger.isInfoEnabled()) {
+                    logger.info(String.format("Version %1$s.%2$s.%3$s.%4$s is available", update.getMajorVersion(), update.getMinorVersion(), update.getBuildVersion(), update.getRevisionVersion()));
+                }
+
+                if (FxUtils.showConfirmationAlert(translationBundle
+                                .getString("NewUpdateAvailable")
+                                .replace("{v}", String.format("%1$s.%2$s.%3$s.%4$s", update.getMajorVersion(), update.getMinorVersion(), update.getBuildVersion(), update.getRevisionVersion())),
+                        getClass().getResourceAsStream(SharedVariables.ICON_URL))) {
+
+                    final String extension = update.getDownloadUrl().substring(update.getDownloadUrl().lastIndexOf('.')).toLowerCase();
+                    final FileChooser fileChooser = new FileChooser();
+                    final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
+                            String.format("%1$s (*%2$s)", extension.substring(1).toUpperCase(), extension),
+                            String.format("*%s", extension));
+
+                    fileChooser.getExtensionFilters().add(extFilter);
+
+                    final File file = fileChooser.showSaveDialog(new Stage());
+
+                    if (file != null) {
+                        String filePath = file.getAbsolutePath();
+                        if (!filePath.toLowerCase().contains(extension)) {
+                            filePath += extension;
+                        }
+
+                        updateController.downloadFile(update.getDownloadUrl(), filePath);
+                        openFile(filePath);
+                    }
+                }
+            } else {
+                logger.info("No updates available");
+                if (showNoUpdates) {
+                    final Alert alert = new Alert(Alert.AlertType.INFORMATION, translationBundle.getString("NoUpdateAvailable"), ButtonType.OK);
+                    alert.showAndWait();
+                }
+            }
+        } catch (final Exception ex) {
+            logger.error("Unable to check for updates", ex);
+            FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+        }
+    }
+
+    /**
+     * Open a file on the local filesystem
+     *
+     * @param path The path of the file that should be opened
+     */
+    private void openFile(final String path) {
+        if (path == null)
+            throw new NullPointerException("Path cannot be null!");
+        if (path.isEmpty())
+            throw new IllegalArgumentException("Path cannot be empty!");
+
+        try {
+            helpUtils.openFile(new RunnableFileOpener(path, new IRunnableHelper() {
+                @Override
+                public final void executed() {
+                    Platform.runLater(() -> logger.info("Successfully opened the file"));
+                }
+
+                @Override
+                public final void exceptionOccurred(final Exception ex) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public final void run() {
+                            logger.error("Error opening the file", ex);
+                            FxUtils.showErrorAlert(translationBundle.getString("FileExecutionError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                        }
+                    });
+                }
+            }));
+        } catch (final IOException ex) {
+            logger.error("Error opening the file", ex);
+            FxUtils.showErrorAlert(translationBundle.getString("FileExecutionError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+        }
+    }
+
+    /**
+     * Get the {@link UpdateController} object
+     *
+     * @return The {@link UpdateController} object
+     */
+    public final UpdateController getUpdateController() {
+        return updateController;
     }
 
     /**
@@ -161,7 +271,7 @@ public final class MainWindowController {
         logger.info("Attempting to open a sound preset");
         final FileChooser chooser = new FileChooser();
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON (*.json)", "*.json");
+        final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON (*.json)", "*.json");
         chooser.getExtensionFilters().add(extFilter);
 
         final File file = chooser.showOpenDialog(new Stage());
@@ -189,7 +299,7 @@ public final class MainWindowController {
                 }
             } catch (final IOException ex) {
                 logger.error(String.format("Unable to open the sound preset from %s", file.getAbsolutePath()), ex);
-                FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+                FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         } else {
             logger.info("Cancelled opening a sound preset");
@@ -204,7 +314,7 @@ public final class MainWindowController {
         logger.info("Attempting to save sound settings");
         final FileChooser fileChooser = new FileChooser();
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON (*.json)", "*.json");
+        final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON (*.json)", "*.json");
         fileChooser.getExtensionFilters().add(extFilter);
 
         final File file = fileChooser.showSaveDialog(new Stage());
@@ -218,7 +328,7 @@ public final class MainWindowController {
                 audioController.saveSoundPreset(filePath);
             } catch (IOException ex) {
                 logger.error(String.format("Unable to save the sound settings to %s", filePath), ex);
-                FxUtils.showErrorAlert(translationBundle.getString("SaveSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+                FxUtils.showErrorAlert(translationBundle.getString("SaveSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         } else {
             logger.info("Cancelled saving a sound settings");
@@ -269,14 +379,14 @@ public final class MainWindowController {
             final Stage primaryStage = new Stage();
 
             primaryStage.setTitle(translationBundle.getString("SettingsWindowTitle"));
-            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/opal.png")));
+            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(SharedVariables.ICON_URL)));
             primaryStage.setScene(new Scene(root));
 
             logger.info("Showing the SettingsWindow");
             primaryStage.show();
         } catch (final IOException | NumberFormatException ex) {
             logger.error("Unable to open the SettingsWindow", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("SettingsWindowError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+            FxUtils.showErrorAlert(translationBundle.getString("SettingsWindowError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -300,14 +410,14 @@ public final class MainWindowController {
                         @Override
                         public final void run() {
                             logger.error("Error opening the help file", ex);
-                            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+                            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                         }
                     });
                 }
             }), "/documents/help.pdf");
         } catch (final IOException ex) {
             logger.error("Error opening the help file", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -330,7 +440,7 @@ public final class MainWindowController {
                     @Override
                     public final void run() {
                         logger.error("Error opening the CodeDead website", ex);
-                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                     }
                 });
             }
@@ -359,14 +469,14 @@ public final class MainWindowController {
                         @Override
                         public final void run() {
                             logger.error("Error opening the license file", ex);
-                            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+                            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                         }
                     });
                 }
             }), "/documents/license.pdf");
         } catch (final IOException ex) {
             logger.error("Error opening the license file", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -389,7 +499,7 @@ public final class MainWindowController {
                     @Override
                     public final void run() {
                         logger.error("Error opening the CodeDead donation website", ex);
-                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                     }
                 });
             }
@@ -422,7 +532,15 @@ public final class MainWindowController {
             primaryStage.show();
         } catch (final IOException | NumberFormatException ex) {
             logger.error("Unable to open the AboutWindow", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("AboutWindowError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+            FxUtils.showErrorAlert(translationBundle.getString("AboutWindowError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
+    }
+
+    /**
+     * Method that is called when the user wants to check for updates
+     */
+    @FXML
+    private void updateAction() {
+        checkForUpdates(true);
     }
 }

@@ -18,8 +18,8 @@
                 <Delete basePath="${basePath}/" maxDepth="1">
                     <IfFileName glob="opal-info-????-??-??.log.gz">
                         <IfAny>
-                            <IfAccumulatedFileSize exceeds="10 MB" />
-                            <IfAccumulatedFileCount exceeds="5" />
+                            <IfAccumulatedFileSize exceeds="10 MB"/>
+                            <IfAccumulatedFileCount exceeds="5"/>
                         </IfAny>
                     </IfFileName>
                 </Delete>
@@ -33,7 +33,7 @@
     </Appenders>
     <Loggers>
         <Logger name="com.codedead" level="debug" additivity="true">
-            <appender-ref ref="fileLogger" />
+            <appender-ref ref="fileLogger"/>
         </Logger>
 
         <Root level="debug" additivity="false">

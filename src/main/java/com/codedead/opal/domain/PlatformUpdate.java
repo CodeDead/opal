@@ -166,16 +166,16 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
     }
 
     /**
-     * Check if a {@link com.codedead.opal.domain.PlatformUpdate} is more recent than another
+     * Check if a {@link PlatformUpdate} is more recent than another
      *
      * @param o The platform update that should be compared
-     * @return 1 if the {@link com.codedead.opal.domain.PlatformUpdate} object that is passed as a parameter is more recent than the given {@link com.codedead.opal.domain.PlatformUpdate}, otherwise 0
+     * @return 1 if the {@link PlatformUpdate} object that is passed as a parameter is more recent than the given {@link PlatformUpdate}, otherwise 0
      */
     @Override
     public int compareTo(final PlatformUpdate o) {
         if (getMajorVersion() < o.getMajorVersion()) {
             return 1;
-        }  else if (getMajorVersion() > o.getMajorVersion()) {
+        } else if (getMajorVersion() > o.getMajorVersion()) {
             return 0;
         } else {
             if (getMinorVersion() < o.getMinorVersion()) {

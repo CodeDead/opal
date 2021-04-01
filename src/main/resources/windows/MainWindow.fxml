@@ -44,7 +44,7 @@
         <Menu text="%HelpMenu">
             <MenuItem fx:id="mniHelp" onAction="#helpAction" text="%Help"/>
             <SeparatorMenuItem/>
-            <MenuItem fx:id="mniUpdate" text="%CheckForUpdates"/>
+            <MenuItem fx:id="mniUpdate" onAction="#updateAction" text="%CheckForUpdates"/>
             <SeparatorMenuItem/>
             <MenuItem fx:id="mniHomepage" onAction="#homepageAction" text="%Homepage"/>
             <MenuItem fx:id="mniLicense" onAction="#licenseAction" text="%License"/>

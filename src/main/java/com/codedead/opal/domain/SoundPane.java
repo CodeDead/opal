@@ -10,6 +10,7 @@ import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 
+@SuppressWarnings("unused")
 public final class SoundPane extends GridPane {
 
     @FXML

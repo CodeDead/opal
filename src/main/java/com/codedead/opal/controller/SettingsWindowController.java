@@ -1,9 +1,8 @@
 package com.codedead.opal.controller;
 
 import com.codedead.opal.utils.FxUtils;
+import com.codedead.opal.utils.SharedVariables;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import org.apache.logging.log4j.LogManager;
@@ -32,6 +31,11 @@ public final class SettingsWindowController {
      */
     public SettingsWindowController() {
         logger.info("Initializing new SettingsWindowController object");
+    }
+
+    @FXML
+    private void initialize() {
+        logger.info("Initializing SettingsWindow");
     }
 
     /**
@@ -88,10 +92,8 @@ public final class SettingsWindowController {
      */
     @FXML
     private void resetSettingsAction() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, translationBundle.getString("ConfirmReset"), ButtonType.YES, ButtonType.NO);
-        alert.showAndWait();
-
-        if (alert.getResult() == ButtonType.YES) {
+        logger.info("Attempting to reset all settings");
+        if (FxUtils.showConfirmationAlert(translationBundle.getString("ConfirmReset"), getClass().getResourceAsStream(SharedVariables.ICON_URL))) {
             showAlertIfLanguageMismatch("en-US");
 
             try {
@@ -101,7 +103,7 @@ public final class SettingsWindowController {
                 setSettingsController(settingsController);
             } catch (final IOException ex) {
                 logger.error("Unable to reset all settings", ex);
-                FxUtils.showErrorAlert(translationBundle.getString("ResetSettingsError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+                FxUtils.showErrorAlert(translationBundle.getString("ResetSettingsError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         }
     }
@@ -111,6 +113,8 @@ public final class SettingsWindowController {
      */
     @FXML
     private void saveSettingsAction() {
+        logger.info("Attempting to save all settings");
+
         properties.setProperty("autoUpdate", Boolean.toString(chbAutoUpdate.isSelected()));
 
         showAlertIfLanguageMismatch(properties.getProperty("locale", "en-US"));
@@ -126,7 +130,7 @@ public final class SettingsWindowController {
             settingsController.saveProperties();
         } catch (final IOException ex) {
             logger.error("Unable to save all settings", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+            FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
 
         setSettingsController(settingsController);
@@ -146,8 +150,7 @@ public final class SettingsWindowController {
         }
 
         if (!languageToMatch.equals(newLanguage)) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, translationBundle.getString("RestartRequired"), ButtonType.OK);
-            alert.showAndWait();
+            FxUtils.showInformationAlert(translationBundle.getString("RestartRequired"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 }

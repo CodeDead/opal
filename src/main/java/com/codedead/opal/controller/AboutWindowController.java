@@ -1,10 +1,7 @@
 package com.codedead.opal.controller;
 
 import com.codedead.opal.interfaces.IRunnableHelper;
-import com.codedead.opal.utils.FxUtils;
-import com.codedead.opal.utils.HelpUtils;
-import com.codedead.opal.utils.RunnableFileOpener;
-import com.codedead.opal.utils.RunnableSiteOpener;
+import com.codedead.opal.utils.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -114,7 +111,7 @@ public final class AboutWindowController {
                         @Override
                         public final void run() {
                             logger.error("Error opening the license file", ex);
-                            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+                            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                         }
                     });
 
@@ -122,7 +119,7 @@ public final class AboutWindowController {
             }), "/documents/license.pdf");
         } catch (final IOException ex) {
             logger.error("Error opening the license file", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -145,7 +142,7 @@ public final class AboutWindowController {
                     @Override
                     public final void run() {
                         logger.error("Error opening the CodeDead website", ex);
-                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream("/images/opal.png"));
+                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                     }
                 });
             }

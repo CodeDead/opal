@@ -1,5 +1,7 @@
 package com.codedead.opal;
 
+import com.codedead.opal.controller.UpdateController;
+import com.codedead.opal.utils.SharedVariables;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,14 +15,11 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class OpalApplication extends Application {
 
     private static final Logger logger = LogManager.getLogger(OpalApplication.class);
-    private static final String PROPERTIES_LOCATION = "default.properties";
 
     /**
      * Initialize the application
@@ -35,12 +34,12 @@ public class OpalApplication extends Application {
      * Method that is called by the JavaFX runtime
      *
      * @param primaryStage The initial Stage object
-     * @throws IOException When the {@link com.codedead.opal.controller.SettingsController} object could not be initialized
+     * @throws IOException When the {@link SettingsController} object could not be initialized
      */
     @Override
     public void start(final Stage primaryStage) throws IOException {
         logger.info("Creating the SettingsController");
-        final SettingsController settingsController = new SettingsController(PROPERTIES_LOCATION, PROPERTIES_LOCATION);
+        final SettingsController settingsController = new SettingsController(SharedVariables.PROPERTIES_LOCATION, SharedVariables.PROPERTIES_LOCATION);
         final Properties properties = settingsController.getProperties();
 
         final String languageTag = properties.getProperty("locale", "en-US");
@@ -62,13 +61,17 @@ public class OpalApplication extends Application {
         }
 
         logger.info("Creating the MainWindowController");
+
         final MainWindowController mainWindowController = loader.getController();
-        mainWindowController.setSettingsController(settingsController);
+        mainWindowController.setControllers(
+                settingsController,
+                new UpdateController(properties.getProperty("updateApi", "https://codedead.com/Software/Opal/version.json"))
+        );
 
         final Scene scene = new Scene(root);
 
         primaryStage.setTitle(translationBundle.getString("MainWindowTitle"));
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/opal.png")));
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(SharedVariables.ICON_URL)));
         primaryStage.setScene(scene);
 
         logger.info("Showing the MainWindow");

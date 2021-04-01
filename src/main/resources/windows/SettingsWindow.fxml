@@ -25,43 +25,41 @@
     </columnConstraints>
 
     <TabPane GridPane.rowIndex="0" tabClosingPolicy="UNAVAILABLE">
-        <tabs>
-            <Tab text="%General">
-                <GridPane alignment="CENTER">
-                    <rowConstraints>
-                        <RowConstraints/>
-                        <RowConstraints/>
-                    </rowConstraints>
+        <Tab text="%General">
+            <GridPane alignment="CENTER">
+                <rowConstraints>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                </rowConstraints>
 
-                    <columnConstraints>
-                        <ColumnConstraints/>
-                        <ColumnConstraints/>
-                    </columnConstraints>
+                <columnConstraints>
+                    <ColumnConstraints/>
+                    <ColumnConstraints/>
+                </columnConstraints>
 
-                    <CheckBox fx:id="chbAutoUpdate" GridPane.columnSpan="2" GridPane.rowIndex="0"
-                              GridPane.columnIndex="0" text="%AutoUpdate">
-                        <GridPane.margin>
-                            <Insets bottom="3" left="3" right="3" top="3"/>
-                        </GridPane.margin>
-                    </CheckBox>
-                    <Label GridPane.rowIndex="1" GridPane.columnIndex="0" text="%Language">
-                        <GridPane.margin>
-                            <Insets bottom="3" left="3" right="3" top="3"/>
-                        </GridPane.margin>
-                    </Label>
-                    <ComboBox fx:id="cboLanguage" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="English"/>
-                                <String fx:value="Français"/>
-                                <String fx:value="Nederlands"/>
-                            </FXCollections>
-                        </items>
-                    </ComboBox>
+                <CheckBox fx:id="chbAutoUpdate" GridPane.columnSpan="2" GridPane.rowIndex="0"
+                          GridPane.columnIndex="0" text="%AutoUpdate">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </CheckBox>
+                <Label GridPane.rowIndex="1" GridPane.columnIndex="0" text="%Language">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </Label>
+                <ComboBox fx:id="cboLanguage" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="English"/>
+                            <String fx:value="Français"/>
+                            <String fx:value="Nederlands"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
 
-                </GridPane>
-            </Tab>
-        </tabs>
+            </GridPane>
+        </Tab>
     </TabPane>
 
     <GridPane GridPane.rowIndex="1">

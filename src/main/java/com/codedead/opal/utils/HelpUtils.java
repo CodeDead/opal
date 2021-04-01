@@ -3,6 +3,7 @@ package com.codedead.opal.utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +23,29 @@ public final class HelpUtils {
     }
 
     /**
+     * Open a file from the local filesystem
+     *
+     * @param runnableFileOpener The RunnableFileOpener that can be used to open the file
+     * @throws FileNotFoundException When the file could not be found
+     */
+    public final void openFile(final RunnableFileOpener runnableFileOpener) throws FileNotFoundException {
+        if (runnableFileOpener == null)
+            throw new NullPointerException("RunnableFileOpener cannot be null!");
+
+        if (logger.isInfoEnabled()) {
+            logger.info(String.format("Attempting to open file %s", runnableFileOpener.getFileLocation()));
+        }
+
+        final Path filePath = Paths.get(runnableFileOpener.getFileLocation());
+
+        if (!Files.exists(filePath)) {
+            throw new FileNotFoundException(String.format("File (%s) does not exist!", runnableFileOpener.getFileLocation()));
+        }
+
+        new Thread(runnableFileOpener).start();
+    }
+
+    /**
      * Open a file from resources
      *
      * @param runnableFileOpener The RunnableFileOpener that can be used to open the file
@@ -32,14 +56,15 @@ public final class HelpUtils {
         if (runnableFileOpener == null)
             throw new NullPointerException("RunnableFileOpener cannot be null!");
 
-        logger.info(String.format("Attempting to open file from resources %s", resource));
+        if (logger.isInfoEnabled()) {
+            logger.info(String.format("Attempting to open file from resources %s", resource));
+        }
 
         final Path filePath = Paths.get(runnableFileOpener.getFileLocation());
 
-        // Check if file already exists
+        // Overwrite the file if it already exists
         if (!Files.exists(filePath)) {
             logger.info("File does not exist on local drive");
-            // Write the file
             try (final InputStream inputStream = this.getClass().getResourceAsStream(resource)) {
                 if (inputStream == null)
                     throw new IOException(String.format("Resource file not found: %s", resource));

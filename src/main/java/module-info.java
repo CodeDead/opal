@@ -6,7 +6,6 @@ module Opal {
     requires javafx.media;
     requires org.apache.logging.log4j;
     requires com.fasterxml.jackson.core;
-    requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.databind;
 
     opens com.codedead.opal.controller to javafx.fxml;
