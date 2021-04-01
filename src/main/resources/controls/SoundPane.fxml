@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+
+<?import javafx.geometry.Insets?>
+
+<fx:root type="javafx.scene.layout.GridPane"
+         xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml">
+
+    <columnConstraints>
+        <ColumnConstraints/>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <ImageView GridPane.rowIndex="0" GridPane.columnIndex="0" fx:id="soundImage">
+        <GridPane.margin>
+            <Insets left="5" right="5" bottom="5" top="5"/>
+        </GridPane.margin>
+    </ImageView>
+
+    <GridPane GridPane.rowIndex="0" GridPane.columnIndex="1">
+        <rowConstraints>
+            <RowConstraints/>
+            <RowConstraints/>
+        </rowConstraints>
+
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label GridPane.rowIndex="0" fx:id="lblName">
+            <GridPane.margin>
+                <Insets left="5" right="5" bottom="5" top="5"/>
+            </GridPane.margin>
+        </Label>
+        <Slider GridPane.rowIndex="1" fx:id="sldVolume">
+            <GridPane.margin>
+                <Insets left="5" right="5" bottom="5" top="5"/>
+            </GridPane.margin>
+        </Slider>
+
+    </GridPane>
+
+</fx:root>
