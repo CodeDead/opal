@@ -32,11 +32,11 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="com.codedead" level="debug" additivity="true">
+        <Logger name="com.codedead" level="info" additivity="true">
             <appender-ref ref="fileLogger"/>
         </Logger>
 
-        <Root level="debug" additivity="false">
+        <Root level="info" additivity="false">
             <AppenderRef ref="console"/>
         </Root>
     </Loggers>

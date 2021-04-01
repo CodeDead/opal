@@ -1,5 +1,7 @@
 # Opal
 
+![Opal](https://codedead.com/Software/Opal/opal.png)
+
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/CodeDead/opal)
 ![GitHub](https://img.shields.io/badge/language-Java-green)
 ![GitHub](https://img.shields.io/github/license/CodeDead/opal)
