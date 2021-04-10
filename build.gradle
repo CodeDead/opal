@@ -5,7 +5,7 @@ plugins {
     id 'idea'
     id 'eclipse'
     id 'application'
-    id 'org.beryx.jlink' version '2.23.5'
+    id 'org.beryx.jlink' version '2.23.6'
 }
 
 group 'com.codedead'
