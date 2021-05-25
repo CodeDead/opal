@@ -30,6 +30,7 @@
                 <rowConstraints>
                     <RowConstraints/>
                     <RowConstraints/>
+                    <RowConstraints/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -49,11 +50,37 @@
                     </GridPane.margin>
                 </Label>
                 <ComboBox fx:id="cboLanguage" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="English"/>
                             <String fx:value="Français"/>
                             <String fx:value="Nederlands"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+
+                <Label GridPane.rowIndex="2" GridPane.columnIndex="0" text="%LogLevel">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </Label>
+                <ComboBox fx:id="cboLogLevel" GridPane.rowIndex="2" GridPane.columnIndex="1" maxWidth="Infinity">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="OFF"/>
+                            <String fx:value="FATAL"/>
+                            <String fx:value="ERROR"/>
+                            <String fx:value="WARN"/>
+                            <String fx:value="INFO"/>
+                            <String fx:value="DEBUG"/>
+                            <String fx:value="TRACE"/>
+                            <String fx:value="ALL"/>
                         </FXCollections>
                     </items>
                 </ComboBox>

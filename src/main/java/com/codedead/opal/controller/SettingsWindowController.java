@@ -5,8 +5,10 @@ import com.codedead.opal.utils.SharedVariables;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -21,6 +23,8 @@ public final class SettingsWindowController {
     private CheckBox chbAutoUpdate;
     @FXML
     private ComboBox<String> cboLanguage;
+    @FXML
+    private ComboBox<String> cboLogLevel;
 
     private SettingsController settingsController;
     private ResourceBundle translationBundle;
@@ -36,15 +40,6 @@ public final class SettingsWindowController {
     @FXML
     private void initialize() {
         logger.info("Initializing SettingsWindow");
-    }
-
-    /**
-     * Get the {@link com.codedead.opal.controller.SettingsController} object
-     *
-     * @return The {@link com.codedead.opal.controller.SettingsController} object
-     */
-    public final SettingsController getSettingsController() {
-        return settingsController;
     }
 
     /**
@@ -78,12 +73,24 @@ public final class SettingsWindowController {
         logger.info("Attempting to load all settings");
         final boolean autoUpdate = Boolean.parseBoolean(properties.getProperty("autoUpdate", "true"));
         final String locale = properties.getProperty("locale", "en-US");
+        final String logLevel = properties.getProperty("loglevel", "INFO");
 
         chbAutoUpdate.setSelected(autoUpdate);
         switch (locale.toLowerCase()) {
             case "fr-fr" -> cboLanguage.getSelectionModel().select(1);
             case "nl-nl" -> cboLanguage.getSelectionModel().select(2);
             default -> cboLanguage.getSelectionModel().select(0);
+        }
+
+        switch (logLevel) {
+            case "OFF" -> cboLogLevel.getSelectionModel().select(0);
+            case "FATAL" -> cboLogLevel.getSelectionModel().select(1);
+            case "ERROR" -> cboLogLevel.getSelectionModel().select(2);
+            case "WARN" -> cboLogLevel.getSelectionModel().select(3);
+            case "DEBUG" -> cboLogLevel.getSelectionModel().select(5);
+            case "TRACE" -> cboLogLevel.getSelectionModel().select(6);
+            case "ALL" -> cboLogLevel.getSelectionModel().select(7);
+            default -> cboLogLevel.getSelectionModel().select(4);
         }
     }
 
@@ -125,6 +132,20 @@ public final class SettingsWindowController {
             default -> properties.setProperty("locale", "en-US");
         }
 
+        properties.setProperty("loglevel", cboLogLevel.getValue());
+
+        final Level level = switch (cboLogLevel.getValue()) {
+            case "OFF" -> Level.OFF;
+            case "FATAL" -> Level.FATAL;
+            case "ERROR" -> Level.ERROR;
+            case "WARN" -> Level.WARN;
+            case "DEBUG" -> Level.DEBUG;
+            case "TRACE" -> Level.TRACE;
+            case "ALL" -> Level.ALL;
+            default -> Level.INFO;
+        };
+
+        Configurator.setAllLevels(LogManager.getRootLogger().getName(), level);
         settingsController.setProperties(properties);
         try {
             settingsController.saveProperties();

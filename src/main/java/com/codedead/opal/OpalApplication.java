@@ -2,6 +2,7 @@ package com.codedead.opal;
 
 import com.codedead.opal.controller.UpdateController;
 import com.codedead.opal.utils.SharedVariables;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import java.io.IOException;
 import java.util.*;
@@ -38,9 +40,21 @@ public class OpalApplication extends Application {
      */
     @Override
     public void start(final Stage primaryStage) throws IOException {
-        logger.info("Creating the SettingsController");
         final SettingsController settingsController = new SettingsController(SharedVariables.PROPERTIES_LOCATION, SharedVariables.PROPERTIES_LOCATION);
         final Properties properties = settingsController.getProperties();
+
+        final Level level = switch (properties.getProperty("loglevel", "INFO")) {
+            case "OFF" -> Level.OFF;
+            case "FATAL" -> Level.FATAL;
+            case "ERROR" -> Level.ERROR;
+            case "WARN" -> Level.WARN;
+            case "DEBUG" -> Level.DEBUG;
+            case "TRACE" -> Level.TRACE;
+            case "ALL" -> Level.ALL;
+            default -> Level.INFO;
+        };
+        Configurator.setAllLevels(LogManager.getRootLogger().getName(), level);
+        logger.info("Finished creating the SettingsController");
 
         final String languageTag = properties.getProperty("locale", "en-US");
 
