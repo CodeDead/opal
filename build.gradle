@@ -9,7 +9,9 @@ plugins {
 }
 
 group 'com.codedead'
-version '1.0-SNAPSHOT'
+version '1.0.0'
+
+def currentOS = DefaultNativePlatform.currentOperatingSystem
 
 java {
     targetCompatibility = JavaVersion.VERSION_16
@@ -27,6 +29,19 @@ jlink {
     launcher {
         name = 'Opal'
     }
+
+    if (currentOS.isWindows()) {
+        jpackage {
+            installerType = 'msi'
+            installerOptions = [
+                    '--win-menu',
+                    '--win-shortcut',
+                    '--copyright', 'Copyright (c) 2021 CodeDead',
+                    '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
+                    '--vendor', 'CodeDead'
+            ]
+        }
+    }
 }
 
 clean.doFirst {
@@ -39,7 +54,6 @@ repositories {
     mavenCentral()
 }
 
-def currentOS = DefaultNativePlatform.currentOperatingSystem
 def platform
 if (currentOS.isWindows()) {
     platform = 'win'
