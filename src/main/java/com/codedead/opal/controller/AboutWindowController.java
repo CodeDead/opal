@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
 
 public final class AboutWindowController {
 
-    private static final Logger logger = LogManager.getLogger(AboutWindowController.class);
+    private final Logger logger;
 
     @FXML
     private Label aboutLabel;
@@ -33,6 +33,7 @@ public final class AboutWindowController {
      * Initialize a new AboutWindowController
      */
     public AboutWindowController() {
+        logger = LogManager.getLogger(AboutWindowController.class);
         logger.info("Initializing new AboutWindowController object");
 
         helpUtils = new HelpUtils();

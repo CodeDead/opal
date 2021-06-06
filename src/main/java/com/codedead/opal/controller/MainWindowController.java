@@ -26,7 +26,7 @@ import java.util.*;
 
 public final class MainWindowController {
 
-    private static final Logger logger = LogManager.getLogger(MainWindowController.class);
+    private final Logger logger;
 
     @FXML
     private SoundPane snpFireplace;
@@ -84,6 +84,7 @@ public final class MainWindowController {
      * @throws URISyntaxException When an URI could not be formed
      */
     public MainWindowController() throws URISyntaxException {
+        logger = LogManager.getLogger(MainWindowController.class);
         logger.info("Initializing new MainWindowController object");
 
         platformName = System.getProperty("os.name");

@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 
 public final class SettingsWindowController {
 
-    private static final Logger logger = LogManager.getLogger(SettingsWindowController.class);
+    private final Logger logger;
 
     @FXML
     private CheckBox chbAutoUpdate;
@@ -34,6 +34,7 @@ public final class SettingsWindowController {
      * Initialize a new SettingsWindowController
      */
     public SettingsWindowController() {
+        logger = LogManager.getLogger(SettingsWindowController.class);
         logger.info("Initializing new SettingsWindowController object");
     }
 

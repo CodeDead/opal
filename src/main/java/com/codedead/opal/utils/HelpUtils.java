@@ -13,12 +13,13 @@ import java.nio.file.Paths;
 
 public final class HelpUtils {
 
-    private static final Logger logger = LogManager.getLogger(HelpUtils.class);
+    private final Logger logger;
 
     /**
      * Initialize a new HelpUtils
      */
     public HelpUtils() {
+        logger = LogManager.getLogger(HelpUtils.class);
         logger.info("Initializing a new HelpUtils object");
     }
 

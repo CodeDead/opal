@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public final class SettingsController {
 
-    private static final Logger logger = LogManager.getLogger(SettingsController.class);
+    private final Logger logger;
 
     private String propertiesFileLocation;
     private String propertiesResourceLocation;
@@ -26,6 +26,7 @@ public final class SettingsController {
      */
     public SettingsController(final String fileLocation,
                               final String propertiesResourceLocation) throws IOException {
+        logger = LogManager.getLogger(SettingsController.class);
         logger.info("Initializing new SettingsController object");
 
         setPropertiesFileLocation(fileLocation);

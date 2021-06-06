@@ -19,7 +19,7 @@ import java.util.Set;
 
 public final class AudioController {
 
-    private static final Logger logger = LogManager.getLogger(AudioController.class);
+    private final Logger logger;
 
     private Map<String, Double> mediaVolumes;
 
@@ -32,6 +32,7 @@ public final class AudioController {
      * @throws URISyntaxException When the URI syntax is incorrect
      */
     public AudioController() throws URISyntaxException {
+        logger = LogManager.getLogger(AudioController.class);
         logger.info("Initializing new AudioController object");
 
         logger.info("Initializing MediaPlayer objects");

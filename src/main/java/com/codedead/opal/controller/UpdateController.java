@@ -2,6 +2,7 @@ package com.codedead.opal.controller;
 
 import com.codedead.opal.domain.InvalidHttpResponseCodeException;
 import com.codedead.opal.domain.PlatformUpdate;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,8 +23,7 @@ import java.util.Optional;
 
 public final class UpdateController {
 
-    private static final Logger logger = LogManager.getLogger(UpdateController.class);
-
+    private final Logger logger;
     private final ObjectMapper objectMapper;
 
     private String updateUrl;
@@ -34,8 +34,12 @@ public final class UpdateController {
      * @param updateUrl The URL that can be used to check for updates
      */
     public UpdateController(final String updateUrl) {
+        logger = LogManager.getLogger(UpdateController.class);
         logger.info("Initializing new UpdateController object");
+
         objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
         setUpdateUrl(updateUrl);
     }
 
