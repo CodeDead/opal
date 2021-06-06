@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -29,6 +30,25 @@ public class OpalApplication extends Application {
      * @param args The application arguments
      */
     public static void main(final String[] args) {
+        try (final FileInputStream fis = new FileInputStream(SharedVariables.PROPERTIES_LOCATION)) {
+            final Properties prop = new Properties();
+            prop.load(fis);
+
+            final Level level = switch (prop.getProperty("loglevel", "INFO")) {
+                case "OFF" -> Level.OFF;
+                case "FATAL" -> Level.FATAL;
+                case "ERROR" -> Level.ERROR;
+                case "WARN" -> Level.WARN;
+                case "DEBUG" -> Level.DEBUG;
+                case "TRACE" -> Level.TRACE;
+                case "ALL" -> Level.ALL;
+                default -> Level.INFO;
+            };
+            Configurator.setAllLevels(LogManager.getRootLogger().getName(), level);
+        } catch (final IOException ex) {
+            logger.error("Properties object could not be loaded", ex);
+        }
+
         launch(args);
     }
 
@@ -43,17 +63,6 @@ public class OpalApplication extends Application {
         final SettingsController settingsController = new SettingsController(SharedVariables.PROPERTIES_LOCATION, SharedVariables.PROPERTIES_LOCATION);
         final Properties properties = settingsController.getProperties();
 
-        final Level level = switch (properties.getProperty("loglevel", "INFO")) {
-            case "OFF" -> Level.OFF;
-            case "FATAL" -> Level.FATAL;
-            case "ERROR" -> Level.ERROR;
-            case "WARN" -> Level.WARN;
-            case "DEBUG" -> Level.DEBUG;
-            case "TRACE" -> Level.TRACE;
-            case "ALL" -> Level.ALL;
-            default -> Level.INFO;
-        };
-        Configurator.setAllLevels(LogManager.getRootLogger().getName(), level);
         logger.info("Finished creating the SettingsController");
 
         final String languageTag = properties.getProperty("locale", "en-US");
