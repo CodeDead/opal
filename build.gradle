@@ -44,6 +44,35 @@ jlink {
     }
 }
 
+task AppImage() {
+    dependsOn jpackageImage
+    doLast {
+        copy {
+            from '.AppDir'
+            into "${buildDir}/AppImage/Opal.AppDir"
+        }
+        copy {
+            from "${buildDir}/jpackage/Opal/"
+            into "${buildDir}/AppImage/Opal.AppDir/usr/"
+        }
+        copy {
+            from '.AppDir/Opal.png'
+            into "${buildDir}/AppImage/Opal.AppDir/usr/lib"
+        }
+
+        exec {
+            commandLine 'sh', "${project.rootDir}/.appimagetool/createAppImage.sh"
+        }
+
+        delete "${buildDir}/AppImage/Opal.AppDir"
+    }
+}
+
+configure(AppImage) {
+    group = 'build'
+    description = 'Create an AppImage after creating the image of the application'
+}
+
 clean.doFirst {
     delete 'default.properties'
     delete 'license.pdf'
