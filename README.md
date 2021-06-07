@@ -8,6 +8,24 @@
 
 Opal is a free and open-source JavaFX application that can play relaxing music in the background.
 
+## Building
+
+### Windows
+
+You can create an executable installer by running the `jpackage` Gradle task:
+```shell
+./gradlew jpackage
+```
+Do note that you will need the [WiX Toolset](https://wixtoolset.org/) in order to create MSI packages.
+
+### Linux
+
+You can create an [AppImage](https://appimage.github.io/) by executing the `AppImage` Gradle task:
+```shell
+./gradlew AppImage
+```
+Do note that this will execute a shell script in order to download and execute the [appimagetool](https://appimage.github.io/appimagetool/) in order to create the AppImage file.
+
 ## Dependencies
 
 A couple of dependencies are required in order to build Opal:
