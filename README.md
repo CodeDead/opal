@@ -35,7 +35,7 @@ You can create an [AppImage](https://appimage.github.io/) by executing the `AppI
 ```shell
 ./gradlew AppImage
 ```
-Do note that this will execute a shell script in order to download and execute the [appimagetool](https://appimage.github.io/appimagetool/) in order to create the AppImage file.
+*Do note that running this task will execute a shell script in order to download and run the [appimagetool](https://appimage.github.io/appimagetool/) in order to create the AppImage file.*
 
 #### Portable image
 
@@ -54,6 +54,21 @@ A couple of dependencies are required in order to build Opal:
 * [FasterXML/jackson](https://github.com/FasterXML/jackson)
 * [badass-jlink-plugin](https://github.com/beryx/badass-jlink-plugin)
 * [Log4j2](https://logging.apache.org/log4j/2.x/)
+
+### Windows
+
+#### MSI
+In order to build an installer (*MSI*) of Opal on Windows, you will need:
+
+* [WiX Toolset](https://wixtoolset.org/)
+
+### Linux
+
+#### rpm
+
+In order to create an [RPM](https://en.wikipedia.org/wiki/RPM_Package_Manager), you will need to have the following package(s) installed:
+
+* rpm-build (`dnf install rpm-build`)
 
 ## About
 
