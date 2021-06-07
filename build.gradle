@@ -62,7 +62,7 @@ task AppImage() {
         }
 
         exec {
-            commandLine 'sh', "${project.rootDir}/.AppImage/createAppImage.sh"
+            commandLine 'sh', "${project.rootDir}/.AppImage/createAppImage.sh", "${project.version.toString()}"
         }
 
         delete "${buildDir}/AppImage/Opal.AppDir"
