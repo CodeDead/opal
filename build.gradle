@@ -45,6 +45,20 @@ jlink {
                     '--license-file', 'LICENSE'
             ]
         }
+    } else if (currentOS.isLinux()) {
+        jpackage {
+            installerType = 'rpm'
+            icon = "${project.rootDir}/src/main/resources/images/opal.png"
+            installerOptions = [
+                    '--linux-shortcut',
+                    '--linux-package-name', 'opal-codedead',
+                    '--linux-rpm-license-type', 'GPLv3',
+                    '--copyright', 'Copyright (c) 2021 CodeDead',
+                    '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
+                    '--vendor', 'CodeDead',
+                    '--license-file', 'LICENSE'
+            ]
+        }
     }
 }
 
