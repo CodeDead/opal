@@ -33,6 +33,7 @@ jlink {
     if (currentOS.isWindows()) {
         jpackage {
             installerType = 'msi'
+            icon = "${project.rootDir}/src/main/resources/images/opal.png"
             installerOptions = [
                     '--win-menu',
                     '--win-shortcut',
