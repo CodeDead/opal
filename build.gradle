@@ -48,7 +48,7 @@ task AppImage() {
     dependsOn jpackageImage
     doLast {
         copy {
-            from '.AppDir'
+            from '.AppImage/.AppDir'
             into "${buildDir}/AppImage/Opal.AppDir"
         }
         copy {
@@ -56,12 +56,12 @@ task AppImage() {
             into "${buildDir}/AppImage/Opal.AppDir/usr/"
         }
         copy {
-            from '.AppDir/Opal.png'
+            from '.AppImage/.AppDir/Opal.png'
             into "${buildDir}/AppImage/Opal.AppDir/usr/lib"
         }
 
         exec {
-            commandLine 'sh', "${project.rootDir}/.appimagetool/createAppImage.sh"
+            commandLine 'sh', "${project.rootDir}/.AppImage/createAppImage.sh"
         }
 
         delete "${buildDir}/AppImage/Opal.AppDir"
