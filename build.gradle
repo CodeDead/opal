@@ -36,10 +36,13 @@ jlink {
             icon = "${project.rootDir}/.msi/opal.ico"
             installerOptions = [
                     '--win-menu',
+                    '--win-menu-group', 'CodeDead',
                     '--win-shortcut',
+                    '--win-dir-chooser',
                     '--copyright', 'Copyright (c) 2021 CodeDead',
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
-                    '--vendor', 'CodeDead'
+                    '--vendor', 'CodeDead',
+                    '--license-file', 'LICENSE'
             ]
         }
     }
