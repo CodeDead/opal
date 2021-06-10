@@ -14,7 +14,7 @@ Opal is a free and open-source JavaFX application that can play relaxing music i
 
 #### Installer
 
-You can create an executable installer by running the `jpackage` Gradle task:
+You can create an executable installer by running the `jpackage` Gradle task on a Windows host:
 ```shell
 ./gradlew jpackage
 ```
@@ -22,7 +22,7 @@ You can create an executable installer by running the `jpackage` Gradle task:
 
 #### Portable image
 
-You can create a portable image by running the `jpackageImage` Gradle task:
+You can create a portable image by running the `jpackageImage` Gradle task on a Windows host:
 ```shell
 ./gradlew jpackageImage
 ```
@@ -31,7 +31,7 @@ You can create a portable image by running the `jpackageImage` Gradle task:
 
 #### rpm
 
-You can create an RPM, by running the `jpackage` Gradle task:
+You can create an RPM, by running the `jpackage` Gradle task on a Linux host:
 ```shell
 ./gradlew jpackage
 ```
@@ -39,7 +39,7 @@ You can create an RPM, by running the `jpackage` Gradle task:
 
 #### AppImage
 
-You can create an [AppImage](https://appimage.github.io/) by executing the `AppImage` Gradle task:
+You can create an [AppImage](https://appimage.github.io/) by executing the `AppImage` Gradle task on a Linux host:
 ```shell
 ./gradlew AppImage
 ```
@@ -47,14 +47,17 @@ You can create an [AppImage](https://appimage.github.io/) by executing the `AppI
 
 #### Portable image
 
-You can create a portable image by running the `jpackageImage` Gradle task:
+You can create a portable image by running the `jpackageImage` Gradle task on a Linux host:
 ```shell
 ./gradlew jpackageImage
 ```
 
 ## Dependencies
 
-A couple of dependencies are required in order to build Opal:
+A couple of dependencies are required in order to build Opal. Some of which require a specific host machine,
+especially if you're targeting a specific platform and installation method.
+
+The following dependencies are universal:
 
 * [JDK16](https://openjdk.java.net/projects/jdk/16/)
 * [JavaFX](https://openjfx.io/)
