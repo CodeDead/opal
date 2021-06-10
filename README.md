@@ -18,7 +18,7 @@ You can create an executable installer by running the `jpackage` Gradle task:
 ```shell
 ./gradlew jpackage
 ```
-Do note that you will need the [WiX Toolset](https://wixtoolset.org/) in order to create MSI packages.
+*Do note that you will need the [WiX Toolset](https://wixtoolset.org/) in order to create MSI packages.*
 
 #### Portable image
 
@@ -28,6 +28,14 @@ You can create a portable image by running the `jpackageImage` Gradle task:
 ```
 
 ### Linux
+
+#### rpm
+
+You can create an RPM, by running the `jpackage` Gradle task:
+```shell
+./gradlew jpackage
+```
+*Do note that you will need the `rpm-build` package in order to create an RPM.*
 
 #### AppImage
 
