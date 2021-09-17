@@ -26,10 +26,10 @@ public final class HelpUtils {
     /**
      * Open a file from the local filesystem
      *
-     * @param runnableFileOpener The RunnableFileOpener that can be used to open the file
+     * @param runnableFileOpener The {@link RunnableFileOpener} object that can be used to open the file
      * @throws FileNotFoundException When the file could not be found
      */
-    public final void openFile(final RunnableFileOpener runnableFileOpener) throws FileNotFoundException {
+    public void openFile(final RunnableFileOpener runnableFileOpener) throws FileNotFoundException {
         if (runnableFileOpener == null)
             throw new NullPointerException("RunnableFileOpener cannot be null!");
 
@@ -49,11 +49,11 @@ public final class HelpUtils {
     /**
      * Open a file from resources
      *
-     * @param runnableFileOpener The RunnableFileOpener that can be used to open the file
+     * @param runnableFileOpener The {@link RunnableFileOpener} object that can be used to open the file
      * @param resource           The resource file where the file can be retrieved if it cannot be found on the disk
      * @throws IOException When the file could not be opened
      */
-    public final void openFileFromResources(final RunnableFileOpener runnableFileOpener, final String resource) throws IOException {
+    public void openFileFromResources(final RunnableFileOpener runnableFileOpener, final String resource) throws IOException {
         if (runnableFileOpener == null)
             throw new NullPointerException("RunnableFileOpener cannot be null!");
 

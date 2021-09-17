@@ -33,8 +33,8 @@ public final class AudioController {
      */
     public AudioController() throws URISyntaxException {
         logger = LogManager.getLogger(AudioController.class);
-        logger.info("Initializing new AudioController object");
 
+        logger.info("Initializing new AudioController object");
         logger.info("Initializing MediaPlayer objects");
 
         mediaPlayers = new HashMap<>();
@@ -59,11 +59,11 @@ public final class AudioController {
     }
 
     /**
-     * Play the {@link Media} for a {@link MediaPlayer} with the specified key
+     * Play the {@link Media} object for a {@link MediaPlayer} object with the specified key
      *
-     * @param key The key for which the {@link Media} should be played
+     * @param key The key for which the {@link Media} object should be played
      */
-    public final void playMedia(final String key) {
+    public void playMedia(final String key) {
         if (key == null)
             throw new NullPointerException("Key cannot be null!");
         if (key.isEmpty())
@@ -75,28 +75,23 @@ public final class AudioController {
             throw new NullPointerException(String.format("MediaPlayer with key %s cannot be found!", key));
 
         if (!player.getStatus().equals(MediaPlayer.Status.PLAYING)) {
-            if (logger.isInfoEnabled()) {
-                logger.info(String.format("Playing media for MediaPlayer with key %s", key));
-            }
-
+            logger.info("Playing media for MediaPlayer with key {}}", key);
             player.play();
         }
     }
 
     /**
-     * Stop playing the {@link Media} for a {@link MediaPlayer} with a specified key
+     * Stop playing the {@link Media} object for a {@link MediaPlayer} object with a specified key
      *
-     * @param key The key for the {@link MediaPlayer} for which the {@link Media} should stop playing
+     * @param key The key for the {@link MediaPlayer} object for which the {@link Media} object should stop playing
      */
-    public final void stopMedia(final String key) {
+    public void stopMedia(final String key) {
         if (key == null)
             throw new NullPointerException("Key cannot be null!");
         if (key.isEmpty())
             throw new IllegalArgumentException("Key cannot be empty!");
 
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("Stopping media for MediaPlayer with key %s", key));
-        }
+        logger.info("Stopping media for MediaPlayer with key {}", key);
 
         final MediaPlayer player = mediaPlayers.get(key);
 
@@ -112,7 +107,7 @@ public final class AudioController {
      * @param key       The key for the {@link MediaPlayer} object
      * @param newVolume The new volume for the {@link MediaPlayer} with the specified key
      */
-    public final void setPlayerVolume(final String key, final double newVolume) {
+    public void setPlayerVolume(final String key, final double newVolume) {
         if (key == null)
             throw new NullPointerException("Key cannot be null!");
         if (key.isEmpty())
@@ -122,9 +117,7 @@ public final class AudioController {
         if (newVolume > 1)
             throw new IllegalArgumentException("Volume cannot be higher than 1!");
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(String.format("Setting volume for MediaPlayer with key %1$s to %2$s", key, newVolume));
-        }
+        logger.debug("Setting volume for MediaPlayer with key {} to {}", key, newVolume);
 
         final MediaPlayer player = mediaPlayers.get(key);
 
@@ -146,9 +139,9 @@ public final class AudioController {
      * Add a new {@link MediaPlayer} object
      *
      * @param key         The key for the {@link MediaPlayer} object
-     * @param mediaPlayer The {@link MediaPlayer} that should be added
+     * @param mediaPlayer The {@link MediaPlayer} object that should be added
      */
-    public final void addPlayer(final String key, final MediaPlayer mediaPlayer) {
+    public void addPlayer(final String key, final MediaPlayer mediaPlayer) {
         if (key == null)
             throw new NullPointerException("Key cannot be null!");
         if (key.isEmpty())
@@ -156,9 +149,7 @@ public final class AudioController {
         if (mediaPlayer == null)
             throw new NullPointerException("MediaPlayer cannot be null!");
 
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("Adding MediaPlayer with key %s", key));
-        }
+        logger.info("Adding MediaPlayer with key {}", key);
 
         if (mediaPlayers.containsKey(key))
             throw new IllegalArgumentException(String.format("MediaPlayer with key %s already exists!", key));
@@ -174,15 +165,13 @@ public final class AudioController {
      *
      * @param key The key of the {@link MediaPlayer} that should be removed
      */
-    public final void deletePlayer(final String key) {
+    public void deletePlayer(final String key) {
         if (key == null)
             throw new NullPointerException("Key cannot be null!");
         if (key.isEmpty())
             throw new IllegalArgumentException("Key cannot be empty!");
 
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("Deleting MediaPlayer with key %s", key));
-        }
+        logger.info("Deleting MediaPlayer with key {}", key);
 
         mediaPlayers.remove(key);
         mediaVolumes.remove(key);
@@ -194,15 +183,13 @@ public final class AudioController {
      * @param path The full path where the sound preset is stored on disk
      * @throws IOException When the file could not be read or the data inside the file could not be parsed
      */
-    public final void loadSoundPreset(final String path) throws IOException {
+    public void loadSoundPreset(final String path) throws IOException {
         if (path == null)
             throw new NullPointerException("Path cannot be null!");
         if (path.isEmpty())
             throw new IllegalArgumentException("Path cannot be empty!");
 
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("Loading sound preset from %s", path));
-        }
+        logger.info("Loading sound preset from {}", path);
 
         final Path filePath = Path.of(path);
         final String actual = Files.readString(filePath);
@@ -210,8 +197,7 @@ public final class AudioController {
         if (actual == null || actual.isEmpty())
             throw new IllegalArgumentException("Sound preset cannot be null or empty!");
 
-        final TypeReference<HashMap<String, Double>> typeRef = new TypeReference<>() {
-        };
+        final TypeReference<HashMap<String, Double>> typeRef = new TypeReference<>() {};
 
         mediaVolumes = objectMapper.readValue(actual, typeRef);
 
@@ -226,15 +212,13 @@ public final class AudioController {
      * @param path The full path where the volume settings should be stored on disk
      * @throws IOException When the media volumes could not be stored to disk
      */
-    public final void saveSoundPreset(final String path) throws IOException {
+    public void saveSoundPreset(final String path) throws IOException {
         if (path == null)
             throw new NullPointerException("Path cannot be null!");
         if (path.isEmpty())
             throw new IllegalArgumentException("Path cannot be empty!");
 
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("Saving sound preset to %s", path));
-        }
+        logger.info("Saving sound preset to {}", path);
 
         objectMapper.writeValue(new File(path), mediaVolumes);
     }
@@ -244,7 +228,7 @@ public final class AudioController {
      *
      * @return The {@link Set} that contains the keys and volume values for all {@link MediaPlayer} objects
      */
-    public final Set<Map.Entry<String, Double>> getVolumes() {
+    public Set<Map.Entry<String, Double>> getVolumes() {
         return mediaVolumes.entrySet();
     }
 }

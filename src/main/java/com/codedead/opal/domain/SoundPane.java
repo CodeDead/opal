@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
+import java.net.URL;
 
 @SuppressWarnings("unused")
 public final class SoundPane extends GridPane {
@@ -38,7 +39,7 @@ public final class SoundPane extends GridPane {
      * @return The image
      */
     @FXML
-    public final String getImage() {
+    public String getImage() {
         return soundImage.getImage().getUrl();
     }
 
@@ -48,10 +49,16 @@ public final class SoundPane extends GridPane {
      * @param image The image
      */
     @FXML
-    public final void setImage(final String image) {
-        if (image == null) return;
+    public void setImage(final String image) {
+        if (image == null)
+            return;
 
-        soundImage.setImage(new Image(getClass().getResource(image).toString()));
+        final URL url = getClass().getResource(image);
+        if (url != null) {
+            soundImage.setImage(new Image(url.toString()));
+        } else {
+            soundImage.setImage(null);
+        }
     }
 
     /**
@@ -60,7 +67,7 @@ public final class SoundPane extends GridPane {
      * @return The name
      */
     @FXML
-    public final String getName() {
+    public String getName() {
         return lblName.getText();
     }
 
@@ -70,7 +77,7 @@ public final class SoundPane extends GridPane {
      * @param name The name
      */
     @FXML
-    public final void setName(final String name) {
+    public void setName(final String name) {
         lblName.setText(name);
     }
 
@@ -80,7 +87,7 @@ public final class SoundPane extends GridPane {
      * @return The volumne
      */
     @FXML
-    public final double getVolume() {
+    public double getVolume() {
         return sldVolume.getValue();
     }
 
@@ -90,7 +97,7 @@ public final class SoundPane extends GridPane {
      * @param volume The volume
      */
     @FXML
-    public final void setVolume(final double volume) {
+    public void setVolume(final double volume) {
         sldVolume.setValue(volume);
     }
 
@@ -99,7 +106,7 @@ public final class SoundPane extends GridPane {
      *
      * @return The slider
      */
-    public final Slider getSlider() {
+    public Slider getSlider() {
         return sldVolume;
     }
 }

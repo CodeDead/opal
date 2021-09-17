@@ -26,7 +26,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @return The platform name
      */
-    public final String getPlatformName() {
+    public String getPlatformName() {
         return platformName;
     }
 
@@ -35,7 +35,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @param platformName The platform name
      */
-    public final void setPlatformName(final String platformName) {
+    public void setPlatformName(final String platformName) {
         this.platformName = platformName;
     }
 
@@ -44,7 +44,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @return True if the version is portable, otherwise false
      */
-    public final boolean isPortable() {
+    public boolean isPortable() {
         return portable;
     }
 
@@ -53,7 +53,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @param portable True if the version is portable, otherwise false
      */
-    public final void setPortable(final boolean portable) {
+    public void setPortable(final boolean portable) {
         this.portable = portable;
     }
 
@@ -62,7 +62,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @return The major version
      */
-    public final int getMajorVersion() {
+    public int getMajorVersion() {
         return majorVersion;
     }
 
@@ -71,7 +71,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @param majorVersion The major version
      */
-    public final void setMajorVersion(final int majorVersion) {
+    public void setMajorVersion(final int majorVersion) {
         this.majorVersion = majorVersion;
     }
 
@@ -80,7 +80,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @return The minor version
      */
-    public final int getMinorVersion() {
+    public int getMinorVersion() {
         return minorVersion;
     }
 
@@ -89,7 +89,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @param minorVersion The minor version
      */
-    public final void setMinorVersion(final int minorVersion) {
+    public void setMinorVersion(final int minorVersion) {
         this.minorVersion = minorVersion;
     }
 
@@ -98,7 +98,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @return The build version
      */
-    public final int getBuildVersion() {
+    public int getBuildVersion() {
         return buildVersion;
     }
 
@@ -107,7 +107,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @param buildVersion The build version
      */
-    public final void setBuildVersion(final int buildVersion) {
+    public void setBuildVersion(final int buildVersion) {
         this.buildVersion = buildVersion;
     }
 
@@ -116,7 +116,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @return The revision version
      */
-    public final int getRevisionVersion() {
+    public int getRevisionVersion() {
         return revisionVersion;
     }
 
@@ -125,7 +125,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @param revisionVersion The revision version
      */
-    public final void setRevisionVersion(final int revisionVersion) {
+    public void setRevisionVersion(final int revisionVersion) {
         this.revisionVersion = revisionVersion;
     }
 
@@ -134,7 +134,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @return The download URL
      */
-    public final String getDownloadUrl() {
+    public String getDownloadUrl() {
         return downloadUrl;
     }
 
@@ -143,7 +143,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @param downloadUrl The download URL
      */
-    public final void setDownloadUrl(final String downloadUrl) {
+    public void setDownloadUrl(final String downloadUrl) {
         this.downloadUrl = downloadUrl;
     }
 
@@ -152,7 +152,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @return The Map that contains the extra attributes
      */
-    public final Map<String, String> getExtraAttributes() {
+    public Map<String, String> getExtraAttributes() {
         return extraAttributes;
     }
 
@@ -161,7 +161,7 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      *
      * @param extraAttributes The Map that contains the extra attributes
      */
-    public final void setExtraAttributes(final Map<String, String> extraAttributes) {
+    public void setExtraAttributes(final Map<String, String> extraAttributes) {
         this.extraAttributes = extraAttributes;
     }
 

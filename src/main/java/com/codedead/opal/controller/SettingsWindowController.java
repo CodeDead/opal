@@ -48,7 +48,7 @@ public final class SettingsWindowController {
      *
      * @param settingsController The {@link com.codedead.opal.controller.SettingsController} object
      */
-    public final void setSettingsController(final SettingsController settingsController) {
+    public void setSettingsController(final SettingsController settingsController) {
         if (settingsController == null)
             throw new NullPointerException("SettingsController cannot be null!");
 
@@ -57,9 +57,7 @@ public final class SettingsWindowController {
         properties = settingsController.getProperties();
         final String languageTag = properties.getProperty("locale", "en-US");
 
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("Attempting to load the ResourceBundle for locale %s", languageTag));
-        }
+        logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
 
         final Locale locale = Locale.forLanguageTag(languageTag);
         translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);

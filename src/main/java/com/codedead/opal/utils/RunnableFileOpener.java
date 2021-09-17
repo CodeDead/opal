@@ -15,7 +15,7 @@ public final class RunnableFileOpener implements Runnable {
      * Initialize a new RunnableFileOpener
      *
      * @param fileLocation    The location of the File that should be opened
-     * @param iRunnableHelper The IRunnableHelper that can be used to delegate messages
+     * @param iRunnableHelper The {@link IRunnableHelper} interface that can be used to delegate messages
      */
     public RunnableFileOpener(final String fileLocation, final IRunnableHelper iRunnableHelper) {
         if (fileLocation == null)
@@ -32,12 +32,15 @@ public final class RunnableFileOpener implements Runnable {
      *
      * @return The file location
      */
-    public final String getFileLocation() {
+    public String getFileLocation() {
         return fileLocation;
     }
 
+    /**
+     * Method that is invoked to run the task
+     */
     @Override
-    public final void run() {
+    public void run() {
         try {
             Desktop.getDesktop().open(new File(fileLocation));
             if (iRunnableHelper != null) {
