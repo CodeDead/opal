@@ -47,6 +47,8 @@ public final class MainWindowController {
     @FXML
     private SoundPane snpRain;
     @FXML
+    private SoundPane snpRiver;
+    @FXML
     private MenuItem mniUpdate;
     @FXML
     private MenuItem mniHomepage;
@@ -253,6 +255,7 @@ public final class MainWindowController {
         snpWind.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("wind", newValue.doubleValue() / 100));
         snpThunder.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("thunder", newValue.doubleValue() / 100));
         snpBird.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("birds", newValue.doubleValue() / 100));
+        snpRiver.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("river", newValue.doubleValue() / 100));
         snpTyping.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("keyboard", newValue.doubleValue() / 100));
         snpTelephone.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("telephone", newValue.doubleValue() / 100));
         snpChatter.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("officeChatter", newValue.doubleValue() / 100));
@@ -282,6 +285,7 @@ public final class MainWindowController {
                         case "wind" -> snpWind.getSlider().setValue(entry.getValue() * 100);
                         case "thunder" -> snpThunder.getSlider().setValue(entry.getValue() * 100);
                         case "birds" -> snpBird.getSlider().setValue(entry.getValue() * 100);
+                        case "river" -> snpRiver.getSlider().setValue(entry.getValue() * 100);
                         case "keyboard" -> snpTyping.getSlider().setValue(entry.getValue() * 100);
                         case "telephone" -> snpTelephone.getSlider().setValue(entry.getValue() * 100);
                         case "officeChatter" -> snpChatter.getSlider().setValue(entry.getValue() * 100);
@@ -337,6 +341,8 @@ public final class MainWindowController {
 
         snpRain.getSlider().setValue(0);
         snpWind.getSlider().setValue(0);
+        snpBird.getSlider().setValue(0);
+        snpRiver.getSlider().setValue(0);
         snpThunder.getSlider().setValue(0);
         snpTyping.getSlider().setValue(0);
         snpTelephone.getSlider().setValue(0);
