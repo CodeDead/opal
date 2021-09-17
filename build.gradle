@@ -5,17 +5,17 @@ plugins {
     id 'idea'
     id 'eclipse'
     id 'application'
-    id 'org.beryx.jlink' version '2.24.0'
+    id 'org.beryx.jlink' version '2.24.2'
 }
 
 group 'com.codedead'
-version '1.0.0'
+version 'v1.0.0'
 
 def currentOS = DefaultNativePlatform.currentOperatingSystem
 
 java {
-    targetCompatibility = JavaVersion.VERSION_16
-    sourceCompatibility = JavaVersion.VERSION_16
+    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 application {
@@ -111,14 +111,14 @@ if (currentOS.isWindows()) {
 }
 
 dependencies {
-    implementation "org.openjfx:javafx-base:16:${platform}"
-    implementation "org.openjfx:javafx-controls:16:${platform}"
-    implementation "org.openjfx:javafx-graphics:16:${platform}"
-    implementation "org.openjfx:javafx-fxml:16:${platform}"
-    implementation "org.openjfx:javafx-media:16:${platform}"
+    implementation "org.openjfx:javafx-base:17.0.0.1:${platform}"
+    implementation "org.openjfx:javafx-controls:17.0.0.1:${platform}"
+    implementation "org.openjfx:javafx-graphics:17.0.0.1:${platform}"
+    implementation "org.openjfx:javafx-fxml:17.0.0.1:${platform}"
+    implementation "org.openjfx:javafx-media:17.0.0.1:${platform}"
     implementation "org.apache.logging.log4j:log4j-core:2.14.1"
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.12.3"
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.12.5"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
