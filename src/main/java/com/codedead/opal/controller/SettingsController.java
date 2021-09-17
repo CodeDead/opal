@@ -46,7 +46,7 @@ public final class SettingsController {
      *
      * @throws IOException When the default properties file could not be read from the application resources or a pre-existing properties file could not be deleted
      */
-    public final void createDefaultProperties() throws IOException {
+    public void createDefaultProperties() throws IOException {
         logger.info("Attempting to create the default properties file");
 
         final Path propertiesPath = Paths.get(getPropertiesFileLocation());
@@ -57,9 +57,7 @@ public final class SettingsController {
 
         try (final InputStream is = getClass().getClassLoader().getResourceAsStream(getPropertiesResourceLocation())) {
             if (is != null) {
-                if (logger.isInfoEnabled()) {
-                    logger.info(String.format("Creating default properties file at %s", getPropertiesFileLocation()));
-                }
+                logger.info("Creating default properties file at {}", getPropertiesFileLocation());
                 Files.copy(is, propertiesPath);
                 logger.info("Default properties file created");
             } else {
@@ -73,7 +71,7 @@ public final class SettingsController {
      *
      * @return The resource location of the default properties file
      */
-    public final String getPropertiesResourceLocation() {
+    public String getPropertiesResourceLocation() {
         return propertiesResourceLocation;
     }
 
@@ -82,7 +80,7 @@ public final class SettingsController {
      *
      * @param propertiesResourceLocation The resource location of the default properties file
      */
-    public final void setPropertiesResourceLocation(final String propertiesResourceLocation) {
+    public void setPropertiesResourceLocation(final String propertiesResourceLocation) {
         if (propertiesResourceLocation == null || propertiesResourceLocation.isEmpty())
             throw new IllegalArgumentException("Properties resource location cannot be null!");
 
@@ -94,7 +92,7 @@ public final class SettingsController {
      *
      * @return The properties file location
      */
-    public final String getPropertiesFileLocation() {
+    public String getPropertiesFileLocation() {
         return propertiesFileLocation;
     }
 
@@ -103,7 +101,7 @@ public final class SettingsController {
      *
      * @param propertiesFileLocation The properties file location
      */
-    public final void setPropertiesFileLocation(final String propertiesFileLocation) {
+    public void setPropertiesFileLocation(final String propertiesFileLocation) {
         if (propertiesFileLocation == null || propertiesFileLocation.isEmpty())
             throw new IllegalArgumentException("Properties file location cannot be null or empty!");
 
@@ -115,7 +113,7 @@ public final class SettingsController {
      *
      * @return The Properties object
      */
-    public final Properties getProperties() {
+    public Properties getProperties() {
         return properties;
     }
 
@@ -124,7 +122,7 @@ public final class SettingsController {
      *
      * @param properties The properties object
      */
-    public final void setProperties(final Properties properties) {
+    public void setProperties(final Properties properties) {
         this.properties = properties;
     }
 
@@ -133,7 +131,7 @@ public final class SettingsController {
      *
      * @throws IOException When the Properties object could not be stored
      */
-    public final void saveProperties() throws IOException {
+    public void saveProperties() throws IOException {
         logger.info("Attempting to store the Properties object");
         try (final FileOutputStream fos = new FileOutputStream(getPropertiesFileLocation())) {
             properties.store(fos, null);
@@ -147,7 +145,7 @@ public final class SettingsController {
      * @return The Properties object
      * @throws IOException When the properties file could not be loaded
      */
-    public final Properties readPropertiesFile() throws IOException {
+    public Properties readPropertiesFile() throws IOException {
         logger.info("Attempting to load the Properties object");
         try (final FileInputStream fis = new FileInputStream(getPropertiesFileLocation())) {
             final Properties prop = new Properties();

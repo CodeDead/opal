@@ -23,13 +23,15 @@ public final class FxUtils {
      * Display an information alert
      *
      * @param content     The content of the information alert
-     * @param imageStream The {@link InputStream} that contains the image for the {@link Alert}
+     * @param imageStream The {@link InputStream} that contains the image for the {@link Alert} object
      */
     public static void showInformationAlert(final String content, final InputStream imageStream) {
         if (content == null)
             throw new NullPointerException("Content cannot be null!");
 
         final Alert alert = new Alert(Alert.AlertType.INFORMATION, content, ButtonType.OK);
+        alert.setResizable(true);
+
         final Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 
         if (imageStream != null) {
@@ -43,11 +45,12 @@ public final class FxUtils {
      * Display a confirmation dialog
      *
      * @param content     The content of the confirmation alert
-     * @param imageStream The {@link InputStream} that contains the image for the {@link Alert}
+     * @param imageStream The {@link InputStream} object that contains the image for the {@link Alert} object
      * @return True if the user pressed YES, otherwise false
      */
     public static boolean showConfirmationAlert(final String content, final InputStream imageStream) {
         final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, content, ButtonType.YES, ButtonType.NO);
+        alert.setResizable(true);
 
         final Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 
@@ -65,7 +68,7 @@ public final class FxUtils {
      *
      * @param header      The content of the header
      * @param content     The content of the error message
-     * @param imageStream The {@link InputStream} that contains the image for the {@link Alert}
+     * @param imageStream The {@link InputStream} object that contains the image for the {@link Alert} object
      */
     public static void showErrorAlert(final String header, final String content, final InputStream imageStream) {
         if (header == null)
@@ -73,7 +76,7 @@ public final class FxUtils {
         if (content == null)
             throw new NullPointerException("Content cannot be null!");
 
-        final Alert alert = getAlert(content);
+        final Alert alert = getErrorAlert(content);
         alert.setHeaderText(header);
 
         final Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
@@ -86,12 +89,12 @@ public final class FxUtils {
     }
 
     /**
-     * Generate a new Alert
+     * Generate a new error {@link Alert} object
      *
      * @param content The content that should be displayed to the user
-     * @return The Alert object that was generated
+     * @return The {@link Alert} object that was generated
      */
-    private static Alert getAlert(final String content) {
+    private static Alert getErrorAlert(final String content) {
         final Alert alert = new Alert(Alert.AlertType.ERROR);
 
         final GridPane expContent = new GridPane();
@@ -109,6 +112,7 @@ public final class FxUtils {
         expContent.add(textArea, 0, 0);
 
         alert.getDialogPane().setExpandableContent(expContent);
+        alert.setResizable(true);
 
         return alert;
     }

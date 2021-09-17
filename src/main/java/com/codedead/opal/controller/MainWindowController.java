@@ -81,7 +81,7 @@ public final class MainWindowController {
     /**
      * Initialize a new MainWindowController
      *
-     * @throws URISyntaxException When an URI could not be formed
+     * @throws URISyntaxException When the URI could not be formed
      */
     public MainWindowController() throws URISyntaxException {
         logger = LogManager.getLogger(MainWindowController.class);
@@ -97,7 +97,7 @@ public final class MainWindowController {
      *
      * @return The {@link SettingsController} object
      */
-    public final SettingsController getSettingsController() {
+    public SettingsController getSettingsController() {
         return settingsController;
     }
 
@@ -107,7 +107,7 @@ public final class MainWindowController {
      * @param settingsController The {@link SettingsController} object
      * @param updateController   The {@link UpdateController} object
      */
-    public final void setControllers(final SettingsController settingsController, final UpdateController updateController) {
+    public void setControllers(final SettingsController settingsController, final UpdateController updateController) {
         if (settingsController == null)
             throw new NullPointerException("SettingsController cannot be null!");
         if (updateController == null)
@@ -123,9 +123,7 @@ public final class MainWindowController {
         final boolean shouldUpdate = Boolean.parseBoolean(properties.getProperty("autoUpdate", "true"));
         isPortable = Boolean.parseBoolean(properties.getProperty("portable", "false"));
 
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("Attempting to load the ResourceBundle for locale %s", languageTag));
-        }
+        logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
 
         final Locale locale = Locale.forLanguageTag(languageTag);
         translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
@@ -138,7 +136,7 @@ public final class MainWindowController {
     /**
      * Check for application updates
      *
-     * @param showNoUpdates Show an {@link Alert} when no updates are available
+     * @param showNoUpdates Show an {@link Alert} object when no updates are available
      */
     private void checkForUpdates(final boolean showNoUpdates) {
         logger.info("Attempting to check for updates");
@@ -148,9 +146,7 @@ public final class MainWindowController {
             if (platformUpdate.isPresent()) {
                 final PlatformUpdate update = platformUpdate.get();
 
-                if (logger.isInfoEnabled()) {
-                    logger.info(String.format("Version %1$s.%2$s.%3$s.%4$s is available", update.getMajorVersion(), update.getMinorVersion(), update.getBuildVersion(), update.getRevisionVersion()));
-                }
+                logger.info("Version {}.{}.{}.{} is available", update.getMajorVersion(), update.getMinorVersion(), update.getBuildVersion(), update.getRevisionVersion());
 
                 if (FxUtils.showConfirmationAlert(translationBundle
                                 .getString("NewUpdateAvailable")
@@ -204,15 +200,15 @@ public final class MainWindowController {
         try {
             helpUtils.openFile(new RunnableFileOpener(path, new IRunnableHelper() {
                 @Override
-                public final void executed() {
+                public void executed() {
                     Platform.runLater(() -> logger.info("Successfully opened the file"));
                 }
 
                 @Override
-                public final void exceptionOccurred(final Exception ex) {
+                public void exceptionOccurred(final Exception ex) {
                     Platform.runLater(new Runnable() {
                         @Override
-                        public final void run() {
+                        public void run() {
                             logger.error("Error opening the file", ex);
                             FxUtils.showErrorAlert(translationBundle.getString("FileExecutionError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                         }
@@ -230,7 +226,7 @@ public final class MainWindowController {
      *
      * @return The {@link UpdateController} object
      */
-    public final UpdateController getUpdateController() {
+    public UpdateController getUpdateController() {
         return updateController;
     }
 
@@ -291,15 +287,11 @@ public final class MainWindowController {
                         case "officeChatter" -> snpChatter.getSlider().setValue(entry.getValue() * 100);
                         case "traffic" -> snpTraffic.getSlider().setValue(entry.getValue() * 100);
                         case "fireplace" -> snpFireplace.getSlider().setValue(entry.getValue() * 100);
-                        default -> {
-                            if (logger.isInfoEnabled()) {
-                                logger.info(String.format("Unknown key found: %s", entry.getKey()));
-                            }
-                        }
+                        default -> logger.info("Unknown key found: {}", entry.getKey());
                     }
                 }
             } catch (final IOException ex) {
-                logger.error(String.format("Unable to open the sound preset from %s", file.getAbsolutePath()), ex);
+                logger.error("Unable to open the sound preset from {}", file.getAbsolutePath(), ex);
                 FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         } else {
@@ -328,7 +320,7 @@ public final class MainWindowController {
                 }
                 audioController.saveSoundPreset(filePath);
             } catch (IOException ex) {
-                logger.error(String.format("Unable to save the sound settings to %s", filePath), ex);
+                logger.error("Unable to save the sound settings to {}", filePath, ex);
                 FxUtils.showErrorAlert(translationBundle.getString("SaveSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         } else {
@@ -401,15 +393,15 @@ public final class MainWindowController {
         try {
             helpUtils.openFileFromResources(new RunnableFileOpener("help.pdf", new IRunnableHelper() {
                 @Override
-                public final void executed() {
+                public void executed() {
                     Platform.runLater(() -> logger.info("Successfully opened the help file"));
                 }
 
                 @Override
-                public final void exceptionOccurred(final Exception ex) {
+                public void exceptionOccurred(final Exception ex) {
                     Platform.runLater(new Runnable() {
                         @Override
-                        public final void run() {
+                        public void run() {
                             logger.error("Error opening the help file", ex);
                             FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                         }
@@ -431,15 +423,15 @@ public final class MainWindowController {
 
         final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com", new IRunnableHelper() {
             @Override
-            public final void executed() {
+            public void executed() {
                 Platform.runLater(() -> logger.info("Successfully opened website"));
             }
 
             @Override
-            public final void exceptionOccurred(final Exception ex) {
+            public void exceptionOccurred(final Exception ex) {
                 Platform.runLater(new Runnable() {
                     @Override
-                    public final void run() {
+                    public void run() {
                         logger.error("Error opening the CodeDead website", ex);
                         FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                     }
@@ -460,15 +452,15 @@ public final class MainWindowController {
         try {
             helpUtils.openFileFromResources(new RunnableFileOpener("license.pdf", new IRunnableHelper() {
                 @Override
-                public final void executed() {
+                public void executed() {
                     Platform.runLater(() -> logger.info("Successfully opened the license file"));
                 }
 
                 @Override
-                public final void exceptionOccurred(final Exception ex) {
+                public void exceptionOccurred(final Exception ex) {
                     Platform.runLater(new Runnable() {
                         @Override
-                        public final void run() {
+                        public void run() {
                             logger.error("Error opening the license file", ex);
                             FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                         }
@@ -482,7 +474,7 @@ public final class MainWindowController {
     }
 
     /**
-     * Method that is called when the donate website should be opened
+     * Method that is called when the donation website should be opened
      */
     @FXML
     private void donateAction() {
@@ -490,15 +482,15 @@ public final class MainWindowController {
 
         final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com/donate", new IRunnableHelper() {
             @Override
-            public final void executed() {
+            public void executed() {
                 Platform.runLater(() -> logger.info("Successfully opened website"));
             }
 
             @Override
-            public final void exceptionOccurred(final Exception ex) {
+            public void exceptionOccurred(final Exception ex) {
                 Platform.runLater(new Runnable() {
                     @Override
-                    public final void run() {
+                    public void run() {
                         logger.error("Error opening the CodeDead donation website", ex);
                         FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                     }

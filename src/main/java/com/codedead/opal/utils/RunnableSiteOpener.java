@@ -18,7 +18,7 @@ public final class RunnableSiteOpener implements Runnable {
      * Initialize a new RunnableSiteOpener
      *
      * @param url             The URL that should be opened
-     * @param iRunnableHelper The IRunnableHelper that can be used to delegate messages
+     * @param iRunnableHelper The {@link IRunnableHelper} interface that can be used to delegate messages
      */
     public RunnableSiteOpener(final String url, final IRunnableHelper iRunnableHelper) {
         if (url == null)
@@ -35,12 +35,15 @@ public final class RunnableSiteOpener implements Runnable {
      *
      * @return The URL
      */
-    public final String getUrl() {
+    public String getUrl() {
         return url;
     }
 
+    /**
+     * Method that is invoked to run the task
+     */
     @Override
-    public final void run() {
+    public void run() {
         try {
             Desktop.getDesktop().browse(new URI(url));
             if (iRunnableHelper != null) {

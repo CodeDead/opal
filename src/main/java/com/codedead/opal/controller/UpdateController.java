@@ -53,7 +53,7 @@ public final class UpdateController {
      * @throws InvalidHttpResponseCodeException When an invalid HTTP response code was returned when checking for updates
      * @throws IOException                      When the response that was returned from the server could not be serialized as a {@link List} of {@link PlatformUpdate} object
      */
-    public final Optional<PlatformUpdate> checkForUpdates(final String currentPlatform, final boolean isPortable) throws InterruptedException, InvalidHttpResponseCodeException, IOException {
+    public Optional<PlatformUpdate> checkForUpdates(final String currentPlatform, final boolean isPortable) throws InterruptedException, InvalidHttpResponseCodeException, IOException {
         if (currentPlatform == null)
             throw new NullPointerException("Current platform cannot be null!");
         if (currentPlatform.isEmpty())
@@ -77,10 +77,8 @@ public final class UpdateController {
      * @throws InterruptedException             When the HTTP request is interrupted
      * @throws InvalidHttpResponseCodeException When the HTTP response status code is not OK
      */
-    public final List<PlatformUpdate> getUpdates() throws IOException, InterruptedException, InvalidHttpResponseCodeException {
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("Attempting to retrieve List of PlatformUpdate objects from %s", getUpdateUrl()));
-        }
+    public List<PlatformUpdate> getUpdates() throws IOException, InterruptedException, InvalidHttpResponseCodeException {
+        logger.info("Attempting to retrieve List of PlatformUpdate objects from {}", getUpdateUrl());
 
         final HttpClient client = HttpClient.newHttpClient();
         final HttpRequest request = HttpRequest.newBuilder()
@@ -102,7 +100,7 @@ public final class UpdateController {
      * @param path The path on the local filesystem where the file should be stored
      * @throws IOException If the transfer failed
      */
-    public final void downloadFile(final String url, final String path) throws IOException {
+    public void downloadFile(final String url, final String path) throws IOException {
         if (url == null)
             throw new NullPointerException("URL cannot be null!");
         if (url.isEmpty())
@@ -112,9 +110,7 @@ public final class UpdateController {
         if (path.isEmpty())
             throw new IllegalArgumentException("Path cannot be empty!");
 
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("Attempting to download file from $1%s and store it at $2%s", url, path));
-        }
+        logger.info("Attempting to download file from {} and store it at {}", url, path);
 
         final URL website = new URL(url);
         try (final InputStream inputStream = website.openStream()) {
@@ -131,7 +127,7 @@ public final class UpdateController {
      *
      * @return The update URL
      */
-    public final String getUpdateUrl() {
+    public String getUpdateUrl() {
         return updateUrl;
     }
 
@@ -140,7 +136,7 @@ public final class UpdateController {
      *
      * @param updateUrl The update URL
      */
-    public final void setUpdateUrl(final String updateUrl) {
+    public void setUpdateUrl(final String updateUrl) {
         if (updateUrl == null)
             throw new NullPointerException("Update URL cannot be null!");
         if (updateUrl.isEmpty())

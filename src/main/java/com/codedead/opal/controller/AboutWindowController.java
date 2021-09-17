@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -40,20 +41,20 @@ public final class AboutWindowController {
     }
 
     /**
-     * Get the SettingsController
+     * Get the {@link SettingsController} object
      *
-     * @return The SettingsController
+     * @return The {@link SettingsController} object
      */
-    public final SettingsController getSettingsController() {
+    public SettingsController getSettingsController() {
         return settingsController;
     }
 
     /**
-     * Set the SettingsController
+     * Set the {@link SettingsController} object
      *
-     * @param settingsController The SettingsController
+     * @param settingsController The {@link SettingsController} object
      */
-    public final void setSettingsController(final SettingsController settingsController) {
+    public void setSettingsController(final SettingsController settingsController) {
         if (settingsController == null)
             throw new NullPointerException("SettingsController cannot be null!");
 
@@ -65,6 +66,7 @@ public final class AboutWindowController {
         if (logger.isInfoEnabled()) {
             logger.info(String.format("Attempting to load the ResourceBundle for locale %s", languageTag));
         }
+
         final Locale locale = Locale.forLanguageTag(languageTag);
         translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
     }
@@ -78,7 +80,13 @@ public final class AboutWindowController {
 
         aboutImageView.setFitHeight(96);
         aboutImageView.setFitWidth(96);
-        aboutImageView.setImage(new Image(getClass().getResourceAsStream("/images/opal.png")));
+
+        final InputStream inputStream = getClass().getResourceAsStream("/images/opal.png");
+        if (inputStream != null) {
+            aboutImageView.setImage(new Image(inputStream));
+        } else {
+            aboutImageView.setImage(null);
+        }
     }
 
     /**
@@ -102,15 +110,15 @@ public final class AboutWindowController {
         try {
             helpUtils.openFileFromResources(new RunnableFileOpener("license.pdf", new IRunnableHelper() {
                 @Override
-                public final void executed() {
+                public void executed() {
                     Platform.runLater(() -> logger.info("Successfully opened the license file"));
                 }
 
                 @Override
-                public final void exceptionOccurred(final Exception ex) {
+                public void exceptionOccurred(final Exception ex) {
                     Platform.runLater(new Runnable() {
                         @Override
-                        public final void run() {
+                        public void run() {
                             logger.error("Error opening the license file", ex);
                             FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                         }
@@ -133,15 +141,15 @@ public final class AboutWindowController {
 
         final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com", new IRunnableHelper() {
             @Override
-            public final void executed() {
+            public void executed() {
                 Platform.runLater(() -> logger.info("Successfully opened website"));
             }
 
             @Override
-            public final void exceptionOccurred(final Exception ex) {
+            public void exceptionOccurred(final Exception ex) {
                 Platform.runLater(new Runnable() {
                     @Override
-                    public final void run() {
+                    public void run() {
                         logger.error("Error opening the CodeDead website", ex);
                         FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                     }
