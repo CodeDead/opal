@@ -36,4 +36,4 @@ out/
 .logs/*
 logs/*
 
-./default.properties
+/default.properties
