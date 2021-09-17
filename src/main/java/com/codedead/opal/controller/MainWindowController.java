@@ -39,6 +39,8 @@ public final class MainWindowController {
     @FXML
     private SoundPane snpTyping;
     @FXML
+    private SoundPane snpClock;
+    @FXML
     private SoundPane snpBird;
     @FXML
     private SoundPane snpThunder;
@@ -260,6 +262,7 @@ public final class MainWindowController {
         snpTelephone.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("telephone", newValue.doubleValue() / 100));
         snpChatter.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("officeChatter", newValue.doubleValue() / 100));
         snpTraffic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("traffic", newValue.doubleValue() / 100));
+        snpClock.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("clock", newValue.doubleValue() / 100));
         snpFireplace.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fireplace", newValue.doubleValue() / 100));
     }
 
@@ -348,6 +351,7 @@ public final class MainWindowController {
         snpTelephone.getSlider().setValue(0);
         snpChatter.getSlider().setValue(0);
         snpTraffic.getSlider().setValue(0);
+        snpClock.getSlider().setValue(0);
         snpFireplace.getSlider().setValue(0);
     }
 
