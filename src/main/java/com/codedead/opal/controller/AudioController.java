@@ -75,7 +75,7 @@ public final class AudioController {
             throw new NullPointerException(String.format("MediaPlayer with key %s cannot be found!", key));
 
         if (!player.getStatus().equals(MediaPlayer.Status.PLAYING)) {
-            logger.info("Playing media for MediaPlayer with key {}}", key);
+            logger.info("Playing media for MediaPlayer with key {}", key);
             player.play();
         }
     }

@@ -35,3 +35,5 @@ out/
 .idea/*
 .logs/*
 logs/*
+
+./default.properties
