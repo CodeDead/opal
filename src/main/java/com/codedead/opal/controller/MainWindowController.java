@@ -29,6 +29,8 @@ public final class MainWindowController {
     private final Logger logger;
 
     @FXML
+    private SoundPane snpStatic;
+    @FXML
     private SoundPane snpFireplace;
     @FXML
     private SoundPane snpTraffic;
@@ -39,6 +41,8 @@ public final class MainWindowController {
     @FXML
     private SoundPane snpTyping;
     @FXML
+    private SoundPane snpClock;
+    @FXML
     private SoundPane snpBird;
     @FXML
     private SoundPane snpThunder;
@@ -46,6 +50,8 @@ public final class MainWindowController {
     private SoundPane snpWind;
     @FXML
     private SoundPane snpRain;
+    @FXML
+    private SoundPane snpRiver;
     @FXML
     private MenuItem mniUpdate;
     @FXML
@@ -253,11 +259,14 @@ public final class MainWindowController {
         snpWind.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("wind", newValue.doubleValue() / 100));
         snpThunder.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("thunder", newValue.doubleValue() / 100));
         snpBird.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("birds", newValue.doubleValue() / 100));
+        snpRiver.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("river", newValue.doubleValue() / 100));
         snpTyping.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("keyboard", newValue.doubleValue() / 100));
         snpTelephone.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("telephone", newValue.doubleValue() / 100));
         snpChatter.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("officeChatter", newValue.doubleValue() / 100));
         snpTraffic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("traffic", newValue.doubleValue() / 100));
+        snpClock.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("clock", newValue.doubleValue() / 100));
         snpFireplace.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fireplace", newValue.doubleValue() / 100));
+        snpStatic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("static", newValue.doubleValue() / 100));
     }
 
     /**
@@ -282,11 +291,13 @@ public final class MainWindowController {
                         case "wind" -> snpWind.getSlider().setValue(entry.getValue() * 100);
                         case "thunder" -> snpThunder.getSlider().setValue(entry.getValue() * 100);
                         case "birds" -> snpBird.getSlider().setValue(entry.getValue() * 100);
+                        case "river" -> snpRiver.getSlider().setValue(entry.getValue() * 100);
                         case "keyboard" -> snpTyping.getSlider().setValue(entry.getValue() * 100);
                         case "telephone" -> snpTelephone.getSlider().setValue(entry.getValue() * 100);
                         case "officeChatter" -> snpChatter.getSlider().setValue(entry.getValue() * 100);
                         case "traffic" -> snpTraffic.getSlider().setValue(entry.getValue() * 100);
                         case "fireplace" -> snpFireplace.getSlider().setValue(entry.getValue() * 100);
+                        case "static" -> snpStatic.getSlider().setValue(entry.getValue() * 100);
                         default -> logger.info("Unknown key found: {}", entry.getKey());
                     }
                 }
@@ -337,12 +348,16 @@ public final class MainWindowController {
 
         snpRain.getSlider().setValue(0);
         snpWind.getSlider().setValue(0);
+        snpBird.getSlider().setValue(0);
+        snpRiver.getSlider().setValue(0);
         snpThunder.getSlider().setValue(0);
         snpTyping.getSlider().setValue(0);
         snpTelephone.getSlider().setValue(0);
         snpChatter.getSlider().setValue(0);
         snpTraffic.getSlider().setValue(0);
+        snpClock.getSlider().setValue(0);
         snpFireplace.getSlider().setValue(0);
+        snpStatic.getSlider().setValue(0);
     }
 
     /**

@@ -42,11 +42,14 @@ public final class AudioController {
         mediaPlayers.put("wind", new MediaPlayer(new Media(getClass().getResource("/audio/wind.mp3").toURI().toString())));
         mediaPlayers.put("thunder", new MediaPlayer(new Media(getClass().getResource("/audio/thunder.mp3").toURI().toString())));
         mediaPlayers.put("birds", new MediaPlayer(new Media(getClass().getResource("/audio/birds.mp3").toURI().toString())));
+        mediaPlayers.put("river", new MediaPlayer(new Media(getClass().getResource("/audio/river.mp3").toURI().toString())));
         mediaPlayers.put("keyboard", new MediaPlayer(new Media(getClass().getResource("/audio/typing.mp3").toURI().toString())));
         mediaPlayers.put("telephone", new MediaPlayer(new Media(getClass().getResource("/audio/telephone.mp3").toURI().toString())));
         mediaPlayers.put("officeChatter", new MediaPlayer(new Media(getClass().getResource("/audio/office.mp3").toURI().toString())));
         mediaPlayers.put("traffic", new MediaPlayer(new Media(getClass().getResource("/audio/traffic.mp3").toURI().toString())));
+        mediaPlayers.put("clock", new MediaPlayer(new Media(getClass().getResource("/audio/clock.mp3").toURI().toString())));
         mediaPlayers.put("fireplace", new MediaPlayer(new Media(getClass().getResource("/audio/fireplace.mp3").toURI().toString())));
+        mediaPlayers.put("static", new MediaPlayer(new Media(getClass().getResource("/audio/static.mp3").toURI().toString())));
 
         mediaVolumes = new HashMap<>();
         for (final Map.Entry<String, MediaPlayer> entry : mediaPlayers.entrySet()) {

@@ -97,13 +97,13 @@
 
         <Button GridPane.columnIndex="0" minWidth="100" text="%Reset" onAction="#resetSettingsAction">
             <GridPane.margin>
-                <Insets bottom="3" left="3" right="3" top="3"/>
+                <Insets bottom="5" left="5" right="5" top="5"/>
             </GridPane.margin>
         </Button>
         <Button GridPane.columnIndex="1" GridPane.halignment="RIGHT" minWidth="100" text="%Save"
                 onAction="#saveSettingsAction">
             <GridPane.margin>
-                <Insets bottom="3" left="3" right="3" top="3"/>
+                <Insets bottom="5" left="5" right="5" top="5"/>
             </GridPane.margin>
         </Button>
     </GridPane>
