@@ -88,6 +88,7 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -104,6 +105,8 @@
                            image="/images/bird.png"/>
                 <SoundPane fx:id="snpRiver" GridPane.rowIndex="4" volume="0" name="%River"
                            image="/images/river.png"/>
+                <SoundPane fx:id="snpFireplace" GridPane.rowIndex="5" volume="0" name="%Fireplace"
+                           image="/images/fire.png"/>
             </GridPane>
 
             <Label GridPane.rowIndex="2" GridPane.columnIndex="1" text="%Office">
@@ -141,7 +144,7 @@
                            image="/images/clock.png"/>
             </GridPane>
 
-            <Label GridPane.rowIndex="4" GridPane.columnIndex="1" text="%Home">
+            <Label GridPane.rowIndex="4" GridPane.columnIndex="1" text="%Other">
                 <font>
                     <Font name="System Bold" size="14"/>
                 </font>
@@ -152,6 +155,9 @@
 
             <GridPane GridPane.rowIndex="5" GridPane.columnIndex="1"
                       style="-fx-background-color: white;-fx-background-radius: 10px;">
+                <GridPane.margin>
+                    <Insets bottom="10"/>
+                </GridPane.margin>
                 <rowConstraints>
                     <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
@@ -160,8 +166,8 @@
                     <ColumnConstraints hgrow="ALWAYS"/>
                 </columnConstraints>
 
-                <SoundPane fx:id="snpFireplace" GridPane.rowIndex="0" volume="0" name="%Fireplace"
-                           image="/images/fire.png"/>
+                <SoundPane fx:id="snpStatic" GridPane.rowIndex="0" volume="0" name="%Static"
+                           image="/images/radio.png"/>
             </GridPane>
         </GridPane>
     </ScrollPane>

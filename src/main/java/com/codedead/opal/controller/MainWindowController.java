@@ -29,6 +29,8 @@ public final class MainWindowController {
     private final Logger logger;
 
     @FXML
+    private SoundPane snpStatic;
+    @FXML
     private SoundPane snpFireplace;
     @FXML
     private SoundPane snpTraffic;
@@ -264,6 +266,7 @@ public final class MainWindowController {
         snpTraffic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("traffic", newValue.doubleValue() / 100));
         snpClock.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("clock", newValue.doubleValue() / 100));
         snpFireplace.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fireplace", newValue.doubleValue() / 100));
+        snpStatic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("static", newValue.doubleValue() / 100));
     }
 
     /**
@@ -294,6 +297,7 @@ public final class MainWindowController {
                         case "officeChatter" -> snpChatter.getSlider().setValue(entry.getValue() * 100);
                         case "traffic" -> snpTraffic.getSlider().setValue(entry.getValue() * 100);
                         case "fireplace" -> snpFireplace.getSlider().setValue(entry.getValue() * 100);
+                        case "static" -> snpStatic.getSlider().setValue(entry.getValue() * 100);
                         default -> logger.info("Unknown key found: {}", entry.getKey());
                     }
                 }
@@ -353,6 +357,7 @@ public final class MainWindowController {
         snpTraffic.getSlider().setValue(0);
         snpClock.getSlider().setValue(0);
         snpFireplace.getSlider().setValue(0);
+        snpStatic.getSlider().setValue(0);
     }
 
     /**
