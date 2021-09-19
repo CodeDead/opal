@@ -26,6 +26,8 @@ import java.util.*;
 public final class MainWindowController implements IAudioTimer {
 
     @FXML
+    private SoundPane snpFantasy;
+    @FXML
     private CheckMenuItem mniTimerEnabled;
     @FXML
     private SoundPane snpStatic;
@@ -272,6 +274,7 @@ public final class MainWindowController implements IAudioTimer {
         snpClock.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("clock", newValue.doubleValue() / 100));
         snpFireplace.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fireplace", newValue.doubleValue() / 100));
         snpStatic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("static", newValue.doubleValue() / 100));
+        snpFantasy.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fantasy", newValue.doubleValue() / 100));
 
         mniTimerEnabled.setOnAction(e ->
         {
@@ -375,6 +378,7 @@ public final class MainWindowController implements IAudioTimer {
         snpClock.getSlider().setValue(0);
         snpFireplace.getSlider().setValue(0);
         snpStatic.getSlider().setValue(0);
+        snpFantasy.getSlider().setValue(0);
     }
 
     /**

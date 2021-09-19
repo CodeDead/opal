@@ -56,6 +56,7 @@ public final class AudioController {
         mediaPlayers.put("clock", new MediaPlayer(new Media(getClass().getResource("/audio/clock.mp3").toURI().toString())));
         mediaPlayers.put("fireplace", new MediaPlayer(new Media(getClass().getResource("/audio/fireplace.mp3").toURI().toString())));
         mediaPlayers.put("static", new MediaPlayer(new Media(getClass().getResource("/audio/static.mp3").toURI().toString())));
+        mediaPlayers.put("fantasy", new MediaPlayer(new Media(getClass().getResource("/audio/fantasy.mp3").toURI().toString())));
 
         mediaVolumes = new HashMap<>();
         for (final Map.Entry<String, MediaPlayer> entry : mediaPlayers.entrySet()) {
