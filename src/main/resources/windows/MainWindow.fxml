@@ -130,6 +130,7 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -146,6 +147,8 @@
                            image="/images/car.png"/>
                 <SoundPane fx:id="snpClock" GridPane.rowIndex="4" volume="0" name="%Clock"
                            image="/images/clock.png"/>
+                <SoundPane fx:id="snpFan" GridPane.rowIndex="5" volume="0" name="%Fan"
+                           image="/images/fan.png"/>
             </GridPane>
 
             <Label GridPane.rowIndex="4" GridPane.columnIndex="1" text="%Other">
