@@ -1,7 +1,10 @@
 package com.codedead.opal.controller;
 
+import com.codedead.opal.domain.NumberTextField;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.SharedVariables;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -14,11 +17,14 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 public final class SettingsWindowController {
 
-    private final Logger logger;
-
+    @FXML
+    private ComboBox<String> cboDelayType;
+    @FXML
+    private NumberTextField numDelay;
     @FXML
     private CheckBox chbAutoUpdate;
     @FXML
@@ -29,6 +35,8 @@ public final class SettingsWindowController {
     private SettingsController settingsController;
     private ResourceBundle translationBundle;
     private Properties properties;
+
+    private final Logger logger;
 
     /**
      * Initialize a new SettingsWindowController
@@ -73,6 +81,8 @@ public final class SettingsWindowController {
         final boolean autoUpdate = Boolean.parseBoolean(properties.getProperty("autoUpdate", "true"));
         final String locale = properties.getProperty("locale", "en-US");
         final String logLevel = properties.getProperty("loglevel", "INFO");
+        long timerDelay = Long.parseLong(properties.getProperty("timerDelay", "3600000"));
+        final int delayType = Integer.parseInt(properties.getProperty("timerDelayType", "0"));
 
         chbAutoUpdate.setSelected(autoUpdate);
         switch (locale.toLowerCase()) {
@@ -91,6 +101,24 @@ public final class SettingsWindowController {
             case "ALL" -> cboLogLevel.getSelectionModel().select(7);
             default -> cboLogLevel.getSelectionModel().select(4);
         }
+
+        final ObservableList<String> options = FXCollections.observableArrayList(
+                translationBundle.getString("Seconds"),
+                translationBundle.getString("Minutes"),
+                translationBundle.getString("Hours")
+        );
+
+        cboDelayType.setItems(options);
+        cboDelayType.getSelectionModel().select(delayType);
+
+        final long correctDelay = switch(delayType) {
+            case 0 -> TimeUnit.MILLISECONDS.toSeconds(timerDelay);
+            case 1 -> TimeUnit.MILLISECONDS.toMinutes(timerDelay);
+            case 2 -> TimeUnit.MILLISECONDS.toHours(timerDelay);
+            default -> throw new IllegalStateException("Unexpected value: " + delayType);
+        };
+
+        numDelay.setText(String.valueOf(correctDelay));
     }
 
     /**
@@ -144,6 +172,24 @@ public final class SettingsWindowController {
             default -> Level.INFO;
         };
 
+        final int delayType = cboDelayType.getSelectionModel().getSelectedIndex();
+        final long delay = Long.parseLong(numDelay.getText());
+
+        if (delay < 1) {
+            FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), translationBundle.getString("TimerDelayTooSmall"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            return;
+        }
+
+        final long correctDelay = switch (delayType) {
+            case 0 -> TimeUnit.SECONDS.toMillis(delay);
+            case 1 -> TimeUnit.MINUTES.toMillis(delay);
+            case 2 -> TimeUnit.HOURS.toMillis(delay);
+            default -> throw new IllegalStateException("Unexpected value: " + delayType);
+        };
+
+        properties.setProperty("timerDelay", String.valueOf(correctDelay));
+        properties.setProperty("timerDelayType", String.valueOf(delayType));
+
         Configurator.setAllLevels(LogManager.getRootLogger().getName(), level);
         settingsController.setProperties(properties);
         try {
@@ -162,12 +208,11 @@ public final class SettingsWindowController {
      * @param languageToMatch The language that needs to be matched to the combobox
      */
     private void showAlertIfLanguageMismatch(final String languageToMatch) {
-        String newLanguage;
-        switch (cboLanguage.getSelectionModel().getSelectedIndex()) {
-            case 1 -> newLanguage = "fr-FR";
-            case 2 -> newLanguage = "nl-NL";
-            default -> newLanguage = "en-US";
-        }
+        final String newLanguage = switch (cboLanguage.getSelectionModel().getSelectedIndex()) {
+            case 1 -> "fr-FR";
+            case 2 -> "nl-NL";
+            default -> "en-US";
+        };
 
         if (!languageToMatch.equals(newLanguage)) {
             FxUtils.showInformationAlert(translationBundle.getString("RestartRequired"), getClass().getResourceAsStream(SharedVariables.ICON_URL));

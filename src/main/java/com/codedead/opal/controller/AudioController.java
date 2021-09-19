@@ -1,5 +1,6 @@
 package com.codedead.opal.controller;
 
+import com.codedead.opal.interfaces.IAudioTimer;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.scene.media.Media;
@@ -13,9 +14,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public final class AudioController {
 
@@ -24,14 +23,19 @@ public final class AudioController {
     private Map<String, Double> mediaVolumes;
 
     private final Map<String, MediaPlayer> mediaPlayers;
+    private final Timer timer;
+    private boolean timerEnabled;
+
+    private final IAudioTimer audioTimer;
     private final ObjectMapper objectMapper;
 
     /**
      * Initialize a new AudioController
      *
+     * @param audioTimer The {@link IAudioTimer} interface that can be used to call back certain timer functionalities
      * @throws URISyntaxException When the URI syntax is incorrect
      */
-    public AudioController() throws URISyntaxException {
+    public AudioController(final IAudioTimer audioTimer) throws URISyntaxException {
         logger = LogManager.getLogger(AudioController.class);
 
         logger.info("Initializing new AudioController object");
@@ -58,7 +62,10 @@ public final class AudioController {
             mediaVolumes.put(entry.getKey(), 0.0);
         }
 
-        objectMapper = new ObjectMapper();
+        timer = new Timer();
+
+        this.audioTimer = audioTimer;
+        this.objectMapper = new ObjectMapper();
     }
 
     /**
@@ -200,7 +207,8 @@ public final class AudioController {
         if (actual == null || actual.isEmpty())
             throw new IllegalArgumentException("Sound preset cannot be null or empty!");
 
-        final TypeReference<HashMap<String, Double>> typeRef = new TypeReference<>() {};
+        final TypeReference<HashMap<String, Double>> typeRef = new TypeReference<>() {
+        };
 
         mediaVolumes = objectMapper.readValue(actual, typeRef);
 
@@ -233,5 +241,47 @@ public final class AudioController {
      */
     public Set<Map.Entry<String, Double>> getVolumes() {
         return mediaVolumes.entrySet();
+    }
+
+    /**
+     * Cancel the {@link Timer} object
+     */
+    public void cancelTimer() {
+        logger.info("Cancelling the Timer to stop all MediaPlayer objects");
+
+        timerEnabled = false;
+        timer.cancel();
+        if (audioTimer != null) {
+            audioTimer.cancelled();
+        }
+    }
+
+    /**
+     * Schedule the {@link Timer} object to cancel all {@link MediaPlayer} objects
+     *
+     * @param delay The delay in milliseconds before the {@link Timer} object executes its function
+     */
+    public void scheduleTimer(long delay) {
+        if (delay <= 1)
+            throw new IllegalArgumentException("Delay cannot be smaller than 1");
+
+        logger.info("Scheduling the Timer to stop all MediaPlayer objects");
+
+        timerEnabled = true;
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                logger.info("Timer has fired");
+                if (timerEnabled) {
+                    for (final String key : mediaPlayers.keySet()) {
+                        stopMedia(key);
+                    }
+                    if (audioTimer != null) {
+                        audioTimer.fired();
+                    }
+                }
+                timerEnabled = false;
+            }
+        }, delay);
     }
 }
