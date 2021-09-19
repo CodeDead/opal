@@ -164,6 +164,7 @@
                 </GridPane.margin>
                 <rowConstraints>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -172,6 +173,8 @@
 
                 <SoundPane fx:id="snpStatic" GridPane.rowIndex="0" volume="0" name="%Static"
                            image="/images/radio.png"/>
+                <SoundPane fx:id="snpFantasy" GridPane.rowIndex="1" volume="0" name="%Fantasy"
+                           image="/images/star.png"/>
             </GridPane>
         </GridPane>
     </ScrollPane>
