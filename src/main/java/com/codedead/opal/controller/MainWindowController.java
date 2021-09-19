@@ -2,6 +2,7 @@ package com.codedead.opal.controller;
 
 import com.codedead.opal.domain.PlatformUpdate;
 import com.codedead.opal.domain.SoundPane;
+import com.codedead.opal.interfaces.IAudioTimer;
 import com.codedead.opal.interfaces.IRunnableHelper;
 import com.codedead.opal.utils.*;
 import javafx.application.Platform;
@@ -9,9 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -24,10 +23,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
 
-public final class MainWindowController {
+public final class MainWindowController implements IAudioTimer {
 
-    private final Logger logger;
-
+    @FXML
+    private CheckMenuItem mniTimerEnabled;
     @FXML
     private SoundPane snpStatic;
     @FXML
@@ -65,6 +64,8 @@ public final class MainWindowController {
     @FXML
     private MenuItem mniHelp;
     @FXML
+    private Menu mnuTimer;
+    @FXML
     private MenuItem mniSettings;
     @FXML
     private MenuItem mniExit;
@@ -82,7 +83,10 @@ public final class MainWindowController {
     private SettingsController settingsController;
     private UpdateController updateController;
     private ResourceBundle translationBundle;
+
     private boolean isPortable;
+
+    private final Logger logger;
 
     /**
      * Initialize a new MainWindowController
@@ -94,7 +98,7 @@ public final class MainWindowController {
         logger.info("Initializing new MainWindowController object");
 
         platformName = System.getProperty("os.name");
-        audioController = new AudioController();
+        audioController = new AudioController(this);
         helpUtils = new HelpUtils();
     }
 
@@ -254,6 +258,7 @@ public final class MainWindowController {
         mniHomepage.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/home.png"))));
         mniUpdate.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/update.png"))));
         mniHelp.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/help.png"))));
+        mnuTimer.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/timer.png"))));
 
         snpRain.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("rain", newValue.doubleValue() / 100));
         snpWind.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("wind", newValue.doubleValue() / 100));
@@ -267,6 +272,18 @@ public final class MainWindowController {
         snpClock.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("clock", newValue.doubleValue() / 100));
         snpFireplace.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fireplace", newValue.doubleValue() / 100));
         snpStatic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("static", newValue.doubleValue() / 100));
+
+        mniTimerEnabled.setOnAction(e ->
+        {
+            if (mniTimerEnabled.isSelected()) {
+                final Properties properties = settingsController.getProperties();
+                final long timerDelay = Long.parseLong(properties.getProperty("timerDelay", "3600000"));
+
+                audioController.scheduleTimer(timerDelay);
+            } else {
+                audioController.cancelTimer();
+            }
+        });
     }
 
     /**
@@ -550,5 +567,22 @@ public final class MainWindowController {
     @FXML
     private void updateAction() {
         checkForUpdates(true);
+    }
+
+    /**
+     * Method that is called when the {@link AudioController} object's {@link Timer} object has fired
+     */
+    @Override
+    public void fired() {
+        resetAction();
+        mniTimerEnabled.setSelected(false);
+    }
+
+    /**
+     * Method that is invoked when the {@link AudioController} object's {@link Timer} object has cancelled
+     */
+    @Override
+    public void cancelled() {
+        mniTimerEnabled.setSelected(false);
     }
 }

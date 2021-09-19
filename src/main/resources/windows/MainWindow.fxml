@@ -16,6 +16,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.CheckMenuItem?>
 <GridPane prefHeight="370" prefWidth="560"
           xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="com.codedead.opal.controller.MainWindowController">
@@ -40,6 +41,9 @@
         </Menu>
         <Menu text="%Tools">
             <MenuItem fx:id="mniSettings" onAction="#settingsAction" text="%Settings"/>
+            <Menu text="%Timer" fx:id="mnuTimer">
+                <CheckMenuItem fx:id="mniTimerEnabled" text="%Enabled"/>
+            </Menu>
         </Menu>
         <Menu text="%HelpMenu">
             <MenuItem fx:id="mniHelp" onAction="#helpAction" text="%Help"/>
