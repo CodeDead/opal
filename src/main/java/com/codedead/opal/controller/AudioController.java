@@ -24,6 +24,8 @@ public final class AudioController {
 
     private final Map<String, MediaPlayer> mediaPlayers;
     private final Timer timer;
+    private TimerTask timerTask;
+
     private boolean timerEnabled;
 
     private final IAudioTimer audioTimer;
@@ -250,7 +252,12 @@ public final class AudioController {
         logger.info("Cancelling the Timer to stop all MediaPlayer objects");
 
         timerEnabled = false;
-        timer.cancel();
+
+        if (timerTask != null) {
+            timerTask.cancel();
+            timer.purge();
+        }
+
         if (audioTimer != null) {
             audioTimer.cancelled();
         }
@@ -265,10 +272,16 @@ public final class AudioController {
         if (delay <= 1)
             throw new IllegalArgumentException("Delay cannot be smaller than 1");
 
-        logger.info("Scheduling the Timer to stop all MediaPlayer objects");
+        logger.info("Scheduling the Timer to stop all MediaPlayer objects after {} millisecond(s)", delay);
 
         timerEnabled = true;
-        timer.schedule(new TimerTask() {
+
+        if (timerTask != null) {
+            timerTask.cancel();
+            timer.purge();
+        }
+
+        timerTask = new TimerTask() {
             @Override
             public void run() {
                 logger.info("Timer has fired");
@@ -282,6 +295,8 @@ public final class AudioController {
                 }
                 timerEnabled = false;
             }
-        }, delay);
+        };
+
+        timer.schedule(timerTask, delay);
     }
 }
