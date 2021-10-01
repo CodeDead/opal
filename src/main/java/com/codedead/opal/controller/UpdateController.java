@@ -23,10 +23,10 @@ import java.util.Optional;
 
 public final class UpdateController {
 
+    private String updateUrl;
+
     private final Logger logger;
     private final ObjectMapper objectMapper;
-
-    private String updateUrl;
 
     /**
      * Initialize a new UpdateController

@@ -28,6 +28,13 @@ public final class NumberTextField extends TextField {
         });
     }
 
+    /**
+     * Method that is invoked when a {@link String} object is replaced
+     *
+     * @param start The start index of the replacement
+     * @param end   The end index of the replacement
+     * @param text  The new {@link String} object
+     */
     @Override
     public void replaceText(final int start, final int end, final String text) {
         if (validate(text)) {
@@ -35,6 +42,11 @@ public final class NumberTextField extends TextField {
         }
     }
 
+    /**
+     * Method that is invoked when a {@link String} object is being replaced
+     *
+     * @param text The new {@link String} object
+     */
     @Override
     public void replaceSelection(final String text) {
         if (validate(text)) {

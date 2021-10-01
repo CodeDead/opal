@@ -11,11 +11,11 @@ import java.util.Properties;
 
 public final class SettingsController {
 
-    private final Logger logger;
-
     private String propertiesFileLocation;
     private String propertiesResourceLocation;
     private Properties properties;
+
+    private final Logger logger;
 
     /**
      * Initialize a new SettingsController

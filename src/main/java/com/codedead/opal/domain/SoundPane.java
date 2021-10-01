@@ -11,7 +11,6 @@ import javafx.scene.layout.GridPane;
 import java.io.IOException;
 import java.net.URL;
 
-@SuppressWarnings("unused")
 public final class SoundPane extends GridPane {
 
     @FXML

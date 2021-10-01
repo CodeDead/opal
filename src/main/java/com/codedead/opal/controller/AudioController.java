@@ -18,8 +18,6 @@ import java.util.*;
 
 public final class AudioController {
 
-    private final Logger logger;
-
     private Map<String, Double> mediaVolumes;
 
     private final Map<String, MediaPlayer> mediaPlayers;
@@ -30,6 +28,7 @@ public final class AudioController {
 
     private final IAudioTimer audioTimer;
     private final ObjectMapper objectMapper;
+    private final Logger logger;
 
     /**
      * Initialize a new AudioController

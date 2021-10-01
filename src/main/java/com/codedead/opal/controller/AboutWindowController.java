@@ -19,16 +19,16 @@ import java.util.ResourceBundle;
 
 public final class AboutWindowController {
 
-    private final Logger logger;
-
     @FXML
     private Label aboutLabel;
     @FXML
     private ImageView aboutImageView;
 
-    private final HelpUtils helpUtils;
     private SettingsController settingsController;
     private ResourceBundle translationBundle;
+
+    private final HelpUtils helpUtils;
+    private final Logger logger;
 
     /**
      * Initialize a new AboutWindowController
