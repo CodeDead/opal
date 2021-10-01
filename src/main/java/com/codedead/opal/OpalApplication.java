@@ -67,9 +67,7 @@ public class OpalApplication extends Application {
 
         final String languageTag = properties.getProperty("locale", "en-US");
 
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("Attempting to load the ResourceBundle for locale %s", languageTag));
-        }
+        logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
 
         final Locale locale = Locale.forLanguageTag(languageTag);
         final ResourceBundle translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);

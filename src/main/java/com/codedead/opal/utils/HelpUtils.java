@@ -33,9 +33,7 @@ public final class HelpUtils {
         if (runnableFileOpener == null)
             throw new NullPointerException("RunnableFileOpener cannot be null!");
 
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("Attempting to open file %s", runnableFileOpener.getFileLocation()));
-        }
+        logger.info("Attempting to open file {}", runnableFileOpener.getFileLocation());
 
         final Path filePath = Paths.get(runnableFileOpener.getFileLocation());
 
@@ -57,9 +55,7 @@ public final class HelpUtils {
         if (runnableFileOpener == null)
             throw new NullPointerException("RunnableFileOpener cannot be null!");
 
-        if (logger.isInfoEnabled()) {
-            logger.info(String.format("Attempting to open file from resources %s", resource));
-        }
+        logger.info("Attempting to open file from resources {}", resource);
 
         final Path filePath = Paths.get(runnableFileOpener.getFileLocation());
 
