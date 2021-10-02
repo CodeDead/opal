@@ -1,5 +1,6 @@
 package com.codedead.opal.controller;
 
+import com.codedead.opal.domain.OsCheck;
 import com.codedead.opal.domain.PlatformUpdate;
 import com.codedead.opal.domain.SoundPane;
 import com.codedead.opal.interfaces.IAudioTimer;
@@ -101,7 +102,7 @@ public final class MainWindowController implements IAudioTimer {
         logger = LogManager.getLogger(MainWindowController.class);
         logger.info("Initializing new MainWindowController object");
 
-        platformName = System.getProperty("os.name");
+        platformName = OsCheck.getOperatingSystemType().name();
         audioController = new AudioController(this);
         helpUtils = new HelpUtils();
     }
