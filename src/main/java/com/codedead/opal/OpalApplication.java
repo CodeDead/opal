@@ -31,7 +31,7 @@ public class OpalApplication extends Application {
      * @param args The application arguments
      */
     public static void main(final String[] args) {
-        try (final FileInputStream fis = new FileInputStream(SharedVariables.PROPERTIES_LOCATION)) {
+        try (final FileInputStream fis = new FileInputStream(SharedVariables.PROPERTIES_FILE_LOCATION)) {
             final Properties prop = new Properties();
             prop.load(fis);
 
@@ -63,7 +63,7 @@ public class OpalApplication extends Application {
         final SettingsController settingsController;
 
         try {
-            settingsController = new SettingsController(SharedVariables.PROPERTIES_LOCATION, SharedVariables.PROPERTIES_LOCATION);
+            settingsController = new SettingsController(SharedVariables.PROPERTIES_FILE_LOCATION, SharedVariables.PROPERTIES_RESOURCE_LOCATION);
         } catch (final IOException ex) {
             FxUtils.showErrorAlert("Exception occurred", ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             logger.error("Unable to initialize the SettingsController", ex);
