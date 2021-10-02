@@ -111,7 +111,7 @@ public final class SettingsWindowController {
         cboDelayType.setItems(options);
         cboDelayType.getSelectionModel().select(delayType);
 
-        final long correctDelay = switch(delayType) {
+        final long correctDelay = switch (delayType) {
             case 0 -> TimeUnit.MILLISECONDS.toSeconds(timerDelay);
             case 1 -> TimeUnit.MILLISECONDS.toMinutes(timerDelay);
             case 2 -> TimeUnit.MILLISECONDS.toHours(timerDelay);
