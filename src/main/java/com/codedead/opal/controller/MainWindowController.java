@@ -357,7 +357,7 @@ public final class MainWindowController implements IAudioTimer {
                     filePath += ".json";
                 }
                 audioController.saveSoundPreset(filePath);
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 logger.error("Unable to save the sound settings to {}", filePath, ex);
                 FxUtils.showErrorAlert(translationBundle.getString("SaveSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
@@ -386,7 +386,6 @@ public final class MainWindowController implements IAudioTimer {
         snpFireplace.getSlider().setValue(0);
         snpStatic.getSlider().setValue(0);
         snpFantasy.getSlider().setValue(0);
-        snpClock.getSlider().setValue(0);
         snpFan.getSlider().setValue(0);
     }
 
