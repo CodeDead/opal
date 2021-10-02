@@ -1,6 +1,7 @@
 package com.codedead.opal;
 
 import com.codedead.opal.controller.UpdateController;
+import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.SharedVariables;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -56,11 +57,19 @@ public class OpalApplication extends Application {
      * Method that is called by the JavaFX runtime
      *
      * @param primaryStage The initial Stage object
-     * @throws IOException When the {@link SettingsController} object could not be initialized
      */
     @Override
-    public void start(final Stage primaryStage) throws IOException {
-        final SettingsController settingsController = new SettingsController(SharedVariables.PROPERTIES_LOCATION, SharedVariables.PROPERTIES_LOCATION);
+    public void start(final Stage primaryStage) {
+        final SettingsController settingsController;
+
+        try {
+            settingsController = new SettingsController(SharedVariables.PROPERTIES_LOCATION, SharedVariables.PROPERTIES_LOCATION);
+        } catch (final IOException ex) {
+            FxUtils.showErrorAlert("Exception occurred", ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            logger.error("Unable to initialize the SettingsController", ex);
+            return;
+        }
+
         final Properties properties = settingsController.getProperties();
 
         logger.info("Finished creating the SettingsController");
