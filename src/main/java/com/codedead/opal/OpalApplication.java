@@ -93,15 +93,13 @@ public class OpalApplication extends Application {
         logger.info("Creating the MainWindowController");
 
         final MainWindowController mainWindowController = loader.getController();
-        mainWindowController.setControllers(
-                settingsController,
-                new UpdateController(properties.getProperty("updateApi", "https://codedead.com/Software/Opal/version.json"))
+        mainWindowController.setControllers(settingsController, new UpdateController(properties.getProperty("updateApi", "https://codedead.com/Software/Opal/version.json"), properties.getProperty("currentVersion", "1.0.0.0"))
         );
 
         final Scene scene = new Scene(root);
 
         primaryStage.setTitle(translationBundle.getString("MainWindowTitle"));
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(SharedVariables.ICON_URL)));
+        primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(SharedVariables.ICON_URL))));
         primaryStage.setScene(scene);
 
         logger.info("Showing the MainWindow");

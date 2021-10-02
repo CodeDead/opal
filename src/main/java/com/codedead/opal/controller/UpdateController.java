@@ -24,6 +24,7 @@ import java.util.Optional;
 public final class UpdateController {
 
     private String updateUrl;
+    private String currentVersion;
 
     private final Logger logger;
     private final ObjectMapper objectMapper;
@@ -31,9 +32,10 @@ public final class UpdateController {
     /**
      * Initialize a new UpdateController
      *
-     * @param updateUrl The URL that can be used to check for updates
+     * @param updateUrl      The URL that can be used to check for updates
+     * @param currentVersion The current application version
      */
-    public UpdateController(final String updateUrl) {
+    public UpdateController(final String updateUrl, final String currentVersion) {
         logger = LogManager.getLogger(UpdateController.class);
         logger.info("Initializing new UpdateController object");
 
@@ -41,6 +43,7 @@ public final class UpdateController {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         setUpdateUrl(updateUrl);
+        setCurrentVersion(currentVersion);
     }
 
     /**
@@ -63,10 +66,52 @@ public final class UpdateController {
 
         final List<PlatformUpdate> updates = getUpdates();
 
-        return updates
+        final Optional<PlatformUpdate> update = updates
                 .stream()
                 .filter(e -> e.getPlatformName().equalsIgnoreCase(currentPlatform) && e.isPortable() == isPortable)
                 .findFirst();
+
+        if (update.isPresent()) {
+            final PlatformUpdate platformUpdate = update.get();
+            if (versionCompare(currentVersion, platformUpdate.getMajorVersion() + "." + platformUpdate.getMinorVersion() + "." + platformUpdate.getBuildVersion() + "." + platformUpdate.getRevisionVersion()) < 0) {
+                return update;
+            }
+            return Optional.empty();
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Compare to strings to check which version is larger
+     *
+     * @param v1 The first {@link String} object that contains a version
+     * @param v2 The second {@link String} object that contains a version
+     * @return 1 if v1 is larger than v2, -1 if v2 is larger than v1 and 0 if both are equal
+     */
+    private int versionCompare(String v1, String v2) {
+        int vnum1 = 0;
+        int vnum2 = 0;
+
+        for (int i = 0, j = 0; (i < v1.length() || j < v2.length()); ) {
+            while (i < v1.length() && v1.charAt(i) != '.') {
+                vnum1 = vnum1 * 10 + (v1.charAt(i) - '0');
+                i++;
+            }
+            while (j < v2.length() && v2.charAt(j) != '.') {
+                vnum2 = vnum2 * 10 + (v2.charAt(j) - '0');
+                j++;
+            }
+
+            if (vnum1 > vnum2)
+                return 1;
+            if (vnum2 > vnum1)
+                return -1;
+
+            vnum1 = vnum2 = 0;
+            i++;
+            j++;
+        }
+        return 0;
     }
 
     /**
@@ -143,5 +188,28 @@ public final class UpdateController {
             throw new IllegalArgumentException("Update URL cannot be empty!");
 
         this.updateUrl = updateUrl;
+    }
+
+    /**
+     * Get the current version
+     *
+     * @return The current version
+     */
+    public String getCurrentVersion() {
+        return currentVersion;
+    }
+
+    /**
+     * Set the current version
+     *
+     * @param currentVersion The current version
+     */
+    public void setCurrentVersion(final String currentVersion) {
+        if (currentVersion == null)
+            throw new NullPointerException("currentVersion cannot be null!");
+        if (currentVersion.isEmpty())
+            throw new IllegalArgumentException("currentVersion cannot be empty!");
+
+        this.currentVersion = currentVersion;
     }
 }
