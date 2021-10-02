@@ -251,18 +251,18 @@ public final class MainWindowController implements IAudioTimer {
     private void initialize() {
         logger.info("Initializing MainWindow");
 
-        mniOpenSoundPreset.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/open.png"))));
-        mniSaveSoundPreset.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/save.png"))));
-        mniReset.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/refresh.png"))));
-        mniExit.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/remove.png"))));
-        mniSettings.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/settings.png"))));
-        mniAbout.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/about.png"))));
-        mniDonate.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/donate.png"))));
-        mniLicense.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/license.png"))));
-        mniHomepage.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/home.png"))));
-        mniUpdate.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/update.png"))));
-        mniHelp.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/help.png"))));
-        mnuTimer.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/timer.png"))));
+        mniOpenSoundPreset.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/open.png")))));
+        mniSaveSoundPreset.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/save.png")))));
+        mniReset.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/refresh.png")))));
+        mniExit.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/remove.png")))));
+        mniSettings.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/settings.png")))));
+        mniAbout.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/about.png")))));
+        mniDonate.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/donate.png")))));
+        mniLicense.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/license.png")))));
+        mniHomepage.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/home.png")))));
+        mniUpdate.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/update.png")))));
+        mniHelp.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/help.png")))));
+        mnuTimer.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/timer.png")))));
 
         snpRain.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("rain", newValue.doubleValue() / 100));
         snpWind.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("wind", newValue.doubleValue() / 100));
@@ -416,7 +416,7 @@ public final class MainWindowController implements IAudioTimer {
             final Stage primaryStage = new Stage();
 
             primaryStage.setTitle(translationBundle.getString("SettingsWindowTitle"));
-            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(SharedVariables.ICON_URL)));
+            primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(SharedVariables.ICON_URL))));
             primaryStage.setScene(new Scene(root));
 
             logger.info("Showing the SettingsWindow");
@@ -562,7 +562,7 @@ public final class MainWindowController implements IAudioTimer {
             final Stage primaryStage = new Stage();
 
             primaryStage.setTitle(translationBundle.getString("AboutWindowTitle"));
-            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/opal.png")));
+            primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/opal.png"))));
             primaryStage.setScene(new Scene(root));
 
             logger.info("Showing the AboutWindow");
