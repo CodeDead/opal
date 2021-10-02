@@ -106,7 +106,7 @@ public final class AboutWindowController {
         logger.info("Attempting to open the license file");
 
         try {
-            helpUtils.openFileFromResources(new RunnableFileOpener("license.pdf", new IRunnableHelper() {
+            helpUtils.openFileFromResources(new RunnableFileOpener(SharedVariables.LICENSE_FILE_LOCATION, new IRunnableHelper() {
                 @Override
                 public void executed() {
                     Platform.runLater(() -> logger.info("Successfully opened the license file"));
@@ -123,7 +123,7 @@ public final class AboutWindowController {
                     });
 
                 }
-            }), "/documents/license.pdf");
+            }), SharedVariables.LICENSE_RESOURCE_LOCATION);
         } catch (final IOException ex) {
             logger.error("Error opening the license file", ex);
             FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
