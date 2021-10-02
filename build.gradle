@@ -94,6 +94,7 @@ configure(AppImage) {
 clean.doFirst {
     delete 'default.properties'
     delete 'license.pdf'
+    delete 'help.pdf'
     delete 'logs'
 }
 

@@ -37,3 +37,4 @@ out/
 logs/*
 
 /default.properties
+/help.pdf
