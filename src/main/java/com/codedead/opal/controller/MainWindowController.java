@@ -27,6 +27,8 @@ import java.util.*;
 public final class MainWindowController implements IAudioTimer {
 
     @FXML
+    private SoundPane snpCave;
+    @FXML
     private SoundPane snpFan;
     @FXML
     private SoundPane snpFantasy;
@@ -279,6 +281,7 @@ public final class MainWindowController implements IAudioTimer {
         snpStatic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("static", newValue.doubleValue() / 100));
         snpFantasy.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fantasy", newValue.doubleValue() / 100));
         snpFan.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fan", newValue.doubleValue() / 100));
+        snpCave.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("cave", newValue.doubleValue() / 100));
 
         mniTimerEnabled.setOnAction(e ->
         {
@@ -325,6 +328,7 @@ public final class MainWindowController implements IAudioTimer {
                         case "fantasy" -> snpFantasy.getSlider().setValue(entry.getValue() * 100);
                         case "fan" -> snpFan.getSlider().setValue(entry.getValue() * 100);
                         case "clock" -> snpClock.getSlider().setValue(entry.getValue() * 100);
+                        case "cave" -> snpCave.getSlider().setValue(entry.getValue() * 100);
                         default -> logger.info("Unknown key found: {}", entry.getKey());
                     }
                 }
@@ -387,6 +391,7 @@ public final class MainWindowController implements IAudioTimer {
         snpStatic.getSlider().setValue(0);
         snpFantasy.getSlider().setValue(0);
         snpFan.getSlider().setValue(0);
+        snpCave.getSlider().setValue(0);
     }
 
     /**
