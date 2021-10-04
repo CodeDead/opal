@@ -588,6 +588,10 @@ public final class MainWindowController implements IAudioTimer {
     public void fired() {
         resetAction();
         mniTimerEnabled.setSelected(false);
+
+        if (Boolean.parseBoolean(settingsController.getProperties().getProperty("timerApplicationShutdown", "false"))) {
+            exitAction();
+        }
     }
 
     /**

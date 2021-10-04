@@ -93,8 +93,8 @@ public class OpalApplication extends Application {
         logger.info("Creating the MainWindowController");
 
         final MainWindowController mainWindowController = loader.getController();
-        mainWindowController.setControllers(settingsController, new UpdateController(properties.getProperty("updateApi", "https://codedead.com/Software/Opal/version.json"), properties.getProperty("currentVersion", "1.0.0.0"))
-        );
+        final UpdateController updateController = new UpdateController(properties.getProperty("updateApi", "https://codedead.com/Software/Opal/version.json"), SharedVariables.CURRENT_VERSION);
+        mainWindowController.setControllers(settingsController, updateController);
 
         final Scene scene = new Scene(root);
 
