@@ -17,9 +17,15 @@
 <?import javafx.scene.text.Font?>
 
 <?import javafx.scene.control.CheckMenuItem?>
-<GridPane prefHeight="370" prefWidth="560"
-          xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="com.codedead.opal.controller.MainWindowController">
+<GridPane
+        prefHeight="370"
+        prefWidth="560"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:id="grpMain"
+        fx:controller="com.codedead.opal.controller.MainWindowController"
+        onDragOver="#onDragOver"
+        onDragDropped="#onDragDropped"
+>
 
     <rowConstraints>
         <RowConstraints/>
