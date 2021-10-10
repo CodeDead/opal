@@ -3,6 +3,7 @@ package com.codedead.opal;
 import com.codedead.opal.controller.UpdateController;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.SharedVariables;
+import javafx.application.Platform;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -101,6 +102,7 @@ public class OpalApplication extends Application {
         primaryStage.setTitle(translationBundle.getString("MainWindowTitle"));
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(SharedVariables.ICON_URL))));
         primaryStage.setScene(scene);
+        primaryStage.setOnCloseRequest(e -> System.exit(0));
 
         logger.info("Showing the MainWindow");
         primaryStage.show();
