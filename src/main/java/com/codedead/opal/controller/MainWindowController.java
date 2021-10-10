@@ -14,6 +14,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +30,8 @@ import java.util.*;
 
 public final class MainWindowController implements IAudioTimer {
 
+    @FXML
+    private GridPane grpMain;
     @FXML
     private SoundPane snpCave;
     @FXML
@@ -310,34 +316,43 @@ public final class MainWindowController implements IAudioTimer {
         final File file = chooser.showOpenDialog(new Stage());
 
         if (file != null && file.exists()) {
-            try {
-                audioController.loadSoundPreset(file.getAbsolutePath());
-                for (final Map.Entry<String, Double> entry : audioController.getVolumes()) {
-                    switch (entry.getKey()) {
-                        case "rain" -> snpRain.getSlider().setValue(entry.getValue() * 100);
-                        case "wind" -> snpWind.getSlider().setValue(entry.getValue() * 100);
-                        case "thunder" -> snpThunder.getSlider().setValue(entry.getValue() * 100);
-                        case "birds" -> snpBird.getSlider().setValue(entry.getValue() * 100);
-                        case "river" -> snpRiver.getSlider().setValue(entry.getValue() * 100);
-                        case "keyboard" -> snpTyping.getSlider().setValue(entry.getValue() * 100);
-                        case "telephone" -> snpTelephone.getSlider().setValue(entry.getValue() * 100);
-                        case "officeChatter" -> snpChatter.getSlider().setValue(entry.getValue() * 100);
-                        case "traffic" -> snpTraffic.getSlider().setValue(entry.getValue() * 100);
-                        case "fireplace" -> snpFireplace.getSlider().setValue(entry.getValue() * 100);
-                        case "static" -> snpStatic.getSlider().setValue(entry.getValue() * 100);
-                        case "fantasy" -> snpFantasy.getSlider().setValue(entry.getValue() * 100);
-                        case "fan" -> snpFan.getSlider().setValue(entry.getValue() * 100);
-                        case "clock" -> snpClock.getSlider().setValue(entry.getValue() * 100);
-                        case "cave" -> snpCave.getSlider().setValue(entry.getValue() * 100);
-                        default -> logger.info("Unknown key found: {}", entry.getKey());
-                    }
-                }
-            } catch (final IOException ex) {
-                logger.error("Unable to open the sound preset from {}", file.getAbsolutePath(), ex);
-                FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-            }
+            openSoundPreset(file.getAbsolutePath());
         } else {
             logger.info("Cancelled opening a sound preset");
+        }
+    }
+
+    /**
+     * Open a sound preset
+     *
+     * @param filePath The absolute path of the sound preset file
+     */
+    private void openSoundPreset(final String filePath) {
+        try {
+            audioController.loadSoundPreset(filePath);
+            for (final Map.Entry<String, Double> entry : audioController.getVolumes()) {
+                switch (entry.getKey()) {
+                    case "rain" -> snpRain.getSlider().setValue(entry.getValue() * 100);
+                    case "wind" -> snpWind.getSlider().setValue(entry.getValue() * 100);
+                    case "thunder" -> snpThunder.getSlider().setValue(entry.getValue() * 100);
+                    case "birds" -> snpBird.getSlider().setValue(entry.getValue() * 100);
+                    case "river" -> snpRiver.getSlider().setValue(entry.getValue() * 100);
+                    case "keyboard" -> snpTyping.getSlider().setValue(entry.getValue() * 100);
+                    case "telephone" -> snpTelephone.getSlider().setValue(entry.getValue() * 100);
+                    case "officeChatter" -> snpChatter.getSlider().setValue(entry.getValue() * 100);
+                    case "traffic" -> snpTraffic.getSlider().setValue(entry.getValue() * 100);
+                    case "fireplace" -> snpFireplace.getSlider().setValue(entry.getValue() * 100);
+                    case "static" -> snpStatic.getSlider().setValue(entry.getValue() * 100);
+                    case "fantasy" -> snpFantasy.getSlider().setValue(entry.getValue() * 100);
+                    case "fan" -> snpFan.getSlider().setValue(entry.getValue() * 100);
+                    case "clock" -> snpClock.getSlider().setValue(entry.getValue() * 100);
+                    case "cave" -> snpCave.getSlider().setValue(entry.getValue() * 100);
+                    default -> logger.info("Unknown key found: {}", entry.getKey());
+                }
+            }
+        } catch (final IOException ex) {
+            logger.error("Unable to open the sound preset from {}", filePath, ex);
+            FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -605,5 +620,37 @@ public final class MainWindowController implements IAudioTimer {
     @Override
     public void cancelled() {
         mniTimerEnabled.setSelected(false);
+    }
+
+    /**
+     * Method that is invoked when a drag-over event is occurring
+     *
+     * @param dragEvent The {@link DragEvent} object
+     */
+    @FXML
+    private void onDragOver(final DragEvent dragEvent) {
+        if (dragEvent.getGestureSource() != grpMain && dragEvent.getDragboard().hasFiles()) {
+            dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        }
+        dragEvent.consume();
+    }
+
+    /**
+     * Method that is invoked when a drag-drop event occurred
+     *
+     * @param dragEvent The {@link DragEvent} object
+     */
+    @FXML
+    public void onDragDropped(final DragEvent dragEvent) {
+        final Dragboard db = dragEvent.getDragboard();
+        boolean success = false;
+
+        if (db.hasFiles()) {
+            openSoundPreset(db.getFiles().get(0).getAbsolutePath());
+            success = true;
+        }
+
+        dragEvent.setDropCompleted(success);
+        dragEvent.consume();
     }
 }
