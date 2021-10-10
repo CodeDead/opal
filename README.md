@@ -99,6 +99,4 @@ This library is maintained by CodeDead. You can find more about us using the fol
 * [Facebook](https://facebook.com/deadlinecodedead)
 * [Reddit](https://reddit.com/r/CodeDead/)
 
-The audio that was included with this project was provided by [ZapSplat](https://www.zapsplat.com/).
-
 Copyright © 2021 CodeDead
