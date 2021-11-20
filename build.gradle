@@ -5,7 +5,7 @@ plugins {
     id 'idea'
     id 'eclipse'
     id 'application'
-    id 'org.beryx.jlink' version '2.24.2'
+    id 'org.beryx.jlink' version '2.24.4'
 }
 
 group 'com.codedead'
@@ -112,11 +112,11 @@ if (currentOS.isWindows()) {
 }
 
 dependencies {
-    implementation "org.openjfx:javafx-base:17.0.0.1:${platform}"
-    implementation "org.openjfx:javafx-controls:17.0.0.1:${platform}"
-    implementation "org.openjfx:javafx-graphics:17.0.0.1:${platform}"
-    implementation "org.openjfx:javafx-fxml:17.0.0.1:${platform}"
-    implementation "org.openjfx:javafx-media:17.0.0.1:${platform}"
+    implementation "org.openjfx:javafx-base:17.0.1:${platform}"
+    implementation "org.openjfx:javafx-controls:17.0.1:${platform}"
+    implementation "org.openjfx:javafx-graphics:17.0.1:${platform}"
+    implementation "org.openjfx:javafx-fxml:17.0.1:${platform}"
+    implementation "org.openjfx:javafx-media:17.0.1:${platform}"
     implementation "org.apache.logging.log4j:log4j-core:2.14.1"
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
