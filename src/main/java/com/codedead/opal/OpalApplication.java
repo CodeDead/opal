@@ -3,6 +3,7 @@ package com.codedead.opal;
 import com.codedead.opal.controller.UpdateController;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.SharedVariables;
+import javafx.application.Platform;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -93,14 +94,15 @@ public class OpalApplication extends Application {
         logger.info("Creating the MainWindowController");
 
         final MainWindowController mainWindowController = loader.getController();
-        mainWindowController.setControllers(settingsController, new UpdateController(properties.getProperty("updateApi", "https://codedead.com/Software/Opal/version.json"), properties.getProperty("currentVersion", "1.0.0.0"))
-        );
+        final UpdateController updateController = new UpdateController(properties.getProperty("updateApi", "https://codedead.com/Software/Opal/version.json"), SharedVariables.CURRENT_VERSION);
+        mainWindowController.setControllers(settingsController, updateController);
 
         final Scene scene = new Scene(root);
 
         primaryStage.setTitle(translationBundle.getString("MainWindowTitle"));
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(SharedVariables.ICON_URL))));
         primaryStage.setScene(scene);
+        primaryStage.setOnCloseRequest(e -> System.exit(0));
 
         logger.info("Showing the MainWindow");
         primaryStage.show();

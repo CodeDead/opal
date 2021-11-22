@@ -60,7 +60,7 @@ especially if you're targeting a specific platform and installation method.
 The following dependencies are universal:
 
 * [JDK17](https://openjdk.java.net/projects/jdk/17/)
-* [JavaFX](https://openjfx.io/)
+* [JavaFX](https://openjfx.io)
 * [Gradle](https://gradle.org)
 * [FasterXML/jackson](https://github.com/FasterXML/jackson)
 * [badass-jlink-plugin](https://github.com/beryx/badass-jlink-plugin)
@@ -71,7 +71,7 @@ The following dependencies are universal:
 #### MSI
 In order to build an installer (*MSI*) of Opal on Windows, you will need:
 
-* [WiX Toolset](https://wixtoolset.org/)
+* [WiX Toolset](https://wixtoolset.org)
 
 ### Linux
 
@@ -98,7 +98,5 @@ This library is maintained by CodeDead. You can find more about us using the fol
 * [Twitter](https://twitter.com/C0DEDEAD)
 * [Facebook](https://facebook.com/deadlinecodedead)
 * [Reddit](https://reddit.com/r/CodeDead/)
-
-The audio that was included with this project was provided by [ZapSplat](https://www.zapsplat.com/).
 
 Copyright © 2021 CodeDead

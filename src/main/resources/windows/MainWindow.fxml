@@ -17,9 +17,15 @@
 <?import javafx.scene.text.Font?>
 
 <?import javafx.scene.control.CheckMenuItem?>
-<GridPane prefHeight="370" prefWidth="560"
-          xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="com.codedead.opal.controller.MainWindowController">
+<GridPane
+        prefHeight="370"
+        prefWidth="560"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:id="grpMain"
+        fx:controller="com.codedead.opal.controller.MainWindowController"
+        onDragOver="#onDragOver"
+        onDragDropped="#onDragDropped"
+>
 
     <rowConstraints>
         <RowConstraints/>
@@ -93,6 +99,8 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -111,6 +119,10 @@
                            image="/images/river.png"/>
                 <SoundPane fx:id="snpFireplace" GridPane.rowIndex="5" volume="0" name="%Fireplace"
                            image="/images/fire.png"/>
+                <SoundPane fx:id="snpCave" GridPane.rowIndex="6" volume="0" name="%Cave"
+                           image="/images/cave.png"/>
+                <SoundPane fx:id="snpFrogs" GridPane.rowIndex="7" volume="0" name="%Frogs"
+                           image="/images/frogs.png"/>
             </GridPane>
 
             <Label GridPane.rowIndex="2" GridPane.columnIndex="1" text="%Office">
@@ -168,6 +180,7 @@
                 <rowConstraints>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -178,6 +191,8 @@
                            image="/images/radio.png"/>
                 <SoundPane fx:id="snpFantasy" GridPane.rowIndex="1" volume="0" name="%Fantasy"
                            image="/images/star.png"/>
+                <SoundPane fx:id="snpZen" GridPane.rowIndex="2" volume="0" name="%Zen"
+                           image="/images/zen.png"/>
             </GridPane>
         </GridPane>
     </ScrollPane>

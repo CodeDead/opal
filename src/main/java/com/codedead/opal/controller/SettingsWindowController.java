@@ -22,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 public final class SettingsWindowController {
 
     @FXML
+    private CheckBox chbTimerApplicationShutdown;
+    @FXML
     private ComboBox<String> cboDelayType;
     @FXML
     private NumberTextField numDelay;
@@ -83,6 +85,7 @@ public final class SettingsWindowController {
         final String logLevel = properties.getProperty("loglevel", "INFO");
         long timerDelay = Long.parseLong(properties.getProperty("timerDelay", "3600000"));
         final int delayType = Integer.parseInt(properties.getProperty("timerDelayType", "0"));
+        chbAutoUpdate.setSelected(Boolean.parseBoolean(properties.getProperty("timerApplicationShutdown", "false")));
 
         chbAutoUpdate.setSelected(autoUpdate);
         switch (locale.toLowerCase()) {
@@ -189,6 +192,7 @@ public final class SettingsWindowController {
 
         properties.setProperty("timerDelay", String.valueOf(correctDelay));
         properties.setProperty("timerDelayType", String.valueOf(delayType));
+        properties.setProperty("timerApplicationShutdown", String.valueOf(chbTimerApplicationShutdown.isSelected()));
 
         Configurator.setAllLevels(LogManager.getRootLogger().getName(), level);
         settingsController.setProperties(properties);

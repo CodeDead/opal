@@ -57,6 +57,9 @@ public final class AudioController {
         mediaPlayers.put("static", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/static.mp3")).toURI().toString())));
         mediaPlayers.put("fantasy", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/fantasy.mp3")).toURI().toString())));
         mediaPlayers.put("fan", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/fan.mp3")).toURI().toString())));
+        mediaPlayers.put("cave", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/cave.mp3")).toURI().toString())));
+        mediaPlayers.put("frogs", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/frogs.mp3")).toURI().toString())));
+        mediaPlayers.put("zen", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/zen.mp3")).toURI().toString())));
 
         mediaVolumes = new HashMap<>();
         for (final Map.Entry<String, MediaPlayer> entry : mediaPlayers.entrySet()) {

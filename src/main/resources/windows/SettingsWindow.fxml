@@ -91,6 +91,7 @@
             <GridPane alignment="CENTER">
                 <rowConstraints>
                     <RowConstraints/>
+                    <RowConstraints/>
                 </rowConstraints>
                 <columnConstraints>
                     <ColumnConstraints/>
@@ -115,6 +116,12 @@
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </ComboBox>
+
+                <CheckBox fx:id="chbTimerApplicationShutdown" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="3" text="%TimerApplicationShutdown">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </CheckBox>
             </GridPane>
         </Tab>
     </TabPane>
