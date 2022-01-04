@@ -31,6 +31,8 @@ import java.util.*;
 public final class MainWindowController implements IAudioTimer {
 
     @FXML
+    private SoundPane snpCoffee;
+    @FXML
     private SoundPane snpZen;
     @FXML
     private SoundPane snpFrogs;
@@ -294,6 +296,7 @@ public final class MainWindowController implements IAudioTimer {
         snpCave.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("cave", newValue.doubleValue() / 100));
         snpFrogs.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("frogs", newValue.doubleValue() / 100));
         snpZen.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("zen", newValue.doubleValue() / 100));
+        snpCoffee.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("coffee", newValue.doubleValue() / 100));
 
         mniTimerEnabled.setOnAction(e ->
         {
@@ -355,6 +358,7 @@ public final class MainWindowController implements IAudioTimer {
                     case "cave" -> snpCave.getSlider().setValue(entry.getValue() * 100);
                     case "frogs" -> snpFrogs.getSlider().setValue(entry.getValue() * 100);
                     case "zen" -> snpZen.getSlider().setValue(entry.getValue() * 100);
+                    case "coffee" -> snpCoffee.getSlider().setValue(entry.getValue() * 100);
                     default -> logger.info("Unknown key found: {}", entry.getKey());
                 }
             }
@@ -417,6 +421,7 @@ public final class MainWindowController implements IAudioTimer {
         snpCave.getSlider().setValue(0);
         snpFrogs.getSlider().setValue(0);
         snpZen.getSlider().setValue(0);
+        snpCoffee.getSlider().setValue(0);
     }
 
     /**
@@ -425,7 +430,6 @@ public final class MainWindowController implements IAudioTimer {
     @FXML
     private void exitAction() {
         logger.info("Exiting the application");
-
         System.exit(0);
     }
 
