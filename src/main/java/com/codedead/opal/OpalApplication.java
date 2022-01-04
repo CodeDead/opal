@@ -3,7 +3,6 @@ package com.codedead.opal;
 import com.codedead.opal.controller.UpdateController;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.SharedVariables;
-import javafx.application.Platform;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
