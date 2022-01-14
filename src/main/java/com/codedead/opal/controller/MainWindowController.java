@@ -103,8 +103,6 @@ public final class MainWindowController implements IAudioTimer {
     private UpdateController updateController;
     private ResourceBundle translationBundle;
 
-    private boolean isPortable;
-
     private final Logger logger;
 
     /**
@@ -148,9 +146,7 @@ public final class MainWindowController implements IAudioTimer {
         final Properties properties = settingsController.getProperties();
 
         final String languageTag = properties.getProperty("locale", "en-US");
-
         final boolean shouldUpdate = Boolean.parseBoolean(properties.getProperty("autoUpdate", "true"));
-        isPortable = Boolean.parseBoolean(properties.getProperty("portable", "false"));
 
         logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
 
@@ -171,7 +167,7 @@ public final class MainWindowController implements IAudioTimer {
         logger.info("Attempting to check for updates");
 
         try {
-            final Optional<PlatformUpdate> platformUpdate = updateController.checkForUpdates(platformName, isPortable);
+            final Optional<PlatformUpdate> platformUpdate = updateController.checkForUpdates(platformName, SharedVariables.PORTABLE);
             if (platformUpdate.isPresent()) {
                 final PlatformUpdate update = platformUpdate.get();
 

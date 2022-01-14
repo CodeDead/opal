@@ -4,6 +4,7 @@ public final class SharedVariables {
 
     public static final String ICON_URL = "/images/opal.png";
     public static final String CURRENT_VERSION = "1.0.1.0";
+    public static final boolean PORTABLE = false;
 
     public static final String PROPERTIES_RESOURCE_LOCATION = "default.properties";
     public static final String PROPERTIES_FILE_LOCATION = System.getProperty("user.home") + "/.opal/opal.properties";
