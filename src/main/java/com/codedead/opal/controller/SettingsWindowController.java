@@ -48,6 +48,9 @@ public final class SettingsWindowController {
         logger.info("Initializing new SettingsWindowController object");
     }
 
+    /**
+     * Method that is invoked to initialize the FXML window
+     */
     @FXML
     private void initialize() {
         logger.info("Initializing SettingsWindow");
@@ -89,8 +92,9 @@ public final class SettingsWindowController {
 
         chbAutoUpdate.setSelected(autoUpdate);
         switch (locale.toLowerCase()) {
-            case "fr-fr" -> cboLanguage.getSelectionModel().select(1);
-            case "nl-nl" -> cboLanguage.getSelectionModel().select(2);
+            case "es-es" -> cboLanguage.getSelectionModel().select(1);
+            case "fr-fr" -> cboLanguage.getSelectionModel().select(2);
+            case "nl-nl" -> cboLanguage.getSelectionModel().select(3);
             default -> cboLanguage.getSelectionModel().select(0);
         }
 
@@ -157,8 +161,9 @@ public final class SettingsWindowController {
         showAlertIfLanguageMismatch(properties.getProperty("locale", "en-US"));
 
         switch (cboLanguage.getSelectionModel().getSelectedIndex()) {
-            case 1 -> properties.setProperty("locale", "fr-FR");
-            case 2 -> properties.setProperty("locale", "nl-NL");
+            case 1 -> properties.setProperty("locale", "es-es");
+            case 2 -> properties.setProperty("locale", "fr-FR");
+            case 3 -> properties.setProperty("locale", "nl-NL");
             default -> properties.setProperty("locale", "en-US");
         }
 
