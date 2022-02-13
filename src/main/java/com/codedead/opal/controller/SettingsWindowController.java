@@ -95,6 +95,7 @@ public final class SettingsWindowController {
             case "es-es" -> cboLanguage.getSelectionModel().select(1);
             case "fr-fr" -> cboLanguage.getSelectionModel().select(2);
             case "nl-nl" -> cboLanguage.getSelectionModel().select(3);
+            case "ru-ru" -> cboLanguage.getSelectionModel().select(4);
             default -> cboLanguage.getSelectionModel().select(0);
         }
 
@@ -164,6 +165,7 @@ public final class SettingsWindowController {
             case 1 -> properties.setProperty("locale", "es-es");
             case 2 -> properties.setProperty("locale", "fr-FR");
             case 3 -> properties.setProperty("locale", "nl-NL");
+            case 4 -> properties.setProperty("locale", "ru-RU");
             default -> properties.setProperty("locale", "en-US");
         }
 
