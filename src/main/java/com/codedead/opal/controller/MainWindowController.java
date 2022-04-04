@@ -12,6 +12,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -28,8 +30,14 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
+
 public final class MainWindowController implements IAudioTimer {
 
+    @FXML
+    private SoundPane snpZoo;
+    @FXML
+    private SoundPane snpCoffee;
     @FXML
     private SoundPane snpZen;
     @FXML
@@ -101,8 +109,6 @@ public final class MainWindowController implements IAudioTimer {
     private UpdateController updateController;
     private ResourceBundle translationBundle;
 
-    private boolean isPortable;
-
     private final Logger logger;
 
     /**
@@ -145,10 +151,8 @@ public final class MainWindowController implements IAudioTimer {
 
         final Properties properties = settingsController.getProperties();
 
-        final String languageTag = properties.getProperty("locale", "en-US");
-
+        final String languageTag = properties.getProperty("locale", DEFAULT_LOCALE);
         final boolean shouldUpdate = Boolean.parseBoolean(properties.getProperty("autoUpdate", "true"));
-        isPortable = Boolean.parseBoolean(properties.getProperty("portable", "false"));
 
         logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
 
@@ -169,7 +173,7 @@ public final class MainWindowController implements IAudioTimer {
         logger.info("Attempting to check for updates");
 
         try {
-            final Optional<PlatformUpdate> platformUpdate = updateController.checkForUpdates(platformName, isPortable);
+            final Optional<PlatformUpdate> platformUpdate = updateController.checkForUpdates(platformName, SharedVariables.PORTABLE);
             if (platformUpdate.isPresent()) {
                 final PlatformUpdate update = platformUpdate.get();
 
@@ -294,6 +298,8 @@ public final class MainWindowController implements IAudioTimer {
         snpCave.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("cave", newValue.doubleValue() / 100));
         snpFrogs.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("frogs", newValue.doubleValue() / 100));
         snpZen.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("zen", newValue.doubleValue() / 100));
+        snpCoffee.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("coffee", newValue.doubleValue() / 100));
+        snpZoo.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("zoo", newValue.doubleValue() / 100));
 
         mniTimerEnabled.setOnAction(e ->
         {
@@ -355,6 +361,8 @@ public final class MainWindowController implements IAudioTimer {
                     case "cave" -> snpCave.getSlider().setValue(entry.getValue() * 100);
                     case "frogs" -> snpFrogs.getSlider().setValue(entry.getValue() * 100);
                     case "zen" -> snpZen.getSlider().setValue(entry.getValue() * 100);
+                    case "coffee" -> snpCoffee.getSlider().setValue(entry.getValue() * 100);
+                    case "zoo" -> snpZoo.getSlider().setValue(entry.getValue() * 100);
                     default -> logger.info("Unknown key found: {}", entry.getKey());
                 }
             }
@@ -417,6 +425,8 @@ public final class MainWindowController implements IAudioTimer {
         snpCave.getSlider().setValue(0);
         snpFrogs.getSlider().setValue(0);
         snpZen.getSlider().setValue(0);
+        snpCoffee.getSlider().setValue(0);
+        snpZoo.getSlider().setValue(0);
     }
 
     /**
@@ -425,7 +435,6 @@ public final class MainWindowController implements IAudioTimer {
     @FXML
     private void exitAction() {
         logger.info("Exiting the application");
-
         System.exit(0);
     }
 

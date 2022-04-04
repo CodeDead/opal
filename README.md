@@ -59,7 +59,7 @@ especially if you're targeting a specific platform and installation method.
 
 The following dependencies are universal:
 
-* [JDK17](https://openjdk.java.net/projects/jdk/17/)
+* [JDK18](https://openjdk.java.net/projects/jdk/18/)
 * [JavaFX](https://openjfx.io)
 * [Gradle](https://gradle.org)
 * [FasterXML/jackson](https://github.com/FasterXML/jackson)
@@ -97,6 +97,5 @@ This library is maintained by CodeDead. You can find more about us using the fol
 * [Website](https://codedead.com)
 * [Twitter](https://twitter.com/C0DEDEAD)
 * [Facebook](https://facebook.com/deadlinecodedead)
-* [Reddit](https://reddit.com/r/CodeDead/)
 
-Copyright © 2021 CodeDead
+Copyright © 2022 CodeDead

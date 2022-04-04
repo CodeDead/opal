@@ -5,7 +5,7 @@ plugins {
     id 'idea'
     id 'eclipse'
     id 'application'
-    id 'org.beryx.jlink' version '2.24.4'
+    id "org.beryx.jlink" version "2.25.0"
 }
 
 group 'com.codedead'
@@ -14,8 +14,8 @@ version '1.0.1'
 def currentOS = DefaultNativePlatform.currentOperatingSystem
 
 java {
-    targetCompatibility = JavaVersion.VERSION_17
-    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_18
+    sourceCompatibility = JavaVersion.VERSION_18
 }
 
 application {
@@ -39,7 +39,7 @@ jlink {
                     '--win-menu-group', 'CodeDead',
                     '--win-shortcut',
                     '--win-dir-chooser',
-                    '--copyright', 'Copyright (c) 2021 CodeDead',
+                    '--copyright', 'Copyright (c) 2022 CodeDead',
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
                     '--license-file', 'LICENSE'
@@ -53,7 +53,7 @@ jlink {
                     '--linux-shortcut',
                     '--linux-package-name', 'opal-codedead',
                     '--linux-rpm-license-type', 'GPLv3',
-                    '--copyright', 'Copyright (c) 2021 CodeDead',
+                    '--copyright', 'Copyright (c) 2022 CodeDead',
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
                     '--license-file', 'LICENSE'
@@ -112,15 +112,15 @@ if (currentOS.isWindows()) {
 }
 
 dependencies {
-    implementation "org.openjfx:javafx-base:17.0.1:${platform}"
-    implementation "org.openjfx:javafx-controls:17.0.1:${platform}"
-    implementation "org.openjfx:javafx-graphics:17.0.1:${platform}"
-    implementation "org.openjfx:javafx-fxml:17.0.1:${platform}"
-    implementation "org.openjfx:javafx-media:17.0.1:${platform}"
-    implementation "org.apache.logging.log4j:log4j-core:2.14.1"
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation "org.openjfx:javafx-base:18:${platform}"
+    implementation "org.openjfx:javafx-controls:18:${platform}"
+    implementation "org.openjfx:javafx-graphics:18:${platform}"
+    implementation "org.openjfx:javafx-fxml:18:${platform}"
+    implementation "org.openjfx:javafx-media:18:${platform}"
+    implementation 'org.apache.logging.log4j:log4j-core:2.17.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }
 
 test {

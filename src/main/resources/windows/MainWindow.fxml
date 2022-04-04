@@ -101,6 +101,7 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -123,6 +124,8 @@
                            image="/images/cave.png"/>
                 <SoundPane fx:id="snpFrogs" GridPane.rowIndex="7" volume="0" name="%Frogs"
                            image="/images/frogs.png"/>
+                <SoundPane fx:id="snpZoo" GridPane.rowIndex="8" volume="0" name="%Zoo"
+                           image="/images/zoo.png"/>
             </GridPane>
 
             <Label GridPane.rowIndex="2" GridPane.columnIndex="1" text="%Office">
@@ -137,6 +140,7 @@
             <GridPane GridPane.rowIndex="3" GridPane.columnIndex="1"
                       style="-fx-background-color: white;-fx-background-radius: 10px;">
                 <rowConstraints>
+                    <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
@@ -161,6 +165,8 @@
                            image="/images/clock.png"/>
                 <SoundPane fx:id="snpFan" GridPane.rowIndex="5" volume="0" name="%Fan"
                            image="/images/fan.png"/>
+                <SoundPane fx:id="snpCoffee" GridPane.rowIndex="6" volume="0" name="%Coffee"
+                           image="/images/coffee.png"/>
             </GridPane>
 
             <Label GridPane.rowIndex="4" GridPane.columnIndex="1" text="%Other">

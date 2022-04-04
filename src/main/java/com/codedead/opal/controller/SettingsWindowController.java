@@ -19,6 +19,8 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
+import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
+
 public final class SettingsWindowController {
 
     @FXML
@@ -48,6 +50,9 @@ public final class SettingsWindowController {
         logger.info("Initializing new SettingsWindowController object");
     }
 
+    /**
+     * Method that is invoked to initialize the FXML window
+     */
     @FXML
     private void initialize() {
         logger.info("Initializing SettingsWindow");
@@ -65,7 +70,7 @@ public final class SettingsWindowController {
         this.settingsController = settingsController;
 
         properties = settingsController.getProperties();
-        final String languageTag = properties.getProperty("locale", "en-US");
+        final String languageTag = properties.getProperty("locale", DEFAULT_LOCALE);
 
         logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
 
@@ -81,16 +86,19 @@ public final class SettingsWindowController {
     private void loadSettings() {
         logger.info("Attempting to load all settings");
         final boolean autoUpdate = Boolean.parseBoolean(properties.getProperty("autoUpdate", "true"));
-        final String locale = properties.getProperty("locale", "en-US");
+        final String locale = properties.getProperty("locale", DEFAULT_LOCALE);
         final String logLevel = properties.getProperty("loglevel", "INFO");
         long timerDelay = Long.parseLong(properties.getProperty("timerDelay", "3600000"));
         final int delayType = Integer.parseInt(properties.getProperty("timerDelayType", "0"));
-        chbAutoUpdate.setSelected(Boolean.parseBoolean(properties.getProperty("timerApplicationShutdown", "false")));
 
         chbAutoUpdate.setSelected(autoUpdate);
+        chbTimerApplicationShutdown.setSelected(Boolean.parseBoolean(properties.getProperty("timerApplicationShutdown", "false")));
+
         switch (locale.toLowerCase()) {
-            case "fr-fr" -> cboLanguage.getSelectionModel().select(1);
-            case "nl-nl" -> cboLanguage.getSelectionModel().select(2);
+            case "es-es" -> cboLanguage.getSelectionModel().select(1);
+            case "fr-fr" -> cboLanguage.getSelectionModel().select(2);
+            case "nl-nl" -> cboLanguage.getSelectionModel().select(3);
+            case "ru-ru" -> cboLanguage.getSelectionModel().select(4);
             default -> cboLanguage.getSelectionModel().select(0);
         }
 
@@ -131,7 +139,7 @@ public final class SettingsWindowController {
     private void resetSettingsAction() {
         logger.info("Attempting to reset all settings");
         if (FxUtils.showConfirmationAlert(translationBundle.getString("ConfirmReset"), getClass().getResourceAsStream(SharedVariables.ICON_URL))) {
-            showAlertIfLanguageMismatch("en-US");
+            showAlertIfLanguageMismatch(DEFAULT_LOCALE);
 
             try {
                 settingsController.createDefaultProperties();
@@ -153,13 +161,16 @@ public final class SettingsWindowController {
         logger.info("Attempting to save all settings");
 
         properties.setProperty("autoUpdate", Boolean.toString(chbAutoUpdate.isSelected()));
+        properties.setProperty("trayIcon", Boolean.toString(chbAutoUpdate.isSelected()));
 
-        showAlertIfLanguageMismatch(properties.getProperty("locale", "en-US"));
+        showAlertIfLanguageMismatch(properties.getProperty("locale", DEFAULT_LOCALE));
 
         switch (cboLanguage.getSelectionModel().getSelectedIndex()) {
-            case 1 -> properties.setProperty("locale", "fr-FR");
-            case 2 -> properties.setProperty("locale", "nl-NL");
-            default -> properties.setProperty("locale", "en-US");
+            case 1 -> properties.setProperty("locale", "es-es");
+            case 2 -> properties.setProperty("locale", "fr-FR");
+            case 3 -> properties.setProperty("locale", "nl-NL");
+            case 4 -> properties.setProperty("locale", "ru-RU");
+            default -> properties.setProperty("locale", DEFAULT_LOCALE);
         }
 
         properties.setProperty("loglevel", cboLogLevel.getValue());
@@ -215,7 +226,7 @@ public final class SettingsWindowController {
         final String newLanguage = switch (cboLanguage.getSelectionModel().getSelectedIndex()) {
             case 1 -> "fr-FR";
             case 2 -> "nl-NL";
-            default -> "en-US";
+            default -> DEFAULT_LOCALE;
         };
 
         if (!languageToMatch.equals(newLanguage)) {
