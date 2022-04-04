@@ -95,10 +95,11 @@ public final class SettingsWindowController {
         chbTimerApplicationShutdown.setSelected(Boolean.parseBoolean(properties.getProperty("timerApplicationShutdown", "false")));
 
         switch (locale.toLowerCase()) {
-            case "es-es" -> cboLanguage.getSelectionModel().select(1);
-            case "fr-fr" -> cboLanguage.getSelectionModel().select(2);
-            case "nl-nl" -> cboLanguage.getSelectionModel().select(3);
-            case "ru-ru" -> cboLanguage.getSelectionModel().select(4);
+            case "de-de" -> cboLanguage.getSelectionModel().select(1);
+            case "es-es" -> cboLanguage.getSelectionModel().select(2);
+            case "fr-fr" -> cboLanguage.getSelectionModel().select(3);
+            case "nl-nl" -> cboLanguage.getSelectionModel().select(4);
+            case "ru-ru" -> cboLanguage.getSelectionModel().select(5);
             default -> cboLanguage.getSelectionModel().select(0);
         }
 
@@ -166,10 +167,11 @@ public final class SettingsWindowController {
         showAlertIfLanguageMismatch(properties.getProperty("locale", DEFAULT_LOCALE));
 
         switch (cboLanguage.getSelectionModel().getSelectedIndex()) {
-            case 1 -> properties.setProperty("locale", "es-es");
-            case 2 -> properties.setProperty("locale", "fr-FR");
-            case 3 -> properties.setProperty("locale", "nl-NL");
-            case 4 -> properties.setProperty("locale", "ru-RU");
+            case 1 -> properties.setProperty("locale", "de-DE");
+            case 2 -> properties.setProperty("locale", "es-es");
+            case 3 -> properties.setProperty("locale", "fr-FR");
+            case 4 -> properties.setProperty("locale", "nl-NL");
+            case 5 -> properties.setProperty("locale", "ru-RU");
             default -> properties.setProperty("locale", DEFAULT_LOCALE);
         }
 
