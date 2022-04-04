@@ -21,6 +21,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
+import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
+
 public class OpalApplication extends Application {
 
     private static final Logger logger = LogManager.getLogger(OpalApplication.class);
@@ -74,7 +76,7 @@ public class OpalApplication extends Application {
 
         logger.info("Finished creating the SettingsController");
 
-        final String languageTag = properties.getProperty("locale", "en-US");
+        final String languageTag = properties.getProperty("locale", DEFAULT_LOCALE);
 
         logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
 
