@@ -17,6 +17,8 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
+
 public final class AboutWindowController {
 
     @FXML
@@ -61,7 +63,7 @@ public final class AboutWindowController {
         this.settingsController = settingsController;
 
         final Properties properties = settingsController.getProperties();
-        final String languageTag = properties.getProperty("locale", "en-US");
+        final String languageTag = properties.getProperty("locale", DEFAULT_LOCALE);
 
         logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
 

@@ -12,6 +12,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -27,6 +29,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
+
+import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
 public final class MainWindowController implements IAudioTimer {
 
@@ -147,7 +151,7 @@ public final class MainWindowController implements IAudioTimer {
 
         final Properties properties = settingsController.getProperties();
 
-        final String languageTag = properties.getProperty("locale", "en-US");
+        final String languageTag = properties.getProperty("locale", DEFAULT_LOCALE);
         final boolean shouldUpdate = Boolean.parseBoolean(properties.getProperty("autoUpdate", "true"));
 
         logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
