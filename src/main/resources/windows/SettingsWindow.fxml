@@ -57,6 +57,7 @@
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="English"/>
+                            <String fx:value="Deutsch"/> 
                             <String fx:value="Español"/>
                             <String fx:value="Français"/>
                             <String fx:value="Nederlands"/>
