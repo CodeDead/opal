@@ -3,6 +3,7 @@ package com.codedead.opal;
 import com.codedead.opal.controller.UpdateController;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.SharedVariables;
+import javafx.application.Platform;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,6 +70,7 @@ public class OpalApplication extends Application {
         } catch (final IOException ex) {
             FxUtils.showErrorAlert("Exception occurred", ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             logger.error("Unable to initialize the SettingsController", ex);
+            Platform.exit();
             return;
         }
 
@@ -89,6 +91,7 @@ public class OpalApplication extends Application {
             root = loader.load();
         } catch (final IOException ex) {
             logger.error("Unable to load FXML for MainWindow", ex);
+            Platform.exit();
             return;
         }
 

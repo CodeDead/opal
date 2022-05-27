@@ -660,7 +660,7 @@ public final class MainWindowController implements IAudioTimer {
      * @param dragEvent The {@link DragEvent} object
      */
     @FXML
-    public void onDragDropped(final DragEvent dragEvent) {
+    private void onDragDropped(final DragEvent dragEvent) {
         final Dragboard db = dragEvent.getDragboard();
         boolean success = false;
 
