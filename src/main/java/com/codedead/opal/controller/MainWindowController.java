@@ -35,6 +35,12 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 public final class MainWindowController implements IAudioTimer {
 
     @FXML
+    private SoundPane snpFootball;
+    @FXML
+    private SoundPane snpTribal;
+    @FXML
+    private SoundPane snpNetworkingEvent;
+    @FXML
     private SoundPane snpZoo;
     @FXML
     private SoundPane snpCoffee;
@@ -301,6 +307,11 @@ public final class MainWindowController implements IAudioTimer {
         snpCoffee.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("coffee", newValue.doubleValue() / 100));
         snpZoo.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("zoo", newValue.doubleValue() / 100));
 
+        // Audiences
+        snpNetworkingEvent.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("networking", newValue.doubleValue() / 100));
+        snpTribal.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("tribal", newValue.doubleValue() / 100));
+        snpFootball.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("football", newValue.doubleValue() / 100));
+
         mniTimerEnabled.setOnAction(e ->
         {
             if (mniTimerEnabled.isSelected()) {
@@ -363,6 +374,9 @@ public final class MainWindowController implements IAudioTimer {
                     case "zen" -> snpZen.getSlider().setValue(entry.getValue() * 100);
                     case "coffee" -> snpCoffee.getSlider().setValue(entry.getValue() * 100);
                     case "zoo" -> snpZoo.getSlider().setValue(entry.getValue() * 100);
+                    case "networking" -> snpNetworkingEvent.getSlider().setValue(entry.getValue() * 100);
+                    case "tribal" -> snpTribal.getSlider().setValue(entry.getValue() * 100);
+                    case "football" -> snpFootball.getSlider().setValue(entry.getValue() * 100);
                     default -> logger.info("Unknown key found: {}", entry.getKey());
                 }
             }
@@ -427,6 +441,9 @@ public final class MainWindowController implements IAudioTimer {
         snpZen.getSlider().setValue(0);
         snpCoffee.getSlider().setValue(0);
         snpZoo.getSlider().setValue(0);
+        snpNetworkingEvent.getSlider().setValue(0);
+        snpTribal.getSlider().setValue(0);
+        snpFootball.getSlider().setValue(0);
     }
 
     /**
