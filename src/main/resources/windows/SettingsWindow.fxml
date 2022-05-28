@@ -71,7 +71,7 @@
                                 <String fx:value="Español"/>
                                 <String fx:value="Français"/>
                                 <String fx:value="Nederlands"/>
-                                <String fx:value="русский" />
+                                <String fx:value="русский"/>
                             </FXCollections>
                         </items>
                     </ComboBox>
@@ -139,7 +139,8 @@
                         </GridPane.margin>
                     </ComboBox>
 
-                    <CheckBox fx:id="chbTimerApplicationShutdown" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="3" text="%TimerApplicationShutdown">
+                    <CheckBox fx:id="chbTimerApplicationShutdown" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                              GridPane.columnSpan="3" text="%TimerApplicationShutdown">
                         <GridPane.margin>
                             <Insets bottom="3" left="3" right="3" top="3"/>
                         </GridPane.margin>
