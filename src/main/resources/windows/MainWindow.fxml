@@ -218,6 +218,7 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -230,6 +231,8 @@
                            image="/images/star.png"/>
                 <SoundPane fx:id="snpZen" GridPane.rowIndex="2" volume="0" name="%Zen"
                            image="/images/zen.png"/>
+                <SoundPane fx:id="snpSleepy" GridPane.rowIndex="3" volume="0" name="%Sleepy"
+                           image="/images/sleepy.png"/>
             </GridPane>
         </GridPane>
     </ScrollPane>
