@@ -35,6 +35,8 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 public final class MainWindowController implements IAudioTimer {
 
     @FXML
+    private SoundPane snpSleepy;
+    @FXML
     private SoundPane snpFootball;
     @FXML
     private SoundPane snpTribal;
@@ -306,6 +308,7 @@ public final class MainWindowController implements IAudioTimer {
         snpZen.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("zen", newValue.doubleValue() / 100));
         snpCoffee.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("coffee", newValue.doubleValue() / 100));
         snpZoo.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("zoo", newValue.doubleValue() / 100));
+        snpSleepy.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("sleepy", newValue.doubleValue() / 100));
 
         // Audiences
         snpNetworkingEvent.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("networking", newValue.doubleValue() / 100));
@@ -377,6 +380,7 @@ public final class MainWindowController implements IAudioTimer {
                     case "networking" -> snpNetworkingEvent.getSlider().setValue(entry.getValue() * 100);
                     case "tribal" -> snpTribal.getSlider().setValue(entry.getValue() * 100);
                     case "football" -> snpFootball.getSlider().setValue(entry.getValue() * 100);
+                    case "sleepy" -> snpSleepy.getSlider().setValue(entry.getValue() * 100);
                     default -> logger.info("Unknown key found: {}", entry.getKey());
                 }
             }
@@ -444,6 +448,7 @@ public final class MainWindowController implements IAudioTimer {
         snpNetworkingEvent.getSlider().setValue(0);
         snpTribal.getSlider().setValue(0);
         snpFootball.getSlider().setValue(0);
+        snpSleepy.getSlider().setValue(0);
     }
 
     /**

@@ -65,6 +65,7 @@ public final class AudioController {
         mediaPlayers.put("networking", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/networking.mp3")).toURI().toString())));
         mediaPlayers.put("tribal", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/tribal.mp3")).toURI().toString())));
         mediaPlayers.put("football", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/football.mp3")).toURI().toString())));
+        mediaPlayers.put("sleepy", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/sleepy.mp3")).toURI().toString())));
 
         mediaVolumes = new HashMap<>();
         for (final Map.Entry<String, MediaPlayer> entry : mediaPlayers.entrySet()) {
