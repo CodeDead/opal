@@ -35,6 +35,8 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 public final class MainWindowController implements IAudioTimer {
 
     @FXML
+    private SoundPane snpDrumTribal;
+    @FXML
     private SoundPane snpSleepy;
     @FXML
     private SoundPane snpFootball;
@@ -313,6 +315,7 @@ public final class MainWindowController implements IAudioTimer {
         // Audiences
         snpNetworkingEvent.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("networking", newValue.doubleValue() / 100));
         snpTribal.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("tribal", newValue.doubleValue() / 100));
+        snpDrumTribal.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("drumtribal", newValue.doubleValue() / 100));
         snpFootball.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("football", newValue.doubleValue() / 100));
 
         mniTimerEnabled.setOnAction(e ->
@@ -381,6 +384,7 @@ public final class MainWindowController implements IAudioTimer {
                     case "tribal" -> snpTribal.getSlider().setValue(entry.getValue() * 100);
                     case "football" -> snpFootball.getSlider().setValue(entry.getValue() * 100);
                     case "sleepy" -> snpSleepy.getSlider().setValue(entry.getValue() * 100);
+                    case "drumtribal" -> snpDrumTribal.getSlider().setValue(entry.getValue() * 100);
                     default -> logger.info("Unknown key found: {}", entry.getKey());
                 }
             }
@@ -449,6 +453,7 @@ public final class MainWindowController implements IAudioTimer {
         snpTribal.getSlider().setValue(0);
         snpFootball.getSlider().setValue(0);
         snpSleepy.getSlider().setValue(0);
+        snpDrumTribal.getSlider().setValue(0);
     }
 
     /**

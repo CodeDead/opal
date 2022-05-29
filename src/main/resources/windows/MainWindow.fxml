@@ -186,6 +186,7 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -196,7 +197,9 @@
                            image="/images/networking.png"/>
                 <SoundPane fx:id="snpTribal" GridPane.rowIndex="1" volume="0" name="%TribalFestival"
                            image="/images/tribal.png"/>
-                <SoundPane fx:id="snpFootball" GridPane.rowIndex="2" volume="0" name="%Football"
+                <SoundPane fx:id="snpDrumTribal" GridPane.rowIndex="2" volume="0" name="%DrumTribalFestival"
+                           image="/images/tribal2.png"/>
+                <SoundPane fx:id="snpFootball" GridPane.rowIndex="3" volume="0" name="%Football"
                            image="/images/football.png"/>
             </GridPane>
 
