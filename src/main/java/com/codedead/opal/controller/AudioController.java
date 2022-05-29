@@ -278,7 +278,7 @@ public final class AudioController {
      *
      * @param delay The delay in milliseconds before the {@link Timer} object executes its function
      */
-    public void scheduleTimer(long delay) {
+    public void scheduleTimer(final long delay) {
         if (delay <= 1)
             throw new IllegalArgumentException("Delay cannot be smaller than 1");
 
