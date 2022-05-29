@@ -64,6 +64,7 @@ public final class AudioController {
         mediaPlayers.put("zoo", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/zoo.mp3")).toURI().toString())));
         mediaPlayers.put("networking", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/networking.mp3")).toURI().toString())));
         mediaPlayers.put("tribal", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/tribal.mp3")).toURI().toString())));
+        mediaPlayers.put("drumtribal", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/tribal2.mp3")).toURI().toString())));
         mediaPlayers.put("football", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/football.mp3")).toURI().toString())));
         mediaPlayers.put("sleepy", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/sleepy.mp3")).toURI().toString())));
 
