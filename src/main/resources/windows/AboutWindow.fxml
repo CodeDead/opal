@@ -5,6 +5,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.geometry.Insets?>
 
+<?import javafx.scene.image.Image?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           alignment="CENTER"
@@ -24,12 +25,13 @@
             <ColumnConstraints/>
         </columnConstraints>
 
-        <ImageView fx:id="aboutImageView" fitHeight="150.0" fitWidth="200.0" layoutX="61.0" layoutY="83.0"
+        <ImageView fitHeight="96.0" fitWidth="96.0"
                    pickOnBounds="true" preserveRatio="true">
 
             <GridPane.margin>
                 <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
             </GridPane.margin>
+            <Image url="@../images/opal.png"/>
         </ImageView>
 
         <Separator orientation="VERTICAL" GridPane.columnIndex="2">
@@ -38,7 +40,7 @@
             </GridPane.margin>
         </Separator>
 
-        <Label fx:id="aboutLabel" wrapText="true" GridPane.columnIndex="3" text="%AboutText">
+        <Label wrapText="true" GridPane.columnIndex="3" text="%AboutText">
             <GridPane.margin>
                 <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
             </GridPane.margin>
