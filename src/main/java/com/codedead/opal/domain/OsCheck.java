@@ -22,13 +22,13 @@ public final class OsCheck {
         if (detectedOS == null) {
             final String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
             if ((OS.contains("mac")) || (OS.contains("darwin"))) {
-                detectedOS = OSType.MacOS;
+                detectedOS = OSType.MACOS;
             } else if (OS.contains("win")) {
-                detectedOS = OSType.Windows;
+                detectedOS = OSType.WINDOWS;
             } else if (OS.contains("nux")) {
-                detectedOS = OSType.Linux;
+                detectedOS = OSType.LINUX;
             } else {
-                detectedOS = OSType.Other;
+                detectedOS = OSType.OTHER;
             }
         }
         return detectedOS;

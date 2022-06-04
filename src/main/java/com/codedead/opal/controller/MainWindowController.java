@@ -1,5 +1,6 @@
 package com.codedead.opal.controller;
 
+import com.codedead.opal.domain.InvalidHttpResponseCodeException;
 import com.codedead.opal.domain.OsCheck;
 import com.codedead.opal.domain.PlatformUpdate;
 import com.codedead.opal.domain.SoundPane;
@@ -12,8 +13,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -217,11 +216,14 @@ public final class MainWindowController implements IAudioTimer {
             } else {
                 logger.info("No updates available");
                 if (showNoUpdates) {
-                    final Alert alert = new Alert(Alert.AlertType.INFORMATION, translationBundle.getString("NoUpdateAvailable"), ButtonType.OK);
-                    alert.showAndWait();
+                    FxUtils.showInformationAlert(translationBundle.getString("NoUpdateAvailable"), null);
                 }
             }
-        } catch (final Exception ex) {
+        } catch (final InterruptedException ex) {
+            logger.error("Unable to check for updates", ex);
+            FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            Thread.currentThread().interrupt();
+        } catch (final IOException | InvalidHttpResponseCodeException ex) {
             logger.error("Unable to check for updates", ex);
             FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
@@ -336,7 +338,7 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void openSoundPresetAction() {
-        logger.info("Attempting to open a sound preset");
+        logger.info("Opening a sound preset");
         final FileChooser chooser = new FileChooser();
 
         final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON (*.json)", "*.json");
@@ -346,8 +348,6 @@ public final class MainWindowController implements IAudioTimer {
 
         if (file != null && file.exists()) {
             openSoundPreset(file.getAbsolutePath());
-        } else {
-            logger.info("Cancelled opening a sound preset");
         }
     }
 

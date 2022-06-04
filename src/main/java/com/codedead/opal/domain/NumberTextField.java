@@ -1,9 +1,13 @@
 package com.codedead.opal.domain;
 
+import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 
 public final class NumberTextField extends TextField {
+
+    @FXML
+    private int min;
 
     /**
      * Initialize a new NumberTextField
@@ -22,8 +26,10 @@ public final class NumberTextField extends TextField {
                 if (!this.getText().isEmpty()) {
                     currentValue = Integer.parseInt(this.getText());
                 }
-                currentValue--;
-                this.setText(Integer.toString(currentValue));
+                if (currentValue - 1 >= getMin()) {
+                    currentValue--;
+                    this.setText(Integer.toString(currentValue));
+                }
             }
         });
     }
@@ -61,6 +67,26 @@ public final class NumberTextField extends TextField {
      * @return True if the text is a number, otherwise false
      */
     private boolean validate(final String text) {
-        return text.matches("[0-9]*");
+        return text.matches("\\d*");
+    }
+
+    /**
+     * Get the minimum allowed value
+     *
+     * @return The mimium allowed value
+     */
+    @FXML
+    public int getMin() {
+        return min;
+    }
+
+    /**
+     * Set the minimum allowed value
+     *
+     * @param min The minimum allowed value
+     */
+    @FXML
+    public void setMin(final int min) {
+        this.min = min;
     }
 }
