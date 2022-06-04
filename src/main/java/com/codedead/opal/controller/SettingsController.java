@@ -59,7 +59,6 @@ public final class SettingsController {
             if (is != null) {
                 logger.info("Creating default properties file at {}", getPropertiesFileLocation());
                 Files.copy(is, propertiesPath);
-                logger.info("Default properties file created");
             } else {
                 throw new IOException(String.format("Could not load default properties from application resources (%s)!", getPropertiesResourceLocation()));
             }
@@ -132,11 +131,10 @@ public final class SettingsController {
      * @throws IOException When the Properties object could not be stored
      */
     public void saveProperties() throws IOException {
-        logger.info("Attempting to store the Properties object");
+        logger.info("Storing the Properties object");
         try (final FileOutputStream fos = new FileOutputStream(getPropertiesFileLocation())) {
             properties.store(fos, null);
         }
-        logger.info("Properties object stored");
     }
 
     /**
@@ -146,13 +144,10 @@ public final class SettingsController {
      * @throws IOException When the properties file could not be loaded
      */
     public Properties readPropertiesFile() throws IOException {
-        logger.info("Attempting to load the Properties object");
+        logger.info("Loading the Properties object");
         try (final FileInputStream fis = new FileInputStream(getPropertiesFileLocation())) {
             final Properties prop = new Properties();
-
             prop.load(fis);
-
-            logger.info("Properties object loaded");
             return prop;
         }
     }

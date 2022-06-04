@@ -59,9 +59,9 @@ public final class SettingsWindowController {
     }
 
     /**
-     * Set the {@link com.codedead.opal.controller.SettingsController} object
+     * Set the {@link SettingsController} object
      *
-     * @param settingsController The {@link com.codedead.opal.controller.SettingsController} object
+     * @param settingsController The {@link SettingsController} object
      */
     public void setSettingsController(final SettingsController settingsController) {
         if (settingsController == null)
@@ -90,6 +90,10 @@ public final class SettingsWindowController {
         final String logLevel = properties.getProperty("loglevel", "INFO");
         long timerDelay = Long.parseLong(properties.getProperty("timerDelay", "3600000"));
         final int delayType = Integer.parseInt(properties.getProperty("timerDelayType", "0"));
+
+        if (timerDelay < 1) {
+            timerDelay = 1;
+        }
 
         chbAutoUpdate.setSelected(autoUpdate);
         chbTimerApplicationShutdown.setSelected(Boolean.parseBoolean(properties.getProperty("timerApplicationShutdown", "false")));

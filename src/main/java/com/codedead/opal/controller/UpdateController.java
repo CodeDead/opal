@@ -88,7 +88,7 @@ public final class UpdateController {
      * @param v2 The second {@link String} object that contains a version
      * @return 1 if v1 is larger than v2, -1 if v2 is larger than v1 and 0 if both are equal
      */
-    private int versionCompare(String v1, String v2) {
+    private int versionCompare(final String v1, final String v2) {
         int vnum1 = 0;
         int vnum2 = 0;
 

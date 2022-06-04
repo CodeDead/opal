@@ -54,6 +54,10 @@ public final class HelpUtils {
     public void openFileFromResources(final RunnableFileOpener runnableFileOpener, final String resource) throws IOException {
         if (runnableFileOpener == null)
             throw new NullPointerException("RunnableFileOpener cannot be null!");
+        if (resource == null)
+            throw new NullPointerException("Resource cannot be null!");
+        if (resource.isEmpty())
+            throw new IllegalArgumentException("Resource cannot be empty!");
 
         logger.info("Attempting to open file from resources {}", resource);
 

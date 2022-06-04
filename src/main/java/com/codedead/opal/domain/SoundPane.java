@@ -19,6 +19,8 @@ public final class SoundPane extends GridPane {
     private Label lblName;
     @FXML
     private Slider sldVolume;
+    @FXML
+    private String key;
 
     /**
      * Initialize a new SoundPane
@@ -107,5 +109,25 @@ public final class SoundPane extends GridPane {
      */
     public Slider getSlider() {
         return sldVolume;
+    }
+
+    /**
+     * Get the key
+     *
+     * @return The key
+     */
+    @FXML
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * Set the key
+     *
+     * @param key The key
+     */
+    @FXML
+    public void setKey(final String key) {
+        this.key = key;
     }
 }

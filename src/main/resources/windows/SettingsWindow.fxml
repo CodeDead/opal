@@ -120,7 +120,7 @@
                     </GridPane.margin>
                 </Label>
 
-                <NumberTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="numDelay">
+                <NumberTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="numDelay" min="1">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
