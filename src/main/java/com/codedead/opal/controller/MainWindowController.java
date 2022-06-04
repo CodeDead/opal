@@ -34,6 +34,8 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 public final class MainWindowController implements IAudioTimer {
 
     @FXML
+    private SoundPane snpGong;
+    @FXML
     private SoundPane snpDrumTribal;
     @FXML
     private SoundPane snpSleepy;
@@ -313,6 +315,7 @@ public final class MainWindowController implements IAudioTimer {
         snpCoffee.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("coffee", newValue.doubleValue() / 100));
         snpZoo.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("zoo", newValue.doubleValue() / 100));
         snpSleepy.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("sleepy", newValue.doubleValue() / 100));
+        snpGong.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("gong", newValue.doubleValue() / 100));
 
         // Audiences
         snpNetworkingEvent.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("networking", newValue.doubleValue() / 100));
@@ -385,6 +388,7 @@ public final class MainWindowController implements IAudioTimer {
                     case "football" -> snpFootball.getSlider().setValue(entry.getValue() * 100);
                     case "sleepy" -> snpSleepy.getSlider().setValue(entry.getValue() * 100);
                     case "drumtribal" -> snpDrumTribal.getSlider().setValue(entry.getValue() * 100);
+                    case "gong" -> snpGong.getSlider().setValue(entry.getValue() * 100);
                     default -> logger.info("Unknown key found: {}", entry.getKey());
                 }
             }
@@ -454,6 +458,7 @@ public final class MainWindowController implements IAudioTimer {
         snpFootball.getSlider().setValue(0);
         snpSleepy.getSlider().setValue(0);
         snpDrumTribal.getSlider().setValue(0);
+        snpGong.getSlider().setValue(0);
     }
 
     /**
