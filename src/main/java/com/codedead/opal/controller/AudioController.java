@@ -66,6 +66,7 @@ public final class AudioController {
         mediaPlayers.put("drumtribal", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/tribal2.mp3")).toURI().toString())));
         mediaPlayers.put("football", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/football.mp3")).toURI().toString())));
         mediaPlayers.put("sleepy", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/sleepy.mp3")).toURI().toString())));
+        mediaPlayers.put("gong", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/gong.mp3")).toURI().toString())));
 
         mediaVolumes = new HashMap<>();
         for (final Map.Entry<String, MediaPlayer> entry : mediaPlayers.entrySet()) {
@@ -142,7 +143,6 @@ public final class AudioController {
         logger.debug("Setting volume for MediaPlayer with key {} to {}", key, newVolume);
 
         final MediaPlayer player = mediaPlayers.get(key);
-
         if (player == null)
             throw new NullPointerException(String.format("MediaPlayer with key %s cannot be found!", key));
 
