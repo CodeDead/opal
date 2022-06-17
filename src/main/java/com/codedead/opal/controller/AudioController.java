@@ -40,7 +40,6 @@ public final class AudioController {
         logger = LogManager.getLogger(AudioController.class);
 
         logger.info("Initializing new AudioController object");
-        logger.info("Initializing MediaPlayer objects");
 
         mediaPlayers = new HashMap<>();
         mediaPlayers.put("rain", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/rain.mp3")).toURI().toString())));
@@ -62,6 +61,12 @@ public final class AudioController {
         mediaPlayers.put("zen", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/zen.mp3")).toURI().toString())));
         mediaPlayers.put("coffee", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/coffee.mp3")).toURI().toString())));
         mediaPlayers.put("zoo", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/zoo.mp3")).toURI().toString())));
+        mediaPlayers.put("networking", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/networking.mp3")).toURI().toString())));
+        mediaPlayers.put("tribal", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/tribal.mp3")).toURI().toString())));
+        mediaPlayers.put("drumtribal", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/tribal2.mp3")).toURI().toString())));
+        mediaPlayers.put("football", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/football.mp3")).toURI().toString())));
+        mediaPlayers.put("sleepy", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/sleepy.mp3")).toURI().toString())));
+        mediaPlayers.put("gong", new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource("/audio/gong.mp3")).toURI().toString())));
 
         mediaVolumes = new HashMap<>();
         for (final Map.Entry<String, MediaPlayer> entry : mediaPlayers.entrySet()) {
@@ -93,7 +98,7 @@ public final class AudioController {
             throw new NullPointerException(String.format("MediaPlayer with key %s cannot be found!", key));
 
         if (!player.getStatus().equals(MediaPlayer.Status.PLAYING)) {
-            logger.info("Playing media for MediaPlayer with key {}", key);
+            logger.info("Playing Media for MediaPlayer with key {}", key);
             player.play();
         }
     }
@@ -109,7 +114,7 @@ public final class AudioController {
         if (key.isEmpty())
             throw new IllegalArgumentException("Key cannot be empty!");
 
-        logger.info("Stopping media for MediaPlayer with key {}", key);
+        logger.info("Stopping Media for MediaPlayer with key {}", key);
 
         final MediaPlayer player = mediaPlayers.get(key);
 
@@ -138,7 +143,6 @@ public final class AudioController {
         logger.debug("Setting volume for MediaPlayer with key {} to {}", key, newVolume);
 
         final MediaPlayer player = mediaPlayers.get(key);
-
         if (player == null)
             throw new NullPointerException(String.format("MediaPlayer with key %s cannot be found!", key));
 
@@ -220,7 +224,7 @@ public final class AudioController {
 
         mediaVolumes = objectMapper.readValue(actual, typeRef);
 
-        for (Map.Entry<String, Double> entry : mediaVolumes.entrySet()) {
+        for (final Map.Entry<String, Double> entry : mediaVolumes.entrySet()) {
             setPlayerVolume(entry.getKey(), entry.getValue());
         }
     }
@@ -274,8 +278,8 @@ public final class AudioController {
      *
      * @param delay The delay in milliseconds before the {@link Timer} object executes its function
      */
-    public void scheduleTimer(long delay) {
-        if (delay <= 1)
+    public void scheduleTimer(final long delay) {
+        if (delay < 1)
             throw new IllegalArgumentException("Delay cannot be smaller than 1");
 
         logger.info("Scheduling the Timer to stop all MediaPlayer objects after {} millisecond(s)", delay);

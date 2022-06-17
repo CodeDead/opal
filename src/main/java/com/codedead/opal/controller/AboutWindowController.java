@@ -3,16 +3,14 @@ package com.codedead.opal.controller;
 import com.codedead.opal.interfaces.IRunnableHelper;
 import com.codedead.opal.utils.*;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -21,14 +19,8 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
 public final class AboutWindowController {
 
-    @FXML
-    private Label aboutLabel;
-    @FXML
-    private ImageView aboutImageView;
-
     private SettingsController settingsController;
     private ResourceBundle translationBundle;
-
     private final HelpUtils helpUtils;
     private final Logger logger;
 
@@ -77,27 +69,15 @@ public final class AboutWindowController {
     @FXML
     private void initialize() {
         logger.info("Initializing AboutWindow");
-
-        aboutImageView.setFitHeight(96);
-        aboutImageView.setFitWidth(96);
-
-        final InputStream inputStream = getClass().getResourceAsStream("/images/opal.png");
-        if (inputStream != null) {
-            aboutImageView.setImage(new Image(inputStream));
-        } else {
-            aboutImageView.setImage(null);
-        }
     }
 
     /**
      * Method that is called when the close button is selected
      */
     @FXML
-    private void closeAction() {
+    private void closeAction(final ActionEvent event) {
         logger.info("Closing AboutWindow");
-
-        final Stage stage = (Stage) aboutLabel.getScene().getWindow();
-        stage.close();
+        ((Stage) (((Button) event.getSource()).getScene().getWindow())).close();
     }
 
     /**

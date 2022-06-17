@@ -73,6 +73,8 @@
                 <RowConstraints/>
                 <RowConstraints/>
                 <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
             </rowConstraints>
 
             <columnConstraints>
@@ -169,7 +171,7 @@
                            image="/images/coffee.png"/>
             </GridPane>
 
-            <Label GridPane.rowIndex="4" GridPane.columnIndex="1" text="%Other">
+            <Label GridPane.rowIndex="4" GridPane.columnIndex="1" text="%Audiences">
                 <font>
                     <Font name="System Bold" size="14"/>
                 </font>
@@ -180,10 +182,44 @@
 
             <GridPane GridPane.rowIndex="5" GridPane.columnIndex="1"
                       style="-fx-background-color: white;-fx-background-radius: 10px;">
+                <rowConstraints>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
+                </rowConstraints>
+
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <SoundPane fx:id="snpNetworkingEvent" GridPane.rowIndex="0" volume="0" name="%NetworkingEvent"
+                           image="/images/networking.png"/>
+                <SoundPane fx:id="snpTribal" GridPane.rowIndex="1" volume="0" name="%TribalFestival"
+                           image="/images/tribal.png"/>
+                <SoundPane fx:id="snpDrumTribal" GridPane.rowIndex="2" volume="0" name="%DrumTribalFestival"
+                           image="/images/tribal2.png"/>
+                <SoundPane fx:id="snpFootball" GridPane.rowIndex="3" volume="0" name="%Football"
+                           image="/images/football.png"/>
+            </GridPane>
+
+            <Label GridPane.rowIndex="6" GridPane.columnIndex="1" text="%Other">
+                <font>
+                    <Font name="System Bold" size="14"/>
+                </font>
+                <GridPane.margin>
+                    <Insets left="5" right="5" bottom="10" top="10"/>
+                </GridPane.margin>
+            </Label>
+
+            <GridPane GridPane.rowIndex="7" GridPane.columnIndex="1"
+                      style="-fx-background-color: white;-fx-background-radius: 10px;">
                 <GridPane.margin>
                     <Insets bottom="10"/>
                 </GridPane.margin>
                 <rowConstraints>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
@@ -199,6 +235,10 @@
                            image="/images/star.png"/>
                 <SoundPane fx:id="snpZen" GridPane.rowIndex="2" volume="0" name="%Zen"
                            image="/images/zen.png"/>
+                <SoundPane fx:id="snpSleepy" GridPane.rowIndex="3" volume="0" name="%Sleepy"
+                           image="/images/sleepy.png"/>
+                <SoundPane fx:id="snpGong" GridPane.rowIndex="4" volume="0" name="%Gong"
+                           image="/images/gong.png"/>
             </GridPane>
         </GridPane>
     </ScrollPane>

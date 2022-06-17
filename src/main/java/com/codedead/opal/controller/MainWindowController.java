@@ -1,5 +1,6 @@
 package com.codedead.opal.controller;
 
+import com.codedead.opal.domain.InvalidHttpResponseCodeException;
 import com.codedead.opal.domain.OsCheck;
 import com.codedead.opal.domain.PlatformUpdate;
 import com.codedead.opal.domain.SoundPane;
@@ -12,8 +13,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -34,6 +33,18 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
 public final class MainWindowController implements IAudioTimer {
 
+    @FXML
+    private SoundPane snpGong;
+    @FXML
+    private SoundPane snpDrumTribal;
+    @FXML
+    private SoundPane snpSleepy;
+    @FXML
+    private SoundPane snpFootball;
+    @FXML
+    private SoundPane snpTribal;
+    @FXML
+    private SoundPane snpNetworkingEvent;
     @FXML
     private SoundPane snpZoo;
     @FXML
@@ -207,11 +218,14 @@ public final class MainWindowController implements IAudioTimer {
             } else {
                 logger.info("No updates available");
                 if (showNoUpdates) {
-                    final Alert alert = new Alert(Alert.AlertType.INFORMATION, translationBundle.getString("NoUpdateAvailable"), ButtonType.OK);
-                    alert.showAndWait();
+                    FxUtils.showInformationAlert(translationBundle.getString("NoUpdateAvailable"), null);
                 }
             }
-        } catch (final Exception ex) {
+        } catch (final InterruptedException ex) {
+            logger.error("Unable to check for updates", ex);
+            FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            Thread.currentThread().interrupt();
+        } catch (final IOException | InvalidHttpResponseCodeException ex) {
             logger.error("Unable to check for updates", ex);
             FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
@@ -300,6 +314,14 @@ public final class MainWindowController implements IAudioTimer {
         snpZen.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("zen", newValue.doubleValue() / 100));
         snpCoffee.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("coffee", newValue.doubleValue() / 100));
         snpZoo.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("zoo", newValue.doubleValue() / 100));
+        snpSleepy.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("sleepy", newValue.doubleValue() / 100));
+        snpGong.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("gong", newValue.doubleValue() / 100));
+
+        // Audiences
+        snpNetworkingEvent.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("networking", newValue.doubleValue() / 100));
+        snpTribal.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("tribal", newValue.doubleValue() / 100));
+        snpDrumTribal.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("drumtribal", newValue.doubleValue() / 100));
+        snpFootball.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("football", newValue.doubleValue() / 100));
 
         mniTimerEnabled.setOnAction(e ->
         {
@@ -319,7 +341,7 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void openSoundPresetAction() {
-        logger.info("Attempting to open a sound preset");
+        logger.info("Opening a sound preset");
         final FileChooser chooser = new FileChooser();
 
         final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON (*.json)", "*.json");
@@ -329,8 +351,6 @@ public final class MainWindowController implements IAudioTimer {
 
         if (file != null && file.exists()) {
             openSoundPreset(file.getAbsolutePath());
-        } else {
-            logger.info("Cancelled opening a sound preset");
         }
     }
 
@@ -363,6 +383,12 @@ public final class MainWindowController implements IAudioTimer {
                     case "zen" -> snpZen.getSlider().setValue(entry.getValue() * 100);
                     case "coffee" -> snpCoffee.getSlider().setValue(entry.getValue() * 100);
                     case "zoo" -> snpZoo.getSlider().setValue(entry.getValue() * 100);
+                    case "networking" -> snpNetworkingEvent.getSlider().setValue(entry.getValue() * 100);
+                    case "tribal" -> snpTribal.getSlider().setValue(entry.getValue() * 100);
+                    case "football" -> snpFootball.getSlider().setValue(entry.getValue() * 100);
+                    case "sleepy" -> snpSleepy.getSlider().setValue(entry.getValue() * 100);
+                    case "drumtribal" -> snpDrumTribal.getSlider().setValue(entry.getValue() * 100);
+                    case "gong" -> snpGong.getSlider().setValue(entry.getValue() * 100);
                     default -> logger.info("Unknown key found: {}", entry.getKey());
                 }
             }
@@ -427,6 +453,12 @@ public final class MainWindowController implements IAudioTimer {
         snpZen.getSlider().setValue(0);
         snpCoffee.getSlider().setValue(0);
         snpZoo.getSlider().setValue(0);
+        snpNetworkingEvent.getSlider().setValue(0);
+        snpTribal.getSlider().setValue(0);
+        snpFootball.getSlider().setValue(0);
+        snpSleepy.getSlider().setValue(0);
+        snpDrumTribal.getSlider().setValue(0);
+        snpGong.getSlider().setValue(0);
     }
 
     /**
@@ -660,7 +692,7 @@ public final class MainWindowController implements IAudioTimer {
      * @param dragEvent The {@link DragEvent} object
      */
     @FXML
-    public void onDragDropped(final DragEvent dragEvent) {
+    private void onDragDropped(final DragEvent dragEvent) {
         final Dragboard db = dragEvent.getDragboard();
         boolean success = false;
 

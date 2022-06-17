@@ -12,6 +12,8 @@
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
 <?import com.codedead.opal.domain.NumberTextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.codedead.opal.controller.SettingsWindowController"
@@ -27,6 +29,11 @@
 
     <TabPane GridPane.rowIndex="0" tabClosingPolicy="UNAVAILABLE">
         <Tab text="%General">
+            <graphic>
+                <ImageView>
+                    <Image url="@../images/settings.png"/>
+                </ImageView>
+            </graphic>
             <GridPane alignment="CENTER">
                 <rowConstraints>
                     <RowConstraints/>
@@ -57,10 +64,11 @@
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="English"/>
+                            <String fx:value="Deutsch"/>
                             <String fx:value="Español"/>
                             <String fx:value="Français"/>
                             <String fx:value="Nederlands"/>
-                            <String fx:value="русский" />
+                            <String fx:value="русский"/>
                         </FXCollections>
                     </items>
                 </ComboBox>
@@ -90,6 +98,11 @@
             </GridPane>
         </Tab>
         <Tab text="%Timer">
+            <graphic>
+                <ImageView>
+                    <Image url="@../images/timer.png"/>
+                </ImageView>
+            </graphic>
             <GridPane alignment="CENTER">
                 <rowConstraints>
                     <RowConstraints/>
@@ -107,7 +120,7 @@
                     </GridPane.margin>
                 </Label>
 
-                <NumberTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="numDelay">
+                <NumberTextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="numDelay" min="1">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
@@ -119,7 +132,8 @@
                     </GridPane.margin>
                 </ComboBox>
 
-                <CheckBox fx:id="chbTimerApplicationShutdown" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="3" text="%TimerApplicationShutdown">
+                <CheckBox fx:id="chbTimerApplicationShutdown" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                          GridPane.columnSpan="3" text="%TimerApplicationShutdown">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
