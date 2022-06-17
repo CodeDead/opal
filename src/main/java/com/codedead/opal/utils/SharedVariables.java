@@ -3,7 +3,7 @@ package com.codedead.opal.utils;
 public final class SharedVariables {
 
     public static final String ICON_URL = "/images/opal.png";
-    public static final String CURRENT_VERSION = "1.0.2.0";
+    public static final String CURRENT_VERSION = "1.0.3.0";
     public static final boolean PORTABLE = false;
     public static final String DEFAULT_LOCALE = "en-US";
 
