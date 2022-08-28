@@ -170,9 +170,48 @@ public final class MainWindowController implements IAudioTimer {
         final Locale locale = Locale.forLanguageTag(languageTag);
         translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
 
+        final boolean mediaButtons = Boolean.parseBoolean(properties.getProperty("mediaButtons", "true"));
+
+        if (!mediaButtons) {
+            loadMediaButtonVisibility(false);
+        }
+
         if (shouldUpdate) {
             checkForUpdates(false);
         }
+    }
+
+    /**
+     * Load the media button visibility for all {@link SoundPane} objects
+     *
+     * @param visible True if the media button should be visible, otherwise false
+     */
+    public void loadMediaButtonVisibility(final boolean visible) {
+        snpRain.setMediaButton(visible);
+        snpWind.setMediaButton(visible);
+        snpThunder.setMediaButton(visible);
+        snpBird.setMediaButton(visible);
+        snpRiver.setMediaButton(visible);
+        snpTyping.setMediaButton(visible);
+        snpTelephone.setMediaButton(visible);
+        snpChatter.setMediaButton(visible);
+        snpTraffic.setMediaButton(visible);
+        snpClock.setMediaButton(visible);
+        snpFireplace.setMediaButton(visible);
+        snpStatic.setMediaButton(visible);
+        snpFantasy.setMediaButton(visible);
+        snpFan.setMediaButton(visible);
+        snpCave.setMediaButton(visible);
+        snpFrogs.setMediaButton(visible);
+        snpZen.setMediaButton(visible);
+        snpCoffee.setMediaButton(visible);
+        snpZoo.setMediaButton(visible);
+        snpSleepy.setMediaButton(visible);
+        snpGong.setMediaButton(visible);
+        snpNetworkingEvent.setMediaButton(visible);
+        snpTribal.setMediaButton(visible);
+        snpDrumTribal.setMediaButton(visible);
+        snpFootball.setMediaButton(visible);
     }
 
     /**
@@ -295,33 +334,356 @@ public final class MainWindowController implements IAudioTimer {
         mniHelp.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/help.png")))));
         mnuTimer.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/timer.png")))));
 
-        snpRain.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("rain", newValue.doubleValue() / 100));
-        snpWind.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("wind", newValue.doubleValue() / 100));
-        snpThunder.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("thunder", newValue.doubleValue() / 100));
-        snpBird.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("birds", newValue.doubleValue() / 100));
-        snpRiver.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("river", newValue.doubleValue() / 100));
-        snpTyping.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("keyboard", newValue.doubleValue() / 100));
-        snpTelephone.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("telephone", newValue.doubleValue() / 100));
-        snpChatter.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("officeChatter", newValue.doubleValue() / 100));
-        snpTraffic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("traffic", newValue.doubleValue() / 100));
-        snpClock.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("clock", newValue.doubleValue() / 100));
-        snpFireplace.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fireplace", newValue.doubleValue() / 100));
-        snpStatic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("static", newValue.doubleValue() / 100));
-        snpFantasy.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fantasy", newValue.doubleValue() / 100));
-        snpFan.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fan", newValue.doubleValue() / 100));
-        snpCave.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("cave", newValue.doubleValue() / 100));
-        snpFrogs.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("frogs", newValue.doubleValue() / 100));
-        snpZen.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("zen", newValue.doubleValue() / 100));
-        snpCoffee.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("coffee", newValue.doubleValue() / 100));
-        snpZoo.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("zoo", newValue.doubleValue() / 100));
-        snpSleepy.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("sleepy", newValue.doubleValue() / 100));
-        snpGong.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("gong", newValue.doubleValue() / 100));
+        snpRain.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpRain.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("rain", newVolume);
+        });
+        snpRain.getBtnPlayPause().setOnAction(event -> {
+            if (snpRain.isPlaying()) {
+                audioController.stopMedia("rain");
+            } else {
+                audioController.playMedia("rain");
+            }
+            snpRain.setPlaying(!snpRain.isPlaying());
+        });
+
+        snpWind.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpWind.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("wind", newVolume);
+        });
+        snpWind.getBtnPlayPause().setOnAction(event -> {
+            if (snpWind.isPlaying()) {
+                audioController.stopMedia("wind");
+            } else {
+                audioController.playMedia("wind");
+            }
+            snpWind.setPlaying(!snpWind.isPlaying());
+        });
+
+        snpThunder.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpThunder.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("thunder", newVolume);
+        });
+        snpThunder.getBtnPlayPause().setOnAction(event -> {
+            if (snpThunder.isPlaying()) {
+                audioController.stopMedia("thunder");
+            } else {
+                audioController.playMedia("thunder");
+            }
+            snpThunder.setPlaying(!snpThunder.isPlaying());
+        });
+
+        snpBird.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpBird.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("birds", newVolume);
+        });
+        snpBird.getBtnPlayPause().setOnAction(event -> {
+            if (snpBird.isPlaying()) {
+                audioController.stopMedia("birds");
+            } else {
+                audioController.playMedia("birds");
+            }
+            snpBird.setPlaying(!snpBird.isPlaying());
+        });
+
+        snpRiver.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpRiver.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("river", newVolume);
+        });
+        snpRiver.getBtnPlayPause().setOnAction(event -> {
+            if (snpRiver.isPlaying()) {
+                audioController.stopMedia("river");
+            } else {
+                audioController.playMedia("river");
+            }
+            snpRiver.setPlaying(!snpRiver.isPlaying());
+        });
+
+        snpTyping.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpTyping.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("keyboard", newVolume);
+        });
+        snpTyping.getBtnPlayPause().setOnAction(event -> {
+            if (snpTyping.isPlaying()) {
+                audioController.stopMedia("keyboard");
+            } else {
+                audioController.playMedia("keyboard");
+            }
+            snpTyping.setPlaying(!snpTyping.isPlaying());
+        });
+
+        snpTelephone.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpTelephone.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("telephone", newVolume);
+        });
+        snpTelephone.getBtnPlayPause().setOnAction(event -> {
+            if (snpTelephone.isPlaying()) {
+                audioController.stopMedia("telephone");
+            } else {
+                audioController.playMedia("telephone");
+            }
+            snpTelephone.setPlaying(!snpTelephone.isPlaying());
+        });
+
+        snpChatter.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpChatter.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("officeChatter", newVolume);
+        });
+        snpChatter.getBtnPlayPause().setOnAction(event -> {
+            if (snpChatter.isPlaying()) {
+                audioController.stopMedia("officeChatter");
+            } else {
+                audioController.playMedia("officeChatter");
+            }
+            snpChatter.setPlaying(!snpChatter.isPlaying());
+        });
+
+        snpTraffic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpTraffic.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("traffic", newVolume);
+        });
+        snpTraffic.getBtnPlayPause().setOnAction(event -> {
+            if (snpTraffic.isPlaying()) {
+                audioController.stopMedia("traffic");
+            } else {
+                audioController.playMedia("traffic");
+            }
+            snpTraffic.setPlaying(!snpTraffic.isPlaying());
+        });
+
+        snpClock.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpClock.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("clock", newVolume);
+        });
+        snpClock.getBtnPlayPause().setOnAction(event -> {
+            if (snpClock.isPlaying()) {
+                audioController.stopMedia("clock");
+            } else {
+                audioController.playMedia("clock");
+            }
+            snpClock.setPlaying(!snpClock.isPlaying());
+        });
+
+        snpFireplace.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpFireplace.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("fireplace", newVolume);
+        });
+        snpFireplace.getBtnPlayPause().setOnAction(event -> {
+            if (snpFireplace.isPlaying()) {
+                audioController.stopMedia("fireplace");
+            } else {
+                audioController.playMedia("fireplace");
+            }
+            snpFireplace.setPlaying(!snpFireplace.isPlaying());
+        });
+
+        snpStatic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpStatic.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("static", newVolume);
+        });
+        snpStatic.getBtnPlayPause().setOnAction(event -> {
+            if (snpStatic.isPlaying()) {
+                audioController.stopMedia("static");
+            } else {
+                audioController.playMedia("static");
+            }
+            snpStatic.setPlaying(!snpStatic.isPlaying());
+        });
+
+        snpFantasy.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpFantasy.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("fantasy", newVolume);
+        });
+        snpFantasy.getBtnPlayPause().setOnAction(event -> {
+            if (snpFantasy.isPlaying()) {
+                audioController.stopMedia("fantasy");
+            } else {
+                audioController.playMedia("fantasy");
+            }
+            snpFantasy.setPlaying(!snpFantasy.isPlaying());
+        });
+
+        snpFan.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpFan.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("fan", newVolume);
+        });
+        snpFan.getBtnPlayPause().setOnAction(event -> {
+            if (snpFan.isPlaying()) {
+                audioController.stopMedia("fan");
+            } else {
+                audioController.playMedia("fan");
+            }
+            snpFan.setPlaying(!snpFan.isPlaying());
+        });
+
+        snpCave.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpCave.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("cave", newVolume);
+        });
+        snpCave.getBtnPlayPause().setOnAction(event -> {
+            if (snpCave.isPlaying()) {
+                audioController.stopMedia("cave");
+            } else {
+                audioController.playMedia("cave");
+            }
+            snpCave.setPlaying(!snpCave.isPlaying());
+        });
+
+        snpFrogs.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpFrogs.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("frogs", newVolume);
+        });
+        snpFrogs.getBtnPlayPause().setOnAction(event -> {
+            if (snpFrogs.isPlaying()) {
+                audioController.stopMedia("frogs");
+            } else {
+                audioController.playMedia("frogs");
+            }
+            snpFrogs.setPlaying(!snpFrogs.isPlaying());
+        });
+
+        snpZen.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpZen.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("zen", newVolume);
+        });
+        snpZen.getBtnPlayPause().setOnAction(event -> {
+            if (snpZen.isPlaying()) {
+                audioController.stopMedia("zen");
+            } else {
+                audioController.playMedia("zen");
+            }
+            snpZen.setPlaying(!snpZen.isPlaying());
+        });
+
+        snpCoffee.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpCoffee.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("coffee", newVolume);
+        });
+        snpCoffee.getBtnPlayPause().setOnAction(event -> {
+            if (snpCoffee.isPlaying()) {
+                audioController.stopMedia("coffee");
+            } else {
+                audioController.playMedia("coffee");
+            }
+            snpCoffee.setPlaying(!snpCoffee.isPlaying());
+        });
+
+        snpZoo.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpZoo.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("zoo", newVolume);
+        });
+        snpZoo.getBtnPlayPause().setOnAction(event -> {
+            if (snpZoo.isPlaying()) {
+                audioController.stopMedia("zoo");
+            } else {
+                audioController.playMedia("zoo");
+            }
+            snpZoo.setPlaying(!snpZoo.isPlaying());
+        });
+
+        snpSleepy.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpSleepy.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("sleepy", newVolume);
+        });
+        snpSleepy.getBtnPlayPause().setOnAction(event -> {
+            if (snpSleepy.isPlaying()) {
+                audioController.stopMedia("sleepy");
+            } else {
+                audioController.playMedia("sleepy");
+            }
+            snpSleepy.setPlaying(!snpSleepy.isPlaying());
+        });
+
+        snpGong.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpGong.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("gong", newVolume);
+        });
+        snpGong.getBtnPlayPause().setOnAction(event -> {
+            if (snpGong.isPlaying()) {
+                audioController.stopMedia("gong");
+            } else {
+                audioController.playMedia("gong");
+            }
+            snpGong.setPlaying(!snpGong.isPlaying());
+        });
 
         // Audiences
-        snpNetworkingEvent.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("networking", newValue.doubleValue() / 100));
-        snpTribal.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("tribal", newValue.doubleValue() / 100));
-        snpDrumTribal.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("drumtribal", newValue.doubleValue() / 100));
-        snpFootball.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("football", newValue.doubleValue() / 100));
+        snpNetworkingEvent.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpNetworkingEvent.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("networking", newVolume);
+        });
+        snpNetworkingEvent.getBtnPlayPause().setOnAction(event -> {
+            if (snpNetworkingEvent.isPlaying()) {
+                audioController.stopMedia("networking");
+            } else {
+                audioController.playMedia("networking");
+            }
+            snpNetworkingEvent.setPlaying(!snpNetworkingEvent.isPlaying());
+        });
+
+        snpTribal.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpTribal.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("tribal", newVolume);
+        });
+        snpTribal.getBtnPlayPause().setOnAction(event -> {
+            if (snpTribal.isPlaying()) {
+                audioController.stopMedia("tribal");
+            } else {
+                audioController.playMedia("tribal");
+            }
+            snpTribal.setPlaying(!snpTribal.isPlaying());
+        });
+
+        snpDrumTribal.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpDrumTribal.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("drumtribal", newVolume);
+        });
+        snpDrumTribal.getBtnPlayPause().setOnAction(event -> {
+            if (snpDrumTribal.isPlaying()) {
+                audioController.stopMedia("drumtribal");
+            } else {
+                audioController.playMedia("drumtribal");
+            }
+            snpDrumTribal.setPlaying(!snpDrumTribal.isPlaying());
+        });
+
+        snpFootball.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            final double newVolume = newValue.doubleValue() / 100;
+            snpFootball.setPlaying(newVolume != 0);
+            audioController.setPlayerVolume("football", newVolume);
+        });
+        snpFootball.getBtnPlayPause().setOnAction(event -> {
+            if (snpFootball.isPlaying()) {
+                audioController.stopMedia("football");
+            } else {
+                audioController.playMedia("football");
+            }
+            snpFootball.setPlaying(!snpFootball.isPlaying());
+        });
 
         mniTimerEnabled.setOnAction(e ->
         {
@@ -483,6 +845,7 @@ public final class MainWindowController implements IAudioTimer {
 
             final SettingsWindowController settingsWindowController = loader.getController();
             settingsWindowController.setSettingsController(getSettingsController());
+            settingsWindowController.setMainWindowController(this);
 
             final Stage primaryStage = new Stage();
 

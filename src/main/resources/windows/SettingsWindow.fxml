@@ -39,6 +39,7 @@
                     <RowConstraints/>
                     <RowConstraints/>
                     <RowConstraints/>
+                    <RowConstraints/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -52,12 +53,18 @@
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </CheckBox>
-                <Label GridPane.rowIndex="1" GridPane.columnIndex="0" text="%Language">
+                <CheckBox fx:id="chbMediaButtons" GridPane.columnSpan="2" GridPane.rowIndex="1"
+                          GridPane.columnIndex="0" text="%MediaButtons">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </CheckBox>
+                <Label GridPane.rowIndex="2" GridPane.columnIndex="0" text="%Language">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </Label>
-                <ComboBox fx:id="cboLanguage" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity">
+                <ComboBox fx:id="cboLanguage" GridPane.rowIndex="2" GridPane.columnIndex="1" maxWidth="Infinity">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
@@ -73,12 +80,12 @@
                     </items>
                 </ComboBox>
 
-                <Label GridPane.rowIndex="2" GridPane.columnIndex="0" text="%LogLevel">
+                <Label GridPane.rowIndex="3" GridPane.columnIndex="0" text="%LogLevel">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </Label>
-                <ComboBox fx:id="cboLogLevel" GridPane.rowIndex="2" GridPane.columnIndex="1" maxWidth="Infinity">
+                <ComboBox fx:id="cboLogLevel" GridPane.rowIndex="3" GridPane.columnIndex="1" maxWidth="Infinity">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>

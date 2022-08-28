@@ -38,7 +38,7 @@ public class OpalApplication extends Application {
             final Properties prop = new Properties();
             prop.load(fis);
 
-            final Level level = switch (prop.getProperty("loglevel", "INFO")) {
+            final Level level = switch (prop.getProperty("loglevel", "ERROR")) {
                 case "OFF" -> Level.OFF;
                 case "FATAL" -> Level.FATAL;
                 case "ERROR" -> Level.ERROR;
@@ -46,7 +46,7 @@ public class OpalApplication extends Application {
                 case "DEBUG" -> Level.DEBUG;
                 case "TRACE" -> Level.TRACE;
                 case "ALL" -> Level.ALL;
-                default -> Level.INFO;
+                default -> Level.ERROR;
             };
             Configurator.setAllLevels(LogManager.getRootLogger().getName(), level);
         } catch (final IOException ex) {

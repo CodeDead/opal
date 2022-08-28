@@ -24,6 +24,8 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 public final class SettingsWindowController {
 
     @FXML
+    private CheckBox chbMediaButtons;
+    @FXML
     private CheckBox chbTimerApplicationShutdown;
     @FXML
     private ComboBox<String> cboDelayType;
@@ -36,6 +38,7 @@ public final class SettingsWindowController {
     @FXML
     private ComboBox<String> cboLogLevel;
 
+    private MainWindowController mainWindowController;
     private SettingsController settingsController;
     private ResourceBundle translationBundle;
     private Properties properties;
@@ -81,11 +84,21 @@ public final class SettingsWindowController {
     }
 
     /**
+     * Set the {@link MainWindowController} object
+     *
+     * @param mainWindowController The {@link MainWindowController} object
+     */
+    public void setMainWindowController(final MainWindowController mainWindowController) {
+        this.mainWindowController = mainWindowController;
+    }
+
+    /**
      * Load all the settings into the UI
      */
     private void loadSettings() {
         logger.info("Attempting to load all settings");
         final boolean autoUpdate = Boolean.parseBoolean(properties.getProperty("autoUpdate", "true"));
+        final boolean mediaButtons = Boolean.parseBoolean(properties.getProperty("mediaButtons", "true"));
         final String locale = properties.getProperty("locale", DEFAULT_LOCALE);
         final String logLevel = properties.getProperty("loglevel", "INFO");
         long timerDelay = Long.parseLong(properties.getProperty("timerDelay", "3600000"));
@@ -96,6 +109,7 @@ public final class SettingsWindowController {
         }
 
         chbAutoUpdate.setSelected(autoUpdate);
+        chbMediaButtons.setSelected(mediaButtons);
         chbTimerApplicationShutdown.setSelected(Boolean.parseBoolean(properties.getProperty("timerApplicationShutdown", "false")));
 
         switch (locale.toLowerCase()) {
@@ -149,6 +163,7 @@ public final class SettingsWindowController {
             try {
                 settingsController.createDefaultProperties();
                 settingsController.setProperties(settingsController.readPropertiesFile());
+                mainWindowController.loadMediaButtonVisibility(Boolean.parseBoolean(settingsController.getProperties().getProperty("mediaButtons", "true")));
 
                 setSettingsController(settingsController);
             } catch (final IOException ex) {
@@ -166,7 +181,8 @@ public final class SettingsWindowController {
         logger.info("Attempting to save all settings");
 
         properties.setProperty("autoUpdate", Boolean.toString(chbAutoUpdate.isSelected()));
-        properties.setProperty("trayIcon", Boolean.toString(chbAutoUpdate.isSelected()));
+        properties.setProperty("mediaButtons", Boolean.toString(chbMediaButtons.isSelected()));
+        mainWindowController.loadMediaButtonVisibility(chbMediaButtons.isSelected());
 
         showAlertIfLanguageMismatch(properties.getProperty("locale", DEFAULT_LOCALE));
 
