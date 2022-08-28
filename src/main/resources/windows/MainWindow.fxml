@@ -199,8 +199,8 @@
                            image="/images/tribal.png"/>
                 <SoundPane fx:id="snpDrumTribal" GridPane.rowIndex="2" volume="0" name="%DrumTribalFestival"
                            image="/images/tribal2.png"/>
-                <SoundPane fx:id="snpFootball" GridPane.rowIndex="3" volume="0" name="%Football"
-                           image="/images/football.png"/>
+                <SoundPane fx:id="snpRugbyFootball" GridPane.rowIndex="3" volume="0" name="%RugbyFootball"
+                           image="/images/rugbyfootball.png"/>
             </GridPane>
 
             <Label GridPane.rowIndex="6" GridPane.columnIndex="1" text="%Other">
