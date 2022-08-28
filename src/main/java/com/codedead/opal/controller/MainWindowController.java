@@ -40,7 +40,7 @@ public final class MainWindowController implements IAudioTimer {
     @FXML
     private SoundPane snpSleepy;
     @FXML
-    private SoundPane snpFootball;
+    private SoundPane snpRugbyFootball;
     @FXML
     private SoundPane snpTribal;
     @FXML
@@ -211,7 +211,7 @@ public final class MainWindowController implements IAudioTimer {
         snpNetworkingEvent.setMediaButton(visible);
         snpTribal.setMediaButton(visible);
         snpDrumTribal.setMediaButton(visible);
-        snpFootball.setMediaButton(visible);
+        snpRugbyFootball.setMediaButton(visible);
     }
 
     /**
@@ -671,18 +671,18 @@ public final class MainWindowController implements IAudioTimer {
             snpDrumTribal.setPlaying(!snpDrumTribal.isPlaying());
         });
 
-        snpFootball.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
+        snpRugbyFootball.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
             final double newVolume = newValue.doubleValue() / 100;
-            snpFootball.setPlaying(newVolume != 0);
+            snpRugbyFootball.setPlaying(newVolume != 0);
             audioController.setPlayerVolume("football", newVolume);
         });
-        snpFootball.getBtnPlayPause().setOnAction(event -> {
-            if (snpFootball.isPlaying()) {
+        snpRugbyFootball.getBtnPlayPause().setOnAction(event -> {
+            if (snpRugbyFootball.isPlaying()) {
                 audioController.stopMedia("football");
             } else {
                 audioController.playMedia("football");
             }
-            snpFootball.setPlaying(!snpFootball.isPlaying());
+            snpRugbyFootball.setPlaying(!snpRugbyFootball.isPlaying());
         });
 
         mniTimerEnabled.setOnAction(e ->
@@ -747,7 +747,7 @@ public final class MainWindowController implements IAudioTimer {
                     case "zoo" -> snpZoo.getSlider().setValue(entry.getValue() * 100);
                     case "networking" -> snpNetworkingEvent.getSlider().setValue(entry.getValue() * 100);
                     case "tribal" -> snpTribal.getSlider().setValue(entry.getValue() * 100);
-                    case "football" -> snpFootball.getSlider().setValue(entry.getValue() * 100);
+                    case "football" -> snpRugbyFootball.getSlider().setValue(entry.getValue() * 100);
                     case "sleepy" -> snpSleepy.getSlider().setValue(entry.getValue() * 100);
                     case "drumtribal" -> snpDrumTribal.getSlider().setValue(entry.getValue() * 100);
                     case "gong" -> snpGong.getSlider().setValue(entry.getValue() * 100);
@@ -817,7 +817,7 @@ public final class MainWindowController implements IAudioTimer {
         snpZoo.getSlider().setValue(0);
         snpNetworkingEvent.getSlider().setValue(0);
         snpTribal.getSlider().setValue(0);
-        snpFootball.getSlider().setValue(0);
+        snpRugbyFootball.getSlider().setValue(0);
         snpSleepy.getSlider().setValue(0);
         snpDrumTribal.getSlider().setValue(0);
         snpGong.getSlider().setValue(0);
