@@ -2,6 +2,7 @@ package com.codedead.opal.domain;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
@@ -10,6 +11,7 @@ import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 
 public final class SoundPane extends GridPane {
 
@@ -20,7 +22,12 @@ public final class SoundPane extends GridPane {
     @FXML
     private Slider sldVolume;
     @FXML
-    private String key;
+    private Button btnPlayPause;
+    @FXML
+    private boolean mediaButton;
+    @FXML
+    private ImageView imgMediaButton;
+    private boolean playing;
 
     /**
      * Initialize a new SoundPane
@@ -112,22 +119,51 @@ public final class SoundPane extends GridPane {
     }
 
     /**
-     * Get the key
+     * Get whether media buttons are enabled
      *
-     * @return The key
+     * @return True if media buttons are enabled, otherwise false
      */
     @FXML
-    public String getKey() {
-        return key;
+    public boolean isMediaButton() {
+        return mediaButton;
     }
 
     /**
-     * Set the key
+     * Set whether media buttons are enabled
      *
-     * @param key The key
+     * @param mediaButton True if media buttons shoudl be enabled, otherwise false
      */
     @FXML
-    public void setKey(final String key) {
-        this.key = key;
+    public void setMediaButton(final boolean mediaButton) {
+        btnPlayPause.setVisible(mediaButton);
+        btnPlayPause.setManaged(mediaButton);
+        this.mediaButton = mediaButton;
+    }
+
+    /**
+     * Get the {@link Button} object to play or pause media
+     *
+     * @return The {@link Button} object to play or pause media
+     */
+    public Button getBtnPlayPause() {
+        return btnPlayPause;
+    }
+
+    /**
+     * Get whether the {@link javafx.scene.media.MediaPlayer} is playing or not
+     *
+     * @return True if the {@link javafx.scene.media.MediaPlayer} is playing, otherwise false
+     */
+    public boolean isPlaying() {
+        return playing;
+    }
+
+    public void setPlaying(final boolean playing) {
+        if (playing && !this.playing) {
+            imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
+        } else if (!playing && this.playing) {
+            imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/play.png"))));
+        }
+        this.playing = playing;
     }
 }
