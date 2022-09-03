@@ -89,25 +89,25 @@ public final class UpdateController {
      * @return 1 if v1 is larger than v2, -1 if v2 is larger than v1 and 0 if both are equal
      */
     private int versionCompare(final String v1, final String v2) {
-        int vnum1 = 0;
-        int vnum2 = 0;
+        int vNum1 = 0;
+        int vNum2 = 0;
 
         for (int i = 0, j = 0; (i < v1.length() || j < v2.length()); ) {
             while (i < v1.length() && v1.charAt(i) != '.') {
-                vnum1 = vnum1 * 10 + (v1.charAt(i) - '0');
+                vNum1 = vNum1 * 10 + (v1.charAt(i) - '0');
                 i++;
             }
             while (j < v2.length() && v2.charAt(j) != '.') {
-                vnum2 = vnum2 * 10 + (v2.charAt(j) - '0');
+                vNum2 = vNum2 * 10 + (v2.charAt(j) - '0');
                 j++;
             }
 
-            if (vnum1 > vnum2)
+            if (vNum1 > vNum2)
                 return 1;
-            if (vnum2 > vnum1)
+            if (vNum2 > vNum1)
                 return -1;
 
-            vnum1 = vnum2 = 0;
+            vNum1 = vNum2 = 0;
             i++;
             j++;
         }
@@ -131,9 +131,9 @@ public final class UpdateController {
                 .build();
 
         final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() == 200) {
+
+        if (response.statusCode() == 200)
             return Arrays.asList(objectMapper.readValue(response.body(), PlatformUpdate[].class));
-        }
 
         throw new InvalidHttpResponseCodeException(String.format("Invalid HTTP response code (%s)", response.statusCode()));
     }
