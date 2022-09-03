@@ -676,7 +676,9 @@ public final class MainWindowController implements IAudioTimer {
      */
     @Override
     public void fired() {
-        resetAction();
+        for (final SoundPane p : getAllSoundPanes(grpControls)) {
+            p.pause();
+        }
         mniTimerEnabled.setSelected(false);
 
         if (Boolean.parseBoolean(settingsController.getProperties().getProperty("timerApplicationShutdown", "false"))) {
@@ -765,7 +767,6 @@ public final class MainWindowController implements IAudioTimer {
             public void run() {
                 logger.info("Timer has fired");
                 if (timerEnabled) {
-                    // stop all media
                     audioTimer.fired();
                 }
                 timerEnabled = false;

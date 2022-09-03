@@ -237,18 +237,11 @@ public final class SoundPane extends GridPane {
     }
 
     /**
-     * Stop the {@link Media} object
-     */
-    public void stop() {
-        this.mediaPlayer.stop();
-    }
-
-    /**
      * Play or pause the {@link Media} object
      */
     @FXML
     private void playPause() {
-        if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+        if (this.mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
             pause();
         } else {
             play();

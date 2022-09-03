@@ -1,6 +1,8 @@
 package com.codedead.opal.interfaces;
 
-public interface IAudioTimer {
+import com.codedead.opal.controller.MainWindowController;
+
+public sealed interface IAudioTimer permits MainWindowController {
 
     void fired();
 
