@@ -64,7 +64,7 @@ public final class AboutWindowController {
     }
 
     /**
-     * Method that is invoked to initialize the FXML window
+     * Method that is invoked to initialize the FXML object
      */
     @FXML
     private void initialize() {

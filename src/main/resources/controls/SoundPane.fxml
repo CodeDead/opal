@@ -39,14 +39,14 @@
                 <Insets left="5" right="5" bottom="5" top="5"/>
             </GridPane.margin>
         </Label>
-        <Slider GridPane.rowIndex="1" fx:id="sldVolume">
+        <Slider GridPane.rowIndex="1" fx:id="sldVolume" max="1">
             <GridPane.margin>
                 <Insets left="5" right="5" bottom="5" top="5"/>
             </GridPane.margin>
         </Slider>
     </GridPane>
 
-    <Button GridPane.rowIndex="0" GridPane.columnIndex="2" fx:id="btnPlayPause">
+    <Button GridPane.rowIndex="0" GridPane.columnIndex="2" fx:id="btnPlayPause" onAction="#playPause">
         <GridPane.margin>
             <Insets left="5" right="5" bottom="5" top="5"/>
         </GridPane.margin>

@@ -1,5 +1,9 @@
 package com.codedead.opal.domain;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -8,11 +12,16 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public final class SoundPane extends GridPane {
 
     @FXML
@@ -27,7 +36,11 @@ public final class SoundPane extends GridPane {
     private boolean mediaButton;
     @FXML
     private ImageView imgMediaButton;
-    private boolean playing;
+    @FXML
+    private final StringProperty mediaPath = new SimpleStringProperty();
+    @FXML
+    private String mediaKey;
+    private MediaPlayer mediaPlayer;
 
     /**
      * Initialize a new SoundPane
@@ -39,6 +52,45 @@ public final class SoundPane extends GridPane {
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
         fxmlLoader.load();
+
+        mediaPath.addListener(new ChangeListener<>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (newValue != null && !newValue.isEmpty()) {
+                    try {
+                        mediaPlayer = new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource(newValue)).toURI().toString()));
+                        mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
+                        mediaPlayer.volumeProperty().bindBidirectional(sldVolume.valueProperty());
+                        mediaPlayer.statusProperty().addListener(new ChangeListener<>() {
+                            @Override
+                            public void changed(ObservableValue<? extends MediaPlayer.Status> observable, MediaPlayer.Status oldValue, MediaPlayer.Status newValue) {
+                                if (newValue == MediaPlayer.Status.PLAYING) {
+                                    imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
+                                } else {
+                                    imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/play.png"))));
+                                }
+                            }
+                        });
+                    } catch (final URISyntaxException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Method that is invoked to initialize the FXML object
+     */
+    @FXML
+    private void initialize() {
+        sldVolume.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue.doubleValue() == 0 && (oldValue != null && oldValue.doubleValue() != 0)) {
+                pause();
+            } else if (newValue != null && newValue.doubleValue() > 0 && (oldValue != null && oldValue.doubleValue() == 0)) {
+                play();
+            }
+        });
     }
 
     /**
@@ -90,26 +142,6 @@ public final class SoundPane extends GridPane {
     }
 
     /**
-     * Get the volume
-     *
-     * @return The volumne
-     */
-    @FXML
-    public double getVolume() {
-        return sldVolume.getValue();
-    }
-
-    /**
-     * Set the volume
-     *
-     * @param volume The volume
-     */
-    @FXML
-    public void setVolume(final double volume) {
-        sldVolume.setValue(volume);
-    }
-
-    /**
      * Get the slider
      *
      * @return The slider
@@ -131,7 +163,7 @@ public final class SoundPane extends GridPane {
     /**
      * Set whether media buttons are enabled
      *
-     * @param mediaButton True if media buttons shoudl be enabled, otherwise false
+     * @param mediaButton True if media buttons should be enabled, otherwise false
      */
     @FXML
     public void setMediaButton(final boolean mediaButton) {
@@ -141,29 +173,85 @@ public final class SoundPane extends GridPane {
     }
 
     /**
-     * Get the {@link Button} object to play or pause media
+     * Get the {@link javafx.scene.media.Media} object path
      *
-     * @return The {@link Button} object to play or pause media
+     * @return The {@link javafx.scene.media.Media} object path
      */
-    public Button getBtnPlayPause() {
-        return btnPlayPause;
+    @FXML
+    public String getMediaPath() {
+        return mediaPath.getValue();
     }
 
     /**
-     * Get whether the {@link javafx.scene.media.MediaPlayer} is playing or not
+     * Set the {@link javafx.scene.media.Media} object path
      *
-     * @return True if the {@link javafx.scene.media.MediaPlayer} is playing, otherwise false
+     * @param mediaPath The {@link javafx.scene.media.Media} object path
      */
-    public boolean isPlaying() {
-        return playing;
+    @FXML
+    public void setMediaPath(final String mediaPath) {
+        if (mediaPath == null)
+            throw new NullPointerException("Media path cannot be null!");
+        if (mediaPath.isEmpty())
+            throw new IllegalArgumentException("Media path cannot be empty!");
+
+        this.mediaPath.setValue(mediaPath);
     }
 
-    public void setPlaying(final boolean playing) {
-        if (playing && !this.playing) {
-            imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
-        } else if (!playing && this.playing) {
-            imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/play.png"))));
+    /**
+     * Get the media key
+     *
+     * @return The media key
+     */
+    @FXML
+    public String getMediaKey() {
+        return mediaKey;
+    }
+
+    /**
+     * Set the media key
+     *
+     * @param mediaKey The media key
+     */
+    @FXML
+    public void setMediaKey(final String mediaKey) {
+        if (mediaKey == null)
+            throw new NullPointerException("Media key cannot be null!");
+        if (mediaKey.isEmpty())
+            throw new IllegalArgumentException("Media key cannot be empty!");
+
+        this.mediaKey = mediaKey;
+    }
+
+    /**
+     * Play the {@link Media} object
+     */
+    public void play() {
+        this.mediaPlayer.play();
+    }
+
+    /**
+     * Pause the {@link Media} object
+     */
+    public void pause() {
+        this.mediaPlayer.pause();
+    }
+
+    /**
+     * Stop the {@link Media} object
+     */
+    public void stop() {
+        this.mediaPlayer.stop();
+    }
+
+    /**
+     * Play or pause the {@link Media} object
+     */
+    @FXML
+    private void playPause() {
+        if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+            pause();
+        } else {
+            play();
         }
-        this.playing = playing;
     }
 }

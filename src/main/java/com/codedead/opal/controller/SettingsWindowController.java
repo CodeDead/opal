@@ -54,7 +54,7 @@ public final class SettingsWindowController {
     }
 
     /**
-     * Method that is invoked to initialize the FXML window
+     * Method that is invoked to initialize the FXML object
      */
     @FXML
     private void initialize() {

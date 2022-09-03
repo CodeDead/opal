@@ -1,15 +1,15 @@
 package com.codedead.opal.controller;
 
-import com.codedead.opal.domain.InvalidHttpResponseCodeException;
-import com.codedead.opal.domain.OsCheck;
-import com.codedead.opal.domain.PlatformUpdate;
-import com.codedead.opal.domain.SoundPane;
+import com.codedead.opal.domain.*;
 import com.codedead.opal.interfaces.IAudioTimer;
 import com.codedead.opal.interfaces.IRunnableHelper;
 import com.codedead.opal.utils.*;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,6 +19,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
@@ -26,13 +27,16 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
 public final class MainWindowController implements IAudioTimer {
 
+    @FXML
+    private GridPane grpControls;
     @FXML
     private SoundPane snpGong;
     @FXML
@@ -113,27 +117,32 @@ public final class MainWindowController implements IAudioTimer {
     private MenuItem mniOpenSoundPreset;
 
     private final String platformName;
-    private final AudioController audioController;
     private final HelpUtils helpUtils;
 
     private SettingsController settingsController;
     private UpdateController updateController;
     private ResourceBundle translationBundle;
+    private final ObjectMapper objectMapper;
+    private final Timer timer;
+    private final IAudioTimer audioTimer;
+    private TimerTask timerTask;
+    private boolean timerEnabled;
 
     private final Logger logger;
 
     /**
      * Initialize a new MainWindowController
-     *
-     * @throws URISyntaxException When the URI could not be formed
      */
-    public MainWindowController() throws URISyntaxException {
+    public MainWindowController() {
         logger = LogManager.getLogger(MainWindowController.class);
         logger.info("Initializing new MainWindowController object");
 
         platformName = OsCheck.getOperatingSystemType().name();
-        audioController = new AudioController(this);
         helpUtils = new HelpUtils();
+
+        this.timer = new Timer();
+        this.audioTimer = this;
+        this.objectMapper = new ObjectMapper();
     }
 
     /**
@@ -271,6 +280,28 @@ public final class MainWindowController implements IAudioTimer {
     }
 
     /**
+     * Get all {@link SoundPane} objects from a {@link GridPane} object
+     *
+     * @param parent The {@link GridPane} object
+     * @return The {@link List} of {@link SoundPane} objects inside the given {@link GridPane} object
+     */
+    private List<SoundPane> getAllSoundPanes(final GridPane parent) {
+        if (parent == null)
+            throw new NullPointerException("GridPane cannot be null!");
+
+        final List<SoundPane> elements = new ArrayList<>();
+        for (final Node node : parent.getChildren()) {
+            if (node instanceof GridPane p) {
+                elements.addAll(getAllSoundPanes(p));
+            }
+            if (node instanceof SoundPane s) {
+                elements.add(s);
+            }
+        }
+        return elements;
+    }
+
+    /**
      * Open a file on the local filesystem
      *
      * @param path The path of the file that should be opened
@@ -315,7 +346,7 @@ public final class MainWindowController implements IAudioTimer {
     }
 
     /**
-     * Method that is invoked to initialize the FXML window
+     * Method that is invoked to initialize the FXML object
      */
     @FXML
     private void initialize() {
@@ -334,366 +365,15 @@ public final class MainWindowController implements IAudioTimer {
         mniHelp.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/help.png")))));
         mnuTimer.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/timer.png")))));
 
-        snpRain.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpRain.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("rain", newVolume);
-        });
-        snpRain.getBtnPlayPause().setOnAction(event -> {
-            if (snpRain.isPlaying()) {
-                audioController.stopMedia("rain");
-            } else {
-                audioController.playMedia("rain");
-            }
-            snpRain.setPlaying(!snpRain.isPlaying());
-        });
-
-        snpWind.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpWind.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("wind", newVolume);
-        });
-        snpWind.getBtnPlayPause().setOnAction(event -> {
-            if (snpWind.isPlaying()) {
-                audioController.stopMedia("wind");
-            } else {
-                audioController.playMedia("wind");
-            }
-            snpWind.setPlaying(!snpWind.isPlaying());
-        });
-
-        snpThunder.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpThunder.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("thunder", newVolume);
-        });
-        snpThunder.getBtnPlayPause().setOnAction(event -> {
-            if (snpThunder.isPlaying()) {
-                audioController.stopMedia("thunder");
-            } else {
-                audioController.playMedia("thunder");
-            }
-            snpThunder.setPlaying(!snpThunder.isPlaying());
-        });
-
-        snpBird.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpBird.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("birds", newVolume);
-        });
-        snpBird.getBtnPlayPause().setOnAction(event -> {
-            if (snpBird.isPlaying()) {
-                audioController.stopMedia("birds");
-            } else {
-                audioController.playMedia("birds");
-            }
-            snpBird.setPlaying(!snpBird.isPlaying());
-        });
-
-        snpRiver.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpRiver.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("river", newVolume);
-        });
-        snpRiver.getBtnPlayPause().setOnAction(event -> {
-            if (snpRiver.isPlaying()) {
-                audioController.stopMedia("river");
-            } else {
-                audioController.playMedia("river");
-            }
-            snpRiver.setPlaying(!snpRiver.isPlaying());
-        });
-
-        snpTyping.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpTyping.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("keyboard", newVolume);
-        });
-        snpTyping.getBtnPlayPause().setOnAction(event -> {
-            if (snpTyping.isPlaying()) {
-                audioController.stopMedia("keyboard");
-            } else {
-                audioController.playMedia("keyboard");
-            }
-            snpTyping.setPlaying(!snpTyping.isPlaying());
-        });
-
-        snpTelephone.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpTelephone.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("telephone", newVolume);
-        });
-        snpTelephone.getBtnPlayPause().setOnAction(event -> {
-            if (snpTelephone.isPlaying()) {
-                audioController.stopMedia("telephone");
-            } else {
-                audioController.playMedia("telephone");
-            }
-            snpTelephone.setPlaying(!snpTelephone.isPlaying());
-        });
-
-        snpChatter.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpChatter.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("officeChatter", newVolume);
-        });
-        snpChatter.getBtnPlayPause().setOnAction(event -> {
-            if (snpChatter.isPlaying()) {
-                audioController.stopMedia("officeChatter");
-            } else {
-                audioController.playMedia("officeChatter");
-            }
-            snpChatter.setPlaying(!snpChatter.isPlaying());
-        });
-
-        snpTraffic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpTraffic.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("traffic", newVolume);
-        });
-        snpTraffic.getBtnPlayPause().setOnAction(event -> {
-            if (snpTraffic.isPlaying()) {
-                audioController.stopMedia("traffic");
-            } else {
-                audioController.playMedia("traffic");
-            }
-            snpTraffic.setPlaying(!snpTraffic.isPlaying());
-        });
-
-        snpClock.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpClock.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("clock", newVolume);
-        });
-        snpClock.getBtnPlayPause().setOnAction(event -> {
-            if (snpClock.isPlaying()) {
-                audioController.stopMedia("clock");
-            } else {
-                audioController.playMedia("clock");
-            }
-            snpClock.setPlaying(!snpClock.isPlaying());
-        });
-
-        snpFireplace.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpFireplace.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("fireplace", newVolume);
-        });
-        snpFireplace.getBtnPlayPause().setOnAction(event -> {
-            if (snpFireplace.isPlaying()) {
-                audioController.stopMedia("fireplace");
-            } else {
-                audioController.playMedia("fireplace");
-            }
-            snpFireplace.setPlaying(!snpFireplace.isPlaying());
-        });
-
-        snpStatic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpStatic.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("static", newVolume);
-        });
-        snpStatic.getBtnPlayPause().setOnAction(event -> {
-            if (snpStatic.isPlaying()) {
-                audioController.stopMedia("static");
-            } else {
-                audioController.playMedia("static");
-            }
-            snpStatic.setPlaying(!snpStatic.isPlaying());
-        });
-
-        snpFantasy.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpFantasy.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("fantasy", newVolume);
-        });
-        snpFantasy.getBtnPlayPause().setOnAction(event -> {
-            if (snpFantasy.isPlaying()) {
-                audioController.stopMedia("fantasy");
-            } else {
-                audioController.playMedia("fantasy");
-            }
-            snpFantasy.setPlaying(!snpFantasy.isPlaying());
-        });
-
-        snpFan.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpFan.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("fan", newVolume);
-        });
-        snpFan.getBtnPlayPause().setOnAction(event -> {
-            if (snpFan.isPlaying()) {
-                audioController.stopMedia("fan");
-            } else {
-                audioController.playMedia("fan");
-            }
-            snpFan.setPlaying(!snpFan.isPlaying());
-        });
-
-        snpCave.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpCave.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("cave", newVolume);
-        });
-        snpCave.getBtnPlayPause().setOnAction(event -> {
-            if (snpCave.isPlaying()) {
-                audioController.stopMedia("cave");
-            } else {
-                audioController.playMedia("cave");
-            }
-            snpCave.setPlaying(!snpCave.isPlaying());
-        });
-
-        snpFrogs.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpFrogs.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("frogs", newVolume);
-        });
-        snpFrogs.getBtnPlayPause().setOnAction(event -> {
-            if (snpFrogs.isPlaying()) {
-                audioController.stopMedia("frogs");
-            } else {
-                audioController.playMedia("frogs");
-            }
-            snpFrogs.setPlaying(!snpFrogs.isPlaying());
-        });
-
-        snpZen.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpZen.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("zen", newVolume);
-        });
-        snpZen.getBtnPlayPause().setOnAction(event -> {
-            if (snpZen.isPlaying()) {
-                audioController.stopMedia("zen");
-            } else {
-                audioController.playMedia("zen");
-            }
-            snpZen.setPlaying(!snpZen.isPlaying());
-        });
-
-        snpCoffee.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpCoffee.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("coffee", newVolume);
-        });
-        snpCoffee.getBtnPlayPause().setOnAction(event -> {
-            if (snpCoffee.isPlaying()) {
-                audioController.stopMedia("coffee");
-            } else {
-                audioController.playMedia("coffee");
-            }
-            snpCoffee.setPlaying(!snpCoffee.isPlaying());
-        });
-
-        snpZoo.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpZoo.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("zoo", newVolume);
-        });
-        snpZoo.getBtnPlayPause().setOnAction(event -> {
-            if (snpZoo.isPlaying()) {
-                audioController.stopMedia("zoo");
-            } else {
-                audioController.playMedia("zoo");
-            }
-            snpZoo.setPlaying(!snpZoo.isPlaying());
-        });
-
-        snpSleepy.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpSleepy.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("sleepy", newVolume);
-        });
-        snpSleepy.getBtnPlayPause().setOnAction(event -> {
-            if (snpSleepy.isPlaying()) {
-                audioController.stopMedia("sleepy");
-            } else {
-                audioController.playMedia("sleepy");
-            }
-            snpSleepy.setPlaying(!snpSleepy.isPlaying());
-        });
-
-        snpGong.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpGong.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("gong", newVolume);
-        });
-        snpGong.getBtnPlayPause().setOnAction(event -> {
-            if (snpGong.isPlaying()) {
-                audioController.stopMedia("gong");
-            } else {
-                audioController.playMedia("gong");
-            }
-            snpGong.setPlaying(!snpGong.isPlaying());
-        });
-
-        // Audiences
-        snpNetworkingEvent.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpNetworkingEvent.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("networking", newVolume);
-        });
-        snpNetworkingEvent.getBtnPlayPause().setOnAction(event -> {
-            if (snpNetworkingEvent.isPlaying()) {
-                audioController.stopMedia("networking");
-            } else {
-                audioController.playMedia("networking");
-            }
-            snpNetworkingEvent.setPlaying(!snpNetworkingEvent.isPlaying());
-        });
-
-        snpTribal.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpTribal.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("tribal", newVolume);
-        });
-        snpTribal.getBtnPlayPause().setOnAction(event -> {
-            if (snpTribal.isPlaying()) {
-                audioController.stopMedia("tribal");
-            } else {
-                audioController.playMedia("tribal");
-            }
-            snpTribal.setPlaying(!snpTribal.isPlaying());
-        });
-
-        snpDrumTribal.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpDrumTribal.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("drumtribal", newVolume);
-        });
-        snpDrumTribal.getBtnPlayPause().setOnAction(event -> {
-            if (snpDrumTribal.isPlaying()) {
-                audioController.stopMedia("drumtribal");
-            } else {
-                audioController.playMedia("drumtribal");
-            }
-            snpDrumTribal.setPlaying(!snpDrumTribal.isPlaying());
-        });
-
-        snpRugbyFootball.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            final double newVolume = newValue.doubleValue() / 100;
-            snpRugbyFootball.setPlaying(newVolume != 0);
-            audioController.setPlayerVolume("football", newVolume);
-        });
-        snpRugbyFootball.getBtnPlayPause().setOnAction(event -> {
-            if (snpRugbyFootball.isPlaying()) {
-                audioController.stopMedia("football");
-            } else {
-                audioController.playMedia("football");
-            }
-            snpRugbyFootball.setPlaying(!snpRugbyFootball.isPlaying());
-        });
-
         mniTimerEnabled.setOnAction(e ->
         {
             if (mniTimerEnabled.isSelected()) {
                 final Properties properties = settingsController.getProperties();
                 final long timerDelay = Long.parseLong(properties.getProperty("timerDelay", "3600000"));
 
-                audioController.scheduleTimer(timerDelay);
+                scheduleTimer(timerDelay);
             } else {
-                audioController.cancelTimer();
+                cancelTimer();
             }
         });
     }
@@ -719,43 +399,34 @@ public final class MainWindowController implements IAudioTimer {
     /**
      * Open a sound preset
      *
-     * @param filePath The absolute path of the sound preset file
+     * @param path The absolute path of the sound preset file
      */
-    private void openSoundPreset(final String filePath) {
+    private void openSoundPreset(final String path) {
+        if (path == null)
+            throw new NullPointerException("Path cannot be null!");
+        if (path.isEmpty())
+            throw new IllegalArgumentException("Path cannot be empty!");
+
+        logger.info("Loading sound preset from {}", path);
+
         try {
-            audioController.loadSoundPreset(filePath);
-            for (final Map.Entry<String, Double> entry : audioController.getVolumes()) {
-                switch (entry.getKey()) {
-                    case "rain" -> snpRain.getSlider().setValue(entry.getValue() * 100);
-                    case "wind" -> snpWind.getSlider().setValue(entry.getValue() * 100);
-                    case "thunder" -> snpThunder.getSlider().setValue(entry.getValue() * 100);
-                    case "birds" -> snpBird.getSlider().setValue(entry.getValue() * 100);
-                    case "river" -> snpRiver.getSlider().setValue(entry.getValue() * 100);
-                    case "keyboard" -> snpTyping.getSlider().setValue(entry.getValue() * 100);
-                    case "telephone" -> snpTelephone.getSlider().setValue(entry.getValue() * 100);
-                    case "officeChatter" -> snpChatter.getSlider().setValue(entry.getValue() * 100);
-                    case "traffic" -> snpTraffic.getSlider().setValue(entry.getValue() * 100);
-                    case "fireplace" -> snpFireplace.getSlider().setValue(entry.getValue() * 100);
-                    case "static" -> snpStatic.getSlider().setValue(entry.getValue() * 100);
-                    case "fantasy" -> snpFantasy.getSlider().setValue(entry.getValue() * 100);
-                    case "fan" -> snpFan.getSlider().setValue(entry.getValue() * 100);
-                    case "clock" -> snpClock.getSlider().setValue(entry.getValue() * 100);
-                    case "cave" -> snpCave.getSlider().setValue(entry.getValue() * 100);
-                    case "frogs" -> snpFrogs.getSlider().setValue(entry.getValue() * 100);
-                    case "zen" -> snpZen.getSlider().setValue(entry.getValue() * 100);
-                    case "coffee" -> snpCoffee.getSlider().setValue(entry.getValue() * 100);
-                    case "zoo" -> snpZoo.getSlider().setValue(entry.getValue() * 100);
-                    case "networking" -> snpNetworkingEvent.getSlider().setValue(entry.getValue() * 100);
-                    case "tribal" -> snpTribal.getSlider().setValue(entry.getValue() * 100);
-                    case "football" -> snpRugbyFootball.getSlider().setValue(entry.getValue() * 100);
-                    case "sleepy" -> snpSleepy.getSlider().setValue(entry.getValue() * 100);
-                    case "drumtribal" -> snpDrumTribal.getSlider().setValue(entry.getValue() * 100);
-                    case "gong" -> snpGong.getSlider().setValue(entry.getValue() * 100);
-                    default -> logger.info("Unknown key found: {}", entry.getKey());
-                }
+            final Path filePath = Path.of(path);
+            final String actual = Files.readString(filePath);
+
+            if (actual == null || actual.isEmpty())
+                throw new IllegalArgumentException("Sound preset cannot be null or empty!");
+
+            final TypeReference<HashMap<String, Double>> typeRef = new TypeReference<>() {
+            };
+
+            final Map<String, Double> mediaVolumes = objectMapper.readValue(actual, typeRef);
+            final List<SoundPane> soundPanes = getAllSoundPanes(grpControls);
+
+            for (final Map.Entry<String, Double> entry : mediaVolumes.entrySet()) {
+                soundPanes.stream().filter(e -> e.getMediaKey().equals(entry.getKey())).forEach(e -> e.getSlider().setValue(entry.getValue()));
             }
         } catch (final IOException ex) {
-            logger.error("Unable to open the sound preset from {}", filePath, ex);
+            logger.error("Unable to open the sound preset from {}", path, ex);
             FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
@@ -775,11 +446,17 @@ public final class MainWindowController implements IAudioTimer {
 
         if (file != null) {
             String filePath = file.getAbsolutePath();
+            if (!filePath.toLowerCase().contains(".json")) {
+                filePath += ".json";
+            }
+
+            final Map<String, Double> mediaVolumes = new HashMap<>();
+            for (final SoundPane p : getAllSoundPanes(grpControls)) {
+                mediaVolumes.put(p.getMediaKey(), p.getSlider().getValue());
+            }
+
             try {
-                if (!filePath.toLowerCase().contains(".json")) {
-                    filePath += ".json";
-                }
-                audioController.saveSoundPreset(filePath);
+                objectMapper.writeValue(new File(filePath), mediaVolumes);
             } catch (final IOException ex) {
                 logger.error("Unable to save the sound settings to {}", filePath, ex);
                 FxUtils.showErrorAlert(translationBundle.getString("SaveSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
@@ -796,31 +473,10 @@ public final class MainWindowController implements IAudioTimer {
     private void resetAction() {
         logger.info("Resetting all audio sliders");
 
-        snpRain.getSlider().setValue(0);
-        snpWind.getSlider().setValue(0);
-        snpBird.getSlider().setValue(0);
-        snpRiver.getSlider().setValue(0);
-        snpThunder.getSlider().setValue(0);
-        snpTyping.getSlider().setValue(0);
-        snpTelephone.getSlider().setValue(0);
-        snpChatter.getSlider().setValue(0);
-        snpTraffic.getSlider().setValue(0);
-        snpClock.getSlider().setValue(0);
-        snpFireplace.getSlider().setValue(0);
-        snpStatic.getSlider().setValue(0);
-        snpFantasy.getSlider().setValue(0);
-        snpFan.getSlider().setValue(0);
-        snpCave.getSlider().setValue(0);
-        snpFrogs.getSlider().setValue(0);
-        snpZen.getSlider().setValue(0);
-        snpCoffee.getSlider().setValue(0);
-        snpZoo.getSlider().setValue(0);
-        snpNetworkingEvent.getSlider().setValue(0);
-        snpTribal.getSlider().setValue(0);
-        snpRugbyFootball.getSlider().setValue(0);
-        snpSleepy.getSlider().setValue(0);
-        snpDrumTribal.getSlider().setValue(0);
-        snpGong.getSlider().setValue(0);
+        final List<SoundPane> soundPanes = getAllSoundPanes(grpControls);
+        for (final SoundPane p : soundPanes) {
+            p.getSlider().setValue(0);
+        }
     }
 
     /**
@@ -1016,7 +672,7 @@ public final class MainWindowController implements IAudioTimer {
     }
 
     /**
-     * Method that is called when the {@link AudioController} object's {@link Timer} object has fired
+     * Method that is called when the {@link Timer} object has fired
      */
     @Override
     public void fired() {
@@ -1029,7 +685,7 @@ public final class MainWindowController implements IAudioTimer {
     }
 
     /**
-     * Method that is invoked when the {@link AudioController} object's {@link Timer} object has cancelled
+     * Method that is invoked when the object's {@link Timer} object has cancelled
      */
     @Override
     public void cancelled() {
@@ -1066,5 +722,56 @@ public final class MainWindowController implements IAudioTimer {
 
         dragEvent.setDropCompleted(success);
         dragEvent.consume();
+    }
+
+    /**
+     * Cancel the {@link Timer} object
+     */
+    public void cancelTimer() {
+        logger.info("Cancelling the Timer to stop all MediaPlayer objects");
+
+        timerEnabled = false;
+
+        if (timerTask != null) {
+            timerTask.cancel();
+            timer.purge();
+        }
+
+        if (audioTimer != null) {
+            audioTimer.cancelled();
+        }
+    }
+
+    /**
+     * Schedule the {@link Timer} object to cancel all {@link MediaPlayer} objects
+     *
+     * @param delay The delay in milliseconds before the {@link Timer} object executes its function
+     */
+    public void scheduleTimer(final long delay) {
+        if (delay < 1)
+            throw new IllegalArgumentException("Delay cannot be smaller than 1");
+
+        logger.info("Scheduling the Timer to stop all MediaPlayer objects after {} millisecond(s)", delay);
+
+        timerEnabled = true;
+
+        if (timerTask != null) {
+            timerTask.cancel();
+            timer.purge();
+        }
+
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                logger.info("Timer has fired");
+                if (timerEnabled) {
+                    // stop all media
+                    audioTimer.fired();
+                }
+                timerEnabled = false;
+            }
+        };
+
+        timer.schedule(timerTask, delay);
     }
 }
