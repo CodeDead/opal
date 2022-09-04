@@ -337,15 +337,6 @@ public final class MainWindowController implements IAudioTimer {
     }
 
     /**
-     * Get the {@link UpdateController} object
-     *
-     * @return The {@link UpdateController} object
-     */
-    public UpdateController getUpdateController() {
-        return updateController;
-    }
-
-    /**
      * Method that is invoked to initialize the FXML object
      */
     @FXML

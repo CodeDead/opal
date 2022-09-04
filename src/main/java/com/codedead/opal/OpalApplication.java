@@ -41,10 +41,10 @@ public class OpalApplication extends Application {
             final Level level = switch (prop.getProperty("loglevel", "ERROR")) {
                 case "OFF" -> Level.OFF;
                 case "FATAL" -> Level.FATAL;
-                case "ERROR" -> Level.ERROR;
                 case "WARN" -> Level.WARN;
                 case "DEBUG" -> Level.DEBUG;
                 case "TRACE" -> Level.TRACE;
+                case "INFO" -> Level.INFO;
                 case "ALL" -> Level.ALL;
                 default -> Level.ERROR;
             };

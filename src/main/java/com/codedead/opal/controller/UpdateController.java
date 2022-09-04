@@ -191,15 +191,6 @@ public final class UpdateController {
     }
 
     /**
-     * Get the current version
-     *
-     * @return The current version
-     */
-    public String getCurrentVersion() {
-        return currentVersion;
-    }
-
-    /**
      * Set the current version
      *
      * @param currentVersion The current version
