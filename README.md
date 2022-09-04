@@ -6,7 +6,7 @@
 ![GitHub](https://img.shields.io/github/license/CodeDead/opal)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/CodeDead/opal)
 
-Opal is a free and open-source JavaFX application that can play relaxing music in the background.
+Opal is a free and open-source [JavaFX](https://openjfx.io/) application that can play relaxing music in the background.
 
 ## Building
 
