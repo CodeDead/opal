@@ -24,6 +24,8 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 public final class SettingsWindowController {
 
     @FXML
+    private CheckBox chbDragDrop;
+    @FXML
     private CheckBox chbMediaButtons;
     @FXML
     private CheckBox chbTimerApplicationShutdown;
@@ -99,6 +101,7 @@ public final class SettingsWindowController {
         logger.info("Attempting to load all settings");
         final boolean autoUpdate = Boolean.parseBoolean(properties.getProperty("autoUpdate", "true"));
         final boolean mediaButtons = Boolean.parseBoolean(properties.getProperty("mediaButtons", "true"));
+        final boolean dragDrop = Boolean.parseBoolean(properties.getProperty("dragDrop", "true"));
         final String locale = properties.getProperty("locale", DEFAULT_LOCALE);
         final String logLevel = properties.getProperty("loglevel", "INFO");
         long timerDelay = Long.parseLong(properties.getProperty("timerDelay", "3600000"));
@@ -110,6 +113,7 @@ public final class SettingsWindowController {
 
         chbAutoUpdate.setSelected(autoUpdate);
         chbMediaButtons.setSelected(mediaButtons);
+        chbDragDrop.setSelected(dragDrop);
         chbTimerApplicationShutdown.setSelected(Boolean.parseBoolean(properties.getProperty("timerApplicationShutdown", "false")));
 
         switch (locale.toLowerCase()) {
@@ -182,6 +186,7 @@ public final class SettingsWindowController {
 
         properties.setProperty("autoUpdate", Boolean.toString(chbAutoUpdate.isSelected()));
         properties.setProperty("mediaButtons", Boolean.toString(chbMediaButtons.isSelected()));
+        properties.setProperty("dragDrop", Boolean.toString(chbDragDrop.isSelected()));
         mainWindowController.loadMediaButtonVisibility(chbMediaButtons.isSelected());
 
         showAlertIfLanguageMismatch(properties.getProperty("locale", DEFAULT_LOCALE));
@@ -246,8 +251,11 @@ public final class SettingsWindowController {
      */
     private void showAlertIfLanguageMismatch(final String languageToMatch) {
         final String newLanguage = switch (cboLanguage.getSelectionModel().getSelectedIndex()) {
-            case 1 -> "fr-FR";
-            case 2 -> "nl-NL";
+            case 1 -> "de-DE";
+            case 2 -> "es-es";
+            case 3 -> "fr-FR";
+            case 4 -> "nl-NL";
+            case 5 -> "ru-RU";
             default -> DEFAULT_LOCALE;
         };
 
