@@ -692,6 +692,11 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void onDragOver(final DragEvent dragEvent) {
+        final Properties properties = settingsController.getProperties();
+        if (!Boolean.parseBoolean(properties.getProperty("dragDrop", "true"))) {
+            return;
+        }
+
         if (dragEvent.getGestureSource() != grpMain && dragEvent.getDragboard().hasFiles()) {
             dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
         }
@@ -705,6 +710,11 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void onDragDropped(final DragEvent dragEvent) {
+        final Properties properties = settingsController.getProperties();
+        if (!Boolean.parseBoolean(properties.getProperty("dragDrop", "true"))) {
+            return;
+        }
+
         final Dragboard db = dragEvent.getDragboard();
         boolean success = false;
 
