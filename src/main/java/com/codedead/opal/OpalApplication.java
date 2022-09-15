@@ -34,11 +34,12 @@ public class OpalApplication extends Application {
      * @param args The application arguments
      */
     public static void main(final String[] args) {
+        Level logLevel = Level.ERROR;
         try (final FileInputStream fis = new FileInputStream(SharedVariables.PROPERTIES_FILE_LOCATION)) {
             final Properties prop = new Properties();
             prop.load(fis);
 
-            final Level level = switch (prop.getProperty("loglevel", "ERROR")) {
+            logLevel = switch (prop.getProperty("loglevel", "ERROR")) {
                 case "OFF" -> Level.OFF;
                 case "FATAL" -> Level.FATAL;
                 case "WARN" -> Level.WARN;
@@ -48,11 +49,11 @@ public class OpalApplication extends Application {
                 case "ALL" -> Level.ALL;
                 default -> Level.ERROR;
             };
-            Configurator.setAllLevels(LogManager.getRootLogger().getName(), level);
         } catch (final IOException ex) {
             logger.error("Properties object could not be loaded", ex);
         }
 
+        Configurator.setAllLevels(LogManager.getRootLogger().getName(), logLevel);
         launch(args);
     }
 
