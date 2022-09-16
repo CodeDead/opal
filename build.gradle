@@ -112,11 +112,11 @@ if (currentOS.isWindows()) {
 }
 
 dependencies {
-    implementation "org.openjfx:javafx-base:18.0.2:${platform}"
-    implementation "org.openjfx:javafx-controls:18.0.2:${platform}"
-    implementation "org.openjfx:javafx-graphics:18.0.2:${platform}"
-    implementation "org.openjfx:javafx-fxml:18.0.2:${platform}"
-    implementation "org.openjfx:javafx-media:18.0.2:${platform}"
+    implementation "org.openjfx:javafx-base:19:${platform}"
+    implementation "org.openjfx:javafx-controls:19:${platform}"
+    implementation "org.openjfx:javafx-graphics:19:${platform}"
+    implementation "org.openjfx:javafx-fxml:19:${platform}"
+    implementation "org.openjfx:javafx-media:19:${platform}"
     implementation 'org.apache.logging.log4j:log4j-core:2.18.0'
     implementation 'io.github.mkpaz:atlantafx-base:1.0.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
