@@ -38,59 +38,9 @@ public final class MainWindowController implements IAudioTimer {
     @FXML
     private GridPane grpControls;
     @FXML
-    private SoundPane snpGong;
-    @FXML
-    private SoundPane snpDrumTribal;
-    @FXML
-    private SoundPane snpSleepy;
-    @FXML
-    private SoundPane snpRugbyFootball;
-    @FXML
-    private SoundPane snpTribal;
-    @FXML
-    private SoundPane snpNetworkingEvent;
-    @FXML
-    private SoundPane snpZoo;
-    @FXML
-    private SoundPane snpCoffee;
-    @FXML
-    private SoundPane snpZen;
-    @FXML
-    private SoundPane snpFrogs;
-    @FXML
     private GridPane grpMain;
     @FXML
-    private SoundPane snpCave;
-    @FXML
-    private SoundPane snpFan;
-    @FXML
-    private SoundPane snpFantasy;
-    @FXML
     private CheckMenuItem mniTimerEnabled;
-    @FXML
-    private SoundPane snpStatic;
-    @FXML
-    private SoundPane snpFireplace;
-    @FXML
-    private SoundPane snpTraffic;
-    @FXML
-    private SoundPane snpChatter;
-    @FXML
-    private SoundPane snpTelephone;
-    @FXML
-    private SoundPane snpTyping;
-    @FXML
-    private SoundPane snpClock;
-    @FXML
-    private SoundPane snpBird;
-    @FXML
-    private SoundPane snpThunder;
-    @FXML
-    private SoundPane snpWind;
-    @FXML
-    private SoundPane snpRain;
-    @FXML
-    private SoundPane snpRiver;
     @FXML
     private MenuItem mniUpdate;
     @FXML
@@ -116,18 +66,16 @@ public final class MainWindowController implements IAudioTimer {
     @FXML
     private MenuItem mniOpenSoundPreset;
 
-    private final String platformName;
-    private final HelpUtils helpUtils;
-
     private SettingsController settingsController;
     private UpdateController updateController;
     private ResourceBundle translationBundle;
+    private TimerTask timerTask;
+    private boolean timerEnabled;
+    private final String platformName;
+    private final HelpUtils helpUtils;
     private final ObjectMapper objectMapper;
     private final Timer timer;
     private final IAudioTimer audioTimer;
-    private TimerTask timerTask;
-    private boolean timerEnabled;
-
     private final Logger logger;
 
     /**
@@ -196,31 +144,9 @@ public final class MainWindowController implements IAudioTimer {
      * @param visible True if the media button should be visible, otherwise false
      */
     public void loadMediaButtonVisibility(final boolean visible) {
-        snpRain.setMediaButton(visible);
-        snpWind.setMediaButton(visible);
-        snpThunder.setMediaButton(visible);
-        snpBird.setMediaButton(visible);
-        snpRiver.setMediaButton(visible);
-        snpTyping.setMediaButton(visible);
-        snpTelephone.setMediaButton(visible);
-        snpChatter.setMediaButton(visible);
-        snpTraffic.setMediaButton(visible);
-        snpClock.setMediaButton(visible);
-        snpFireplace.setMediaButton(visible);
-        snpStatic.setMediaButton(visible);
-        snpFantasy.setMediaButton(visible);
-        snpFan.setMediaButton(visible);
-        snpCave.setMediaButton(visible);
-        snpFrogs.setMediaButton(visible);
-        snpZen.setMediaButton(visible);
-        snpCoffee.setMediaButton(visible);
-        snpZoo.setMediaButton(visible);
-        snpSleepy.setMediaButton(visible);
-        snpGong.setMediaButton(visible);
-        snpNetworkingEvent.setMediaButton(visible);
-        snpTribal.setMediaButton(visible);
-        snpDrumTribal.setMediaButton(visible);
-        snpRugbyFootball.setMediaButton(visible);
+        for (final SoundPane p : getAllSoundPanes(grpControls)) {
+            p.setMediaButton(visible);
+        }
     }
 
     /**
