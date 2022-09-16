@@ -1,5 +1,9 @@
 package com.codedead.opal;
 
+import atlantafx.base.theme.NordDark;
+import atlantafx.base.theme.NordLight;
+import atlantafx.base.theme.PrimerDark;
+import atlantafx.base.theme.PrimerLight;
 import com.codedead.opal.controller.UpdateController;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.SharedVariables;
@@ -76,12 +80,18 @@ public class OpalApplication extends Application {
         }
 
         final Properties properties = settingsController.getProperties();
-
-        logger.info("Finished creating the SettingsController");
-
         final String languageTag = properties.getProperty("locale", DEFAULT_LOCALE);
 
-        logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
+        final String theme = properties.getProperty("theme", "light");
+        if (theme.equalsIgnoreCase("dark")) {
+            Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+        } else if (theme.equalsIgnoreCase("nordlight")) {
+            Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
+        } else if (theme.equalsIgnoreCase("norddark")) {
+            Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+        } else {
+            Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+        }
 
         final Locale locale = Locale.forLanguageTag(languageTag);
         final ResourceBundle translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);

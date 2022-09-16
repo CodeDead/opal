@@ -64,7 +64,7 @@
         </Menu>
     </MenuBar>
 
-    <ScrollPane GridPane.rowIndex="1" fitToHeight="true" fitToWidth="true" style="-fx-background-color:transparent;">
+    <ScrollPane GridPane.rowIndex="1" fitToHeight="true" fitToWidth="true">
         <GridPane fx:id="grpControls">
             <rowConstraints>
                 <RowConstraints/>
@@ -92,8 +92,7 @@
                 </GridPane.margin>
             </Label>
 
-            <GridPane GridPane.rowIndex="1" GridPane.columnIndex="1"
-                      style="-fx-background-color: white;-fx-background-radius: 10px;">
+            <GridPane GridPane.rowIndex="1" GridPane.columnIndex="1">
                 <rowConstraints>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
@@ -148,8 +147,7 @@
                 </GridPane.margin>
             </Label>
 
-            <GridPane GridPane.rowIndex="3" GridPane.columnIndex="1"
-                      style="-fx-background-color: white;-fx-background-radius: 10px;">
+            <GridPane GridPane.rowIndex="3" GridPane.columnIndex="1">
                 <rowConstraints>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
@@ -196,8 +194,7 @@
                 </GridPane.margin>
             </Label>
 
-            <GridPane GridPane.rowIndex="5" GridPane.columnIndex="1"
-                      style="-fx-background-color: white;-fx-background-radius: 10px;">
+            <GridPane GridPane.rowIndex="5" GridPane.columnIndex="1">
                 <rowConstraints>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
@@ -232,8 +229,7 @@
                 </GridPane.margin>
             </Label>
 
-            <GridPane GridPane.rowIndex="7" GridPane.columnIndex="1"
-                      style="-fx-background-color: white;-fx-background-radius: 10px;">
+            <GridPane GridPane.rowIndex="7" GridPane.columnIndex="1">
                 <GridPane.margin>
                     <Insets bottom="10"/>
                 </GridPane.margin>
