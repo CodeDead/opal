@@ -1,8 +1,13 @@
 package com.codedead.opal.controller;
 
+import atlantafx.base.theme.NordDark;
+import atlantafx.base.theme.NordLight;
+import atlantafx.base.theme.PrimerDark;
+import atlantafx.base.theme.PrimerLight;
 import com.codedead.opal.domain.NumberTextField;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.SharedVariables;
+import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -23,6 +28,8 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
 public final class SettingsWindowController {
 
+    @FXML
+    private ComboBox<String> cboTheme;
     @FXML
     private CheckBox chbDragDrop;
     @FXML
@@ -106,6 +113,7 @@ public final class SettingsWindowController {
         final String logLevel = properties.getProperty("loglevel", "INFO");
         long timerDelay = Long.parseLong(properties.getProperty("timerDelay", "3600000"));
         final int delayType = Integer.parseInt(properties.getProperty("timerDelayType", "0"));
+        final String theme = properties.getProperty("theme", "light");
 
         if (timerDelay < 1) {
             timerDelay = 1;
@@ -142,8 +150,24 @@ public final class SettingsWindowController {
                 translationBundle.getString("Hours")
         );
 
+        final ObservableList<String> themes = FXCollections.observableArrayList(
+                translationBundle.getString("Light"),
+                translationBundle.getString("Dark"),
+                translationBundle.getString("NordLight"),
+                translationBundle.getString("NordDark")
+        );
+
         cboDelayType.setItems(options);
         cboDelayType.getSelectionModel().select(delayType);
+
+        final int themeIndex = switch (theme) {
+            case "dark" -> 1;
+            case "nordlight" -> 2;
+            case "norddark" -> 3;
+            default -> 0;
+        };
+        cboTheme.setItems(themes);
+        cboTheme.getSelectionModel().select(themeIndex);
 
         final long correctDelay = switch (delayType) {
             case 0 -> TimeUnit.MILLISECONDS.toSeconds(timerDelay);
@@ -164,6 +188,7 @@ public final class SettingsWindowController {
         if (FxUtils.showConfirmationAlert(translationBundle.getString("ConfirmReset"), getClass().getResourceAsStream(SharedVariables.ICON_URL))) {
             showAlertIfLanguageMismatch(DEFAULT_LOCALE);
 
+            Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
             try {
                 settingsController.createDefaultProperties();
                 settingsController.setProperties(settingsController.readPropertiesFile());
@@ -198,6 +223,25 @@ public final class SettingsWindowController {
             case 4 -> properties.setProperty("locale", "nl-NL");
             case 5 -> properties.setProperty("locale", "ru-RU");
             default -> properties.setProperty("locale", DEFAULT_LOCALE);
+        }
+
+        switch (cboTheme.getSelectionModel().getSelectedIndex()) {
+            case 1:
+                properties.setProperty("theme", "dark");
+                Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+                break;
+            case 2:
+                properties.setProperty("theme", "nordlight");
+                Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
+                break;
+            case 3:
+                properties.setProperty("theme", "norddark");
+                Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+                break;
+            default:
+                properties.setProperty("theme", "light");
+                Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+                break;
         }
 
         properties.setProperty("loglevel", cboLogLevel.getValue());

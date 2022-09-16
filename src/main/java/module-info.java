@@ -8,6 +8,7 @@ module Opal {
     requires org.apache.logging.log4j.core;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
+    requires atlantafx.base;
 
     opens com.codedead.opal.controller to javafx.fxml;
     opens com.codedead.opal.domain to javafx.fxml, com.fasterxml.jackson.databind;

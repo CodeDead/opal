@@ -1,6 +1,6 @@
 # Opal
 
-![Opal](https://i.imgur.com/eIFALLL.png)
+![Opal](https://i.imgur.com/q7h3Ekm.png)
 
 ![GitHub](https://img.shields.io/badge/language-Java-green)
 ![GitHub](https://img.shields.io/github/license/CodeDead/opal)
@@ -65,7 +65,7 @@ The following dependencies are universal:
 * [FasterXML/jackson](https://github.com/FasterXML/jackson)
 * [badass-jlink-plugin](https://github.com/beryx/badass-jlink-plugin)
 * [Log4j2](https://logging.apache.org/log4j/2.x/)
-
+* [AtlantaFX](https://github.com/mkpaz/atlantafx)
 ### Windows
 
 #### MSI

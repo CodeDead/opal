@@ -17,7 +17,7 @@
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.codedead.opal.controller.SettingsWindowController"
-          prefHeight="250.0" prefWidth="400.0">
+          prefHeight="320.0" prefWidth="400.0">
 
     <rowConstraints>
         <RowConstraints vgrow="ALWAYS"/>
@@ -36,6 +36,7 @@
             </graphic>
             <GridPane alignment="CENTER">
                 <rowConstraints>
+                    <RowConstraints/>
                     <RowConstraints/>
                     <RowConstraints/>
                     <RowConstraints/>
@@ -82,17 +83,28 @@
                             <String fx:value="Español"/>
                             <String fx:value="Français"/>
                             <String fx:value="Nederlands"/>
-                            <String fx:value="русский"/>
+                            <String fx:value="Русский"/>
                         </FXCollections>
                     </items>
                 </ComboBox>
 
-                <Label GridPane.rowIndex="4" GridPane.columnIndex="0" text="%LogLevel">
+                <Label GridPane.rowIndex="4" GridPane.columnIndex="0" text="%Theme">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </Label>
-                <ComboBox fx:id="cboLogLevel" GridPane.rowIndex="4" GridPane.columnIndex="1" maxWidth="Infinity">
+                <ComboBox fx:id="cboTheme" GridPane.rowIndex="4" GridPane.columnIndex="1" maxWidth="Infinity">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </ComboBox>
+
+                <Label GridPane.rowIndex="5" GridPane.columnIndex="0" text="%LogLevel">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </Label>
+                <ComboBox fx:id="cboLogLevel" GridPane.rowIndex="5" GridPane.columnIndex="1" maxWidth="Infinity">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
