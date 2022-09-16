@@ -17,6 +17,7 @@
 <?import javafx.scene.text.Font?>
 
 <?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.Separator?>
 <GridPane
         prefHeight="370"
         prefWidth="560"
@@ -75,6 +76,10 @@
                 <RowConstraints/>
                 <RowConstraints/>
                 <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
             </rowConstraints>
 
             <columnConstraints>
@@ -88,11 +93,17 @@
                     <Font name="System Bold" size="14"/>
                 </font>
                 <GridPane.margin>
-                    <Insets left="5" right="5" bottom="10" top="10"/>
+                    <Insets left="5" right="5" top="10"/>
                 </GridPane.margin>
             </Label>
 
-            <GridPane GridPane.rowIndex="1" GridPane.columnIndex="1">
+            <Separator GridPane.rowIndex="1" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="3.0" left="5" right="5"/>
+                </GridPane.margin>
+            </Separator>
+
+            <GridPane GridPane.rowIndex="2" GridPane.columnIndex="1">
                 <rowConstraints>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
@@ -138,16 +149,22 @@
                            image="/images/zoo.png"/>
             </GridPane>
 
-            <Label GridPane.rowIndex="2" GridPane.columnIndex="1" text="%Office">
+            <Label GridPane.rowIndex="3" GridPane.columnIndex="1" text="%Office">
                 <font>
                     <Font name="System Bold" size="14"/>
                 </font>
                 <GridPane.margin>
-                    <Insets left="5" right="5" bottom="10" top="10"/>
+                    <Insets left="5" right="5" top="10"/>
                 </GridPane.margin>
             </Label>
 
-            <GridPane GridPane.rowIndex="3" GridPane.columnIndex="1">
+            <Separator GridPane.rowIndex="4" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="3.0" left="5" right="5"/>
+                </GridPane.margin>
+            </Separator>
+
+            <GridPane GridPane.rowIndex="5" GridPane.columnIndex="1">
                 <rowConstraints>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
@@ -185,16 +202,22 @@
                            image="/images/coffee.png"/>
             </GridPane>
 
-            <Label GridPane.rowIndex="4" GridPane.columnIndex="1" text="%Audiences">
+            <Label GridPane.rowIndex="6" GridPane.columnIndex="1" text="%Audiences">
                 <font>
                     <Font name="System Bold" size="14"/>
                 </font>
                 <GridPane.margin>
-                    <Insets left="5" right="5" bottom="10" top="10"/>
+                    <Insets left="5" right="5" top="10"/>
                 </GridPane.margin>
             </Label>
 
-            <GridPane GridPane.rowIndex="5" GridPane.columnIndex="1">
+            <Separator GridPane.rowIndex="7" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="3.0" left="5" right="5"/>
+                </GridPane.margin>
+            </Separator>
+
+            <GridPane GridPane.rowIndex="8" GridPane.columnIndex="1">
                 <rowConstraints>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
@@ -220,16 +243,22 @@
                            image="/images/rugbyfootball.png"/>
             </GridPane>
 
-            <Label GridPane.rowIndex="6" GridPane.columnIndex="1" text="%Other">
+            <Label GridPane.rowIndex="9" GridPane.columnIndex="1" text="%Other">
                 <font>
                     <Font name="System Bold" size="14"/>
                 </font>
                 <GridPane.margin>
-                    <Insets left="5" right="5" bottom="10" top="10"/>
+                    <Insets left="5" right="5" top="10"/>
                 </GridPane.margin>
             </Label>
 
-            <GridPane GridPane.rowIndex="7" GridPane.columnIndex="1">
+            <Separator GridPane.rowIndex="10" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="3.0" left="5" right="5"/>
+                </GridPane.margin>
+            </Separator>
+
+            <GridPane GridPane.rowIndex="11" GridPane.columnIndex="1">
                 <GridPane.margin>
                     <Insets bottom="10"/>
                 </GridPane.margin>
