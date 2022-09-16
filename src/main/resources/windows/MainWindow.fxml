@@ -223,6 +223,7 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -232,13 +233,16 @@
                 <SoundPane GridPane.rowIndex="0" name="%NetworkingEvent"
                            mediaKey="networking" mediaPath="/audio/networking.mp3"
                            image="/images/networking.png"/>
-                <SoundPane GridPane.rowIndex="1" name="%TribalFestival"
+                <SoundPane GridPane.rowIndex="1" name="%Restaurant"
+                           mediaKey="restaurant" mediaPath="/audio/restaurant.mp3"
+                           image="/images/restaurant.png"/>
+                <SoundPane GridPane.rowIndex="2" name="%TribalFestival"
                            mediaKey="tribal" mediaPath="/audio/tribal.mp3"
                            image="/images/tribal.png"/>
-                <SoundPane GridPane.rowIndex="2" name="%DrumTribalFestival"
+                <SoundPane GridPane.rowIndex="3" name="%DrumTribalFestival"
                            mediaKey="drumtribal" mediaPath="/audio/tribal2.mp3"
                            image="/images/tribal2.png"/>
-                <SoundPane GridPane.rowIndex="3" name="%RugbyFootball"
+                <SoundPane GridPane.rowIndex="4" name="%RugbyFootball"
                            mediaKey="rugbyfootball" mediaPath="/audio/football.mp3"
                            image="/images/rugbyfootball.png"/>
             </GridPane>
