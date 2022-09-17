@@ -14,10 +14,11 @@
 <?import com.codedead.opal.domain.NumberTextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.codedead.opal.controller.SettingsWindowController"
-          prefHeight="320.0" prefWidth="400.0">
+          prefHeight="320.0" prefWidth="450.0">
 
     <rowConstraints>
         <RowConstraints vgrow="ALWAYS"/>
@@ -27,7 +28,7 @@
         <ColumnConstraints hgrow="ALWAYS"/>
     </columnConstraints>
 
-    <TabPane GridPane.rowIndex="0" tabClosingPolicy="UNAVAILABLE">
+    <TabPane GridPane.rowIndex="0" tabClosingPolicy="UNAVAILABLE" side="LEFT">
         <Tab text="%General">
             <graphic>
                 <ImageView>
@@ -172,17 +173,25 @@
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS"/>
             <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints/>
         </columnConstraints>
 
-        <Button GridPane.columnIndex="0" minWidth="100" text="%Reset" onAction="#resetSettingsAction">
+        <Button GridPane.columnIndex="0" minWidth="100" text="%Reset"
+                onAction="#resetSettingsAction" styleClass="danger">
             <GridPane.margin>
                 <Insets bottom="5" left="5" right="5" top="5"/>
             </GridPane.margin>
         </Button>
-        <Button GridPane.columnIndex="1" GridPane.halignment="RIGHT" minWidth="100" text="%Save"
-                onAction="#saveSettingsAction">
+        <Button GridPane.columnIndex="1" GridPane.halignment="RIGHT" minWidth="100" text="%Cancel"
+                onAction="#cancelAction">
             <GridPane.margin>
-                <Insets bottom="5" left="5" right="5" top="5"/>
+                <Insets bottom="5" right="5" top="5"/>
+            </GridPane.margin>
+        </Button>
+        <Button GridPane.columnIndex="2" GridPane.halignment="RIGHT" minWidth="100" text="%Save"
+                onAction="#saveSettingsAction" styleClass="success">
+            <GridPane.margin>
+                <Insets bottom="5" top="5" right="5"/>
             </GridPane.margin>
         </Button>
     </GridPane>
