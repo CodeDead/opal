@@ -52,6 +52,20 @@ public final class SoundPane extends GridPane {
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
         fxmlLoader.load();
+    }
+
+    /**
+     * Method that is invoked to initialize the FXML object
+     */
+    @FXML
+    private void initialize() {
+        sldVolume.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue.doubleValue() == 0 && (oldValue != null && oldValue.doubleValue() != 0)) {
+                pause();
+            } else if (newValue != null && newValue.doubleValue() > 0 && (oldValue != null && oldValue.doubleValue() == 0)) {
+                play();
+            }
+        });
 
         mediaPath.addListener(new ChangeListener<>() {
             @Override
@@ -75,20 +89,6 @@ public final class SoundPane extends GridPane {
                         throw new RuntimeException(e);
                     }
                 }
-            }
-        });
-    }
-
-    /**
-     * Method that is invoked to initialize the FXML object
-     */
-    @FXML
-    private void initialize() {
-        sldVolume.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && newValue.doubleValue() == 0 && (oldValue != null && oldValue.doubleValue() != 0)) {
-                pause();
-            } else if (newValue != null && newValue.doubleValue() > 0 && (oldValue != null && oldValue.doubleValue() == 0)) {
-                play();
             }
         });
     }
