@@ -9,7 +9,7 @@
                      filePattern="${sys:user.home}/${basePath}/opal-info-%d{yyyy-MM-dd}.log.gz"
                      ignoreExceptions="false">
             <PatternLayout>
-                <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1}\t-\t%msg%n</pattern>
+                <pattern>[%level][%d{yyyy-MM-dd HH:mm:ss.SSS}][%t] %c{1}\t-\t%msg%n</pattern>
             </PatternLayout>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"/>
@@ -27,7 +27,7 @@
         </RollingFile>
 
         <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1}\t-\t%msg%n"/>
+            <PatternLayout pattern="[%level][%d{yyyy-MM-dd HH:mm:ss.SSS}][%t] %c{1}\t-\t%msg%n"/>
         </Console>
     </Appenders>
     <Loggers>

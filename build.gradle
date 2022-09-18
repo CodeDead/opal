@@ -30,6 +30,15 @@ jlink {
         name = 'Opal'
     }
 
+    mergedModule {
+        additive = true
+        uses 'org.apache.logging.log4j.util.PropertySource';
+        uses 'org.apache.logging.log4j.core.util.ContextDataProvider';
+        uses 'org.apache.logging.log4j.core.util.WatchEventService';
+        uses 'org.apache.logging.log4j.spi.Provider';
+        uses 'org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory';
+    }
+
     if (currentOS.isWindows()) {
         jpackage {
             installerType = 'msi'
@@ -117,7 +126,7 @@ dependencies {
     implementation "org.openjfx:javafx-graphics:19:${platform}"
     implementation "org.openjfx:javafx-fxml:19:${platform}"
     implementation "org.openjfx:javafx-media:19:${platform}"
-    implementation 'org.apache.logging.log4j:log4j-core:2.18.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
     implementation 'io.github.mkpaz:atlantafx-base:1.0.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
