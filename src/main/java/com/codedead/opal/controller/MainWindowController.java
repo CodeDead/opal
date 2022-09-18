@@ -334,6 +334,7 @@ public final class MainWindowController implements IAudioTimer {
         popup.addSeparator();
         popup.add(exitItem);
 
+        localTrayIcon.setToolTip("Opal");
         localTrayIcon.setPopupMenu(popup);
         localTrayIcon.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
