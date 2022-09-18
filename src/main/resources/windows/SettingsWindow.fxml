@@ -90,6 +90,7 @@
                             <String fx:value="Deutsch"/>
                             <String fx:value="Español"/>
                             <String fx:value="Français"/>
+                            <String fx:value="日本"/>
                             <String fx:value="Nederlands"/>
                             <String fx:value="Русский"/>
                         </FXCollections>
