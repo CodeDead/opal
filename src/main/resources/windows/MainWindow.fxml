@@ -277,6 +277,7 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -301,6 +302,9 @@
                 <SoundPane GridPane.rowIndex="5" name="%Space"
                            mediaKey="space" mediaPath="/audio/space.mp3"
                            image="/images/space.png"/>
+                <SoundPane GridPane.rowIndex="6" name="%Train"
+                           mediaKey="train" mediaPath="/audio/train.mp3"
+                           image="/images/train.png"/>
             </GridPane>
         </GridPane>
     </ScrollPane>
