@@ -37,9 +37,8 @@ public final class HelpUtils {
 
         final Path filePath = Paths.get(runnableFileOpener.getFileLocation());
 
-        if (!Files.exists(filePath)) {
+        if (!Files.exists(filePath))
             throw new FileNotFoundException(String.format("File (%s) does not exist!", runnableFileOpener.getFileLocation()));
-        }
 
         new Thread(runnableFileOpener).start();
     }
