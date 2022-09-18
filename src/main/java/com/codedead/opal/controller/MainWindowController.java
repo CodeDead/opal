@@ -9,14 +9,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -47,30 +43,6 @@ public final class MainWindowController implements IAudioTimer {
     private GridPane grpMain;
     @FXML
     private CheckMenuItem mniTimerEnabled;
-    @FXML
-    private MenuItem mniUpdate;
-    @FXML
-    private MenuItem mniHomepage;
-    @FXML
-    private MenuItem mniLicense;
-    @FXML
-    private MenuItem mniDonate;
-    @FXML
-    private MenuItem mniAbout;
-    @FXML
-    private MenuItem mniHelp;
-    @FXML
-    private Menu mnuTimer;
-    @FXML
-    private MenuItem mniSettings;
-    @FXML
-    private MenuItem mniExit;
-    @FXML
-    private MenuItem mniReset;
-    @FXML
-    private MenuItem mniSaveSoundPreset;
-    @FXML
-    private MenuItem mniOpenSoundPreset;
 
     private TrayIcon trayIcon;
     private SettingsController settingsController;
@@ -151,9 +123,7 @@ public final class MainWindowController implements IAudioTimer {
      * @param visible True if the media button should be visible, otherwise false
      */
     public void loadMediaButtonVisibility(final boolean visible) {
-        for (final SoundPane p : getAllSoundPanes(grpControls)) {
-            p.setMediaButton(visible);
-        }
+        getAllSoundPanes(grpControls).forEach(s -> s.setMediaButton(visible));
     }
 
     /**
@@ -223,14 +193,12 @@ public final class MainWindowController implements IAudioTimer {
             throw new NullPointerException("GridPane cannot be null!");
 
         final List<SoundPane> elements = new ArrayList<>();
-        for (final Node node : parent.getChildren()) {
-            if (node instanceof GridPane p) {
+        parent.getChildren().forEach(e -> {
+            if (e instanceof GridPane p)
                 elements.addAll(getAllSoundPanes(p));
-            }
-            if (node instanceof SoundPane s) {
+            if (e instanceof SoundPane s)
                 elements.add(s);
-            }
-        }
+        });
         return elements;
     }
 
@@ -274,19 +242,6 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void initialize() {
-        mniOpenSoundPreset.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/open.png")))));
-        mniSaveSoundPreset.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/save.png")))));
-        mniReset.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/refresh.png")))));
-        mniExit.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/remove.png")))));
-        mniSettings.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/settings.png")))));
-        mniAbout.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/about.png")))));
-        mniDonate.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/donate.png")))));
-        mniLicense.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/license.png")))));
-        mniHomepage.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/home.png")))));
-        mniUpdate.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/update.png")))));
-        mniHelp.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/help.png")))));
-        mnuTimer.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/timer.png")))));
-
         mniTimerEnabled.setOnAction(e ->
         {
             if (mniTimerEnabled.isSelected()) {
@@ -446,9 +401,7 @@ public final class MainWindowController implements IAudioTimer {
             final Map<String, Double> mediaVolumes = objectMapper.readValue(actual, typeRef);
             final List<SoundPane> soundPanes = getAllSoundPanes(grpControls);
 
-            for (final Map.Entry<String, Double> entry : mediaVolumes.entrySet()) {
-                soundPanes.stream().filter(e -> e.getMediaKey().equals(entry.getKey())).forEach(e -> e.getSlider().setValue(entry.getValue()));
-            }
+            mediaVolumes.forEach((key, value) -> soundPanes.stream().filter(e -> e.getMediaKey().equals(key)).forEach(e -> e.getSlider().setValue(value)));
         } catch (final IOException ex) {
             logger.error("Unable to open the sound preset from {}", path, ex);
             FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
@@ -475,9 +428,7 @@ public final class MainWindowController implements IAudioTimer {
             }
 
             final Map<String, Double> mediaVolumes = new HashMap<>();
-            for (final SoundPane p : getAllSoundPanes(grpControls)) {
-                mediaVolumes.put(p.getMediaKey(), p.getSlider().getValue());
-            }
+            getAllSoundPanes(grpControls).forEach(e -> mediaVolumes.put(e.getMediaKey(), e.getSlider().getValue()));
 
             try {
                 objectMapper.writeValue(new File(filePath), mediaVolumes);
@@ -496,11 +447,7 @@ public final class MainWindowController implements IAudioTimer {
     @FXML
     private void resetAction() {
         logger.info("Resetting all audio sliders");
-
-        final List<SoundPane> soundPanes = getAllSoundPanes(grpControls);
-        for (final SoundPane p : soundPanes) {
-            p.getSlider().setValue(0);
-        }
+        getAllSoundPanes(grpControls).forEach(e -> e.getSlider().setValue(0));
     }
 
     /**
@@ -535,7 +482,7 @@ public final class MainWindowController implements IAudioTimer {
 
             logger.info("Showing the SettingsWindow");
             primaryStage.show();
-        } catch (final IOException | NumberFormatException ex) {
+        } catch (final IOException ex) {
             logger.error("Unable to open the SettingsWindow", ex);
             FxUtils.showErrorAlert(translationBundle.getString("SettingsWindowError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
@@ -671,7 +618,7 @@ public final class MainWindowController implements IAudioTimer {
             final Parent root = loader.load();
 
             final AboutWindowController aboutWindowController = loader.getController();
-            aboutWindowController.setSettingsController(getSettingsController());
+            aboutWindowController.setResourceBundle(translationBundle);
 
             final Stage primaryStage = new Stage();
 
@@ -681,7 +628,7 @@ public final class MainWindowController implements IAudioTimer {
 
             logger.info("Showing the AboutWindow");
             primaryStage.show();
-        } catch (final IOException | NumberFormatException ex) {
+        } catch (final IOException ex) {
             logger.error("Unable to open the AboutWindow", ex);
             FxUtils.showErrorAlert(translationBundle.getString("AboutWindowError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
@@ -700,9 +647,7 @@ public final class MainWindowController implements IAudioTimer {
      */
     @Override
     public void fired() {
-        for (final SoundPane p : getAllSoundPanes(grpControls)) {
-            p.pause();
-        }
+        getAllSoundPanes(grpControls).forEach(SoundPane::pause);
         mniTimerEnabled.setSelected(false);
 
         if (Boolean.parseBoolean(settingsController.getProperties().getProperty("timerApplicationShutdown", "false"))) {
@@ -725,10 +670,8 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void onDragOver(final DragEvent dragEvent) {
-        final Properties properties = settingsController.getProperties();
-        if (!Boolean.parseBoolean(properties.getProperty("dragDrop", "true"))) {
+        if (!Boolean.parseBoolean(settingsController.getProperties().getProperty("dragDrop", "true")))
             return;
-        }
 
         if (dragEvent.getGestureSource() != grpMain && dragEvent.getDragboard().hasFiles()) {
             dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
@@ -743,10 +686,8 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void onDragDropped(final DragEvent dragEvent) {
-        final Properties properties = settingsController.getProperties();
-        if (!Boolean.parseBoolean(properties.getProperty("dragDrop", "true"))) {
+        if (!Boolean.parseBoolean(settingsController.getProperties().getProperty("dragDrop", "true")))
             return;
-        }
 
         final Dragboard db = dragEvent.getDragboard();
         boolean success = false;

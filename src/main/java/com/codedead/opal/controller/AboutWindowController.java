@@ -11,15 +11,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.Locale;
-import java.util.Properties;
 import java.util.ResourceBundle;
-
-import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
 public final class AboutWindowController {
 
-    private SettingsController settingsController;
     private ResourceBundle translationBundle;
     private final HelpUtils helpUtils;
     private final Logger logger;
@@ -35,32 +30,15 @@ public final class AboutWindowController {
     }
 
     /**
-     * Get the {@link SettingsController} object
+     * Set the resource bundle
      *
-     * @return The {@link SettingsController} object
+     * @param resourceBundle The {@link ResourceBundle} object
      */
-    public SettingsController getSettingsController() {
-        return settingsController;
-    }
+    public void setResourceBundle(final ResourceBundle resourceBundle) {
+        if (resourceBundle == null)
+            throw new NullPointerException("ResourceBundle cannot be null");
 
-    /**
-     * Set the {@link SettingsController} object
-     *
-     * @param settingsController The {@link SettingsController} object
-     */
-    public void setSettingsController(final SettingsController settingsController) {
-        if (settingsController == null)
-            throw new NullPointerException("SettingsController cannot be null!");
-
-        this.settingsController = settingsController;
-
-        final Properties properties = settingsController.getProperties();
-        final String languageTag = properties.getProperty("locale", DEFAULT_LOCALE);
-
-        logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
-
-        final Locale locale = Locale.forLanguageTag(languageTag);
-        translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
+        this.translationBundle = resourceBundle;
     }
 
     /**

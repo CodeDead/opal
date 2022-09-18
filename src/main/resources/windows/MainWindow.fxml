@@ -18,6 +18,8 @@
 
 <?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <GridPane
         prefHeight="370"
         prefWidth="560"
@@ -39,29 +41,100 @@
 
     <MenuBar GridPane.rowIndex="0">
         <Menu text="%File">
-            <MenuItem fx:id="mniOpenSoundPreset" onAction="#openSoundPresetAction" text="%OpenSoundPreset"/>
-            <MenuItem fx:id="mniSaveSoundPreset" onAction="#saveSoundPresetAction" text="%SaveSoundPreset"/>
+            <MenuItem onAction="#openSoundPresetAction" text="%OpenSoundPreset">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/open.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
+            <MenuItem onAction="#saveSoundPresetAction" text="%SaveSoundPreset">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/save.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
             <SeparatorMenuItem/>
-            <MenuItem fx:id="mniReset" onAction="#resetAction" text="%Reset"/>
+            <MenuItem onAction="#resetAction" text="%Reset">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/refresh.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
             <SeparatorMenuItem/>
-            <MenuItem fx:id="mniExit" onAction="#exitAction" text="%Exit"/>
+            <MenuItem onAction="#exitAction" text="%Exit">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/remove.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
         </Menu>
         <Menu text="%Tools">
-            <MenuItem fx:id="mniSettings" onAction="#settingsAction" text="%Settings"/>
-            <Menu text="%Timer" fx:id="mnuTimer">
+            <MenuItem onAction="#settingsAction" text="%Settings">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/settings.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
+            <Menu text="%Timer">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/timer.png"/>
+                    </ImageView>
+                </graphic>
                 <CheckMenuItem fx:id="mniTimerEnabled" text="%Enabled"/>
             </Menu>
         </Menu>
         <Menu text="%HelpMenu">
-            <MenuItem fx:id="mniHelp" onAction="#helpAction" text="%Help"/>
+            <MenuItem onAction="#helpAction" text="%Help">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/help.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
             <SeparatorMenuItem/>
-            <MenuItem fx:id="mniUpdate" onAction="#updateAction" text="%CheckForUpdates"/>
+            <MenuItem onAction="#updateAction" text="%CheckForUpdates">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/update.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
             <SeparatorMenuItem/>
-            <MenuItem fx:id="mniHomepage" onAction="#homepageAction" text="%Homepage"/>
-            <MenuItem fx:id="mniLicense" onAction="#licenseAction" text="%License"/>
+            <MenuItem onAction="#homepageAction" text="%Homepage">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/home.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
+            <MenuItem onAction="#licenseAction" text="%License">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/license.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
             <SeparatorMenuItem/>
-            <MenuItem fx:id="mniDonate" onAction="#donateAction" text="%Donate"/>
-            <MenuItem fx:id="mniAbout" onAction="#aboutAction" text="%About"/>
+            <MenuItem onAction="#donateAction" text="%Donate">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/donate.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
+            <MenuItem onAction="#aboutAction" text="%About">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/about.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
         </Menu>
     </MenuBar>
 
