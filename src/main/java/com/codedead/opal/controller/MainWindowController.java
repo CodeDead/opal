@@ -13,6 +13,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -25,11 +27,15 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.List;
 
 import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
@@ -66,6 +72,7 @@ public final class MainWindowController implements IAudioTimer {
     @FXML
     private MenuItem mniOpenSoundPreset;
 
+    private TrayIcon trayIcon;
     private SettingsController settingsController;
     private UpdateController updateController;
     private ResourceBundle translationBundle;
@@ -267,8 +274,6 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void initialize() {
-        logger.info("Initializing MainWindow");
-
         mniOpenSoundPreset.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/open.png")))));
         mniSaveSoundPreset.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/save.png")))));
         mniReset.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/refresh.png")))));
@@ -293,6 +298,98 @@ public final class MainWindowController implements IAudioTimer {
                 cancelTimer();
             }
         });
+    }
+
+    /**
+     * Create a tray icon
+     *
+     * @throws IOException When the {@link TrayIcon} could not be created
+     */
+    public void createTrayIcon() throws IOException {
+        if (!SystemTray.isSupported()) {
+            logger.warn("SystemTray is not supported");
+            return;
+        }
+
+        final SystemTray tray = SystemTray.getSystemTray();
+        final Dimension trayIconSize = tray.getTrayIconSize();
+        final PopupMenu popup = new PopupMenu();
+        final BufferedImage trayIconImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/opal.png")));
+        final TrayIcon localTrayIcon = new TrayIcon(trayIconImage.getScaledInstance(trayIconSize.width, trayIconSize.height, java.awt.Image.SCALE_SMOOTH));
+        final java.awt.MenuItem displayItem = new java.awt.MenuItem(translationBundle.getString("Display"));
+        final java.awt.MenuItem settingsItem = new java.awt.MenuItem(translationBundle.getString("Settings"));
+        final java.awt.MenuItem aboutItem = new java.awt.MenuItem(translationBundle.getString("About"));
+        final java.awt.MenuItem exitItem = new java.awt.MenuItem(translationBundle.getString("Exit"));
+
+        // Platform.runLater to run on the JavaFX thread
+        displayItem.addActionListener(e -> Platform.runLater(this::hideShowStage));
+        settingsItem.addActionListener(e -> Platform.runLater(this::settingsAction));
+        aboutItem.addActionListener(e -> Platform.runLater(this::aboutAction));
+        exitItem.addActionListener(e -> Platform.runLater(this::exitAction));
+
+        popup.add(displayItem);
+        popup.addSeparator();
+        popup.add(settingsItem);
+        popup.add(aboutItem);
+        popup.addSeparator();
+        popup.add(exitItem);
+
+        localTrayIcon.setToolTip("Opal");
+        localTrayIcon.setPopupMenu(popup);
+        localTrayIcon.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(final java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
+                    Platform.runLater(() -> hideShowStage());
+                }
+            }
+        });
+
+        this.trayIcon = localTrayIcon;
+    }
+
+    /**
+     * Display the tray icon
+     */
+    public void showTrayIcon() {
+        if (trayIcon == null) {
+            logger.warn("TrayIcon cannot be null!");
+            return;
+        }
+
+        final SystemTray tray = SystemTray.getSystemTray();
+        try {
+            if (!Arrays.asList(tray.getTrayIcons()).contains(trayIcon)) {
+                tray.add(trayIcon);
+            }
+        } catch (final AWTException e) {
+            logger.error("TrayIcon could not be added", e);
+        }
+    }
+
+    /**
+     * Hide the tray icon
+     */
+    public void hideTrayIcon() {
+        if (trayIcon == null) {
+            logger.warn("TrayIcon cannot be null!");
+            return;
+        }
+
+        final SystemTray tray = SystemTray.getSystemTray();
+        tray.remove(trayIcon);
+    }
+
+    /**
+     * Hide the current stage
+     */
+    private void hideShowStage() {
+        final Stage stage = (Stage) grpControls.getScene().getWindow();
+        if (stage.isShowing()) {
+            stage.hide();
+        } else {
+            stage.show();
+        }
     }
 
     /**

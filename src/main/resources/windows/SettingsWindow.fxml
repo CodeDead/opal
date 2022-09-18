@@ -43,6 +43,7 @@
                     <RowConstraints/>
                     <RowConstraints/>
                     <RowConstraints/>
+                    <RowConstraints/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -68,12 +69,18 @@
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </CheckBox>
-                <Label GridPane.rowIndex="3" GridPane.columnIndex="0" text="%Language">
+                <CheckBox fx:id="chbTrayIcon" GridPane.columnSpan="2" GridPane.rowIndex="3"
+                          GridPane.columnIndex="0" text="%TrayIcon">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </CheckBox>
+                <Label GridPane.rowIndex="4" GridPane.columnIndex="0" text="%Language">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </Label>
-                <ComboBox fx:id="cboLanguage" GridPane.rowIndex="3" GridPane.columnIndex="1" maxWidth="Infinity">
+                <ComboBox fx:id="cboLanguage" GridPane.rowIndex="4" GridPane.columnIndex="1" maxWidth="Infinity">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
@@ -89,23 +96,23 @@
                     </items>
                 </ComboBox>
 
-                <Label GridPane.rowIndex="4" GridPane.columnIndex="0" text="%Theme">
+                <Label GridPane.rowIndex="5" GridPane.columnIndex="0" text="%Theme">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </Label>
-                <ComboBox fx:id="cboTheme" GridPane.rowIndex="4" GridPane.columnIndex="1" maxWidth="Infinity">
+                <ComboBox fx:id="cboTheme" GridPane.rowIndex="5" GridPane.columnIndex="1" maxWidth="Infinity">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </ComboBox>
 
-                <Label GridPane.rowIndex="5" GridPane.columnIndex="0" text="%LogLevel">
+                <Label GridPane.rowIndex="6" GridPane.columnIndex="0" text="%LogLevel">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </Label>
-                <ComboBox fx:id="cboLogLevel" GridPane.rowIndex="5" GridPane.columnIndex="1" maxWidth="Infinity">
+                <ComboBox fx:id="cboLogLevel" GridPane.rowIndex="6" GridPane.columnIndex="1" maxWidth="Infinity">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
@@ -176,6 +183,7 @@
             <ColumnConstraints/>
         </columnConstraints>
 
+        <!--suppress JavaFxUnresolvedStyleClassReference -->
         <Button GridPane.columnIndex="0" minWidth="100" text="%Reset"
                 onAction="#resetSettingsAction" styleClass="danger">
             <GridPane.margin>
@@ -183,11 +191,12 @@
             </GridPane.margin>
         </Button>
         <Button GridPane.columnIndex="1" GridPane.halignment="RIGHT" minWidth="100" text="%Cancel"
-                onAction="#cancelAction">
+                onAction="#cancelAction" cancelButton="true">
             <GridPane.margin>
                 <Insets bottom="5" right="5" top="5"/>
             </GridPane.margin>
         </Button>
+        <!--suppress JavaFxUnresolvedStyleClassReference -->
         <Button GridPane.columnIndex="2" GridPane.halignment="RIGHT" minWidth="100" text="%Save"
                 onAction="#saveSettingsAction" styleClass="success">
             <GridPane.margin>
