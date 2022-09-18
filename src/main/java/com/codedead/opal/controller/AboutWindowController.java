@@ -64,14 +64,6 @@ public final class AboutWindowController {
     }
 
     /**
-     * Method that is invoked to initialize the FXML object
-     */
-    @FXML
-    private void initialize() {
-        logger.info("Initializing AboutWindow");
-    }
-
-    /**
      * Method that is called when the close button is selected
      */
     @FXML

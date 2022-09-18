@@ -65,9 +65,11 @@ public class OpalApplication extends Application {
      * Method that is called by the JavaFX runtime
      *
      * @param primaryStage The initial Stage object
+     * @throws IOException When the {@link java.awt.TrayIcon} could not be created
      */
     @Override
-    public void start(final Stage primaryStage) {
+    public void start(final Stage primaryStage) throws IOException {
+        Platform.setImplicitExit(false);
         final SettingsController settingsController;
 
         try {
@@ -121,5 +123,11 @@ public class OpalApplication extends Application {
 
         logger.info("Showing the MainWindow");
         primaryStage.show();
+
+        // Load tray icons after displaying the main stage to display the proper icon in the task bar / activities bar (linux)
+        mainWindowController.createTrayIcon();
+        if (Boolean.parseBoolean(properties.getProperty("trayIcon", "false"))) {
+            mainWindowController.showTrayIcon();
+        }
     }
 }

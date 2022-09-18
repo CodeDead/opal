@@ -31,6 +31,8 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 public final class SettingsWindowController {
 
     @FXML
+    private CheckBox chbTrayIcon;
+    @FXML
     private ComboBox<String> cboTheme;
     @FXML
     private CheckBox chbDragDrop;
@@ -61,14 +63,6 @@ public final class SettingsWindowController {
     public SettingsWindowController() {
         logger = LogManager.getLogger(SettingsWindowController.class);
         logger.info("Initializing new SettingsWindowController object");
-    }
-
-    /**
-     * Method that is invoked to initialize the FXML object
-     */
-    @FXML
-    private void initialize() {
-        logger.info("Initializing SettingsWindow");
     }
 
     /**
@@ -165,6 +159,7 @@ public final class SettingsWindowController {
         chbAutoUpdate.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("autoUpdate", "true")));
         chbMediaButtons.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("mediaButtons", "true")));
         chbDragDrop.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("dragDrop", "true")));
+        chbTrayIcon.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("trayIcon", "false")));
         chbTimerApplicationShutdown.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("timerApplicationShutdown", "false")));
         cboDelayType.getSelectionModel().select(delayType);
         cboTheme.getSelectionModel().select(themeIndex);
@@ -185,6 +180,7 @@ public final class SettingsWindowController {
                 settingsController.createDefaultProperties();
                 settingsController.setProperties(settingsController.readPropertiesFile());
                 mainWindowController.loadMediaButtonVisibility(Boolean.parseBoolean(settingsController.getProperties().getProperty("mediaButtons", "true")));
+                mainWindowController.hideTrayIcon();
 
                 loadSettings();
             } catch (final IOException ex) {
@@ -204,7 +200,14 @@ public final class SettingsWindowController {
         settingsController.getProperties().setProperty("autoUpdate", Boolean.toString(chbAutoUpdate.isSelected()));
         settingsController.getProperties().setProperty("mediaButtons", Boolean.toString(chbMediaButtons.isSelected()));
         settingsController.getProperties().setProperty("dragDrop", Boolean.toString(chbDragDrop.isSelected()));
+        settingsController.getProperties().setProperty("trayIcon", Boolean.toString(chbTrayIcon.isSelected()));
+
         mainWindowController.loadMediaButtonVisibility(chbMediaButtons.isSelected());
+        if (chbTrayIcon.isSelected()) {
+            mainWindowController.showTrayIcon();
+        } else {
+            mainWindowController.hideTrayIcon();
+        }
 
         showAlertIfLanguageMismatch(settingsController.getProperties().getProperty("locale", DEFAULT_LOCALE));
 
