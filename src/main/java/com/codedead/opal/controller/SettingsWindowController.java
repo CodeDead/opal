@@ -204,7 +204,12 @@ public final class SettingsWindowController {
 
         mainWindowController.loadMediaButtonVisibility(chbMediaButtons.isSelected());
         if (chbTrayIcon.isSelected()) {
-            mainWindowController.showTrayIcon();
+            try {
+                mainWindowController.showTrayIcon();
+            } catch (final IOException ex) {
+                logger.error("Unable to create tray icon", ex);
+                FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            }
         } else {
             mainWindowController.hideTrayIcon();
         }

@@ -65,18 +65,17 @@ public class OpalApplication extends Application {
      * Method that is called by the JavaFX runtime
      *
      * @param primaryStage The initial Stage object
-     * @throws IOException When the {@link java.awt.TrayIcon} could not be created
      */
     @Override
-    public void start(final Stage primaryStage) throws IOException {
+    public void start(final Stage primaryStage) {
         Platform.setImplicitExit(false);
         final SettingsController settingsController;
 
         try {
             settingsController = new SettingsController(SharedVariables.PROPERTIES_FILE_LOCATION, SharedVariables.PROPERTIES_RESOURCE_LOCATION);
         } catch (final IOException ex) {
-            FxUtils.showErrorAlert("Exception occurred", ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             logger.error("Unable to initialize the SettingsController", ex);
+            FxUtils.showErrorAlert("Exception occurred", ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             Platform.exit();
             return;
         }
@@ -85,14 +84,11 @@ public class OpalApplication extends Application {
         final String languageTag = properties.getProperty("locale", DEFAULT_LOCALE);
 
         final String theme = properties.getProperty("theme", "light");
-        if (theme.equalsIgnoreCase("dark")) {
-            Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
-        } else if (theme.equalsIgnoreCase("nordlight")) {
-            Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
-        } else if (theme.equalsIgnoreCase("norddark")) {
-            Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
-        } else {
-            Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+        switch (theme.toLowerCase()) {
+            case "nordlight" -> Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
+            case "norddark" -> Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+            case "dark" -> Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+            default -> Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
         }
 
         final Locale locale = Locale.forLanguageTag(languageTag);
@@ -125,9 +121,13 @@ public class OpalApplication extends Application {
         primaryStage.show();
 
         // Load tray icons after displaying the main stage to display the proper icon in the task bar / activities bar (linux)
-        mainWindowController.createTrayIcon();
         if (Boolean.parseBoolean(properties.getProperty("trayIcon", "false"))) {
-            mainWindowController.showTrayIcon();
+            try {
+                mainWindowController.showTrayIcon();
+            } catch (final IOException ex) {
+                logger.error("Unable to create tray icon", ex);
+                FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            }
         }
     }
 }

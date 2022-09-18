@@ -305,7 +305,8 @@ public final class MainWindowController implements IAudioTimer {
      *
      * @throws IOException When the {@link TrayIcon} could not be created
      */
-    public void createTrayIcon() throws IOException {
+    private void createTrayIcon() throws IOException {
+        logger.info("Creating tray icon");
         if (!SystemTray.isSupported()) {
             logger.warn("SystemTray is not supported");
             return;
@@ -340,7 +341,7 @@ public final class MainWindowController implements IAudioTimer {
             @Override
             public void mouseClicked(final java.awt.event.MouseEvent evt) {
                 if (evt.getClickCount() == 2) {
-                    Platform.runLater(() -> hideShowStage());
+                    Platform.runLater(MainWindowController.this::hideShowStage);
                 }
             }
         });
@@ -350,11 +351,17 @@ public final class MainWindowController implements IAudioTimer {
 
     /**
      * Display the tray icon
+     *
+     * @throws IOException When the {@link TrayIcon} could not be created
      */
-    public void showTrayIcon() {
+    public void showTrayIcon() throws IOException {
+        logger.info("Displaying tray icon");
         if (trayIcon == null) {
-            logger.warn("TrayIcon cannot be null!");
-            return;
+            createTrayIcon();
+            if (trayIcon == null) {
+                logger.warn("TrayIcon cannot be null!");
+                return;
+            }
         }
 
         final SystemTray tray = SystemTray.getSystemTray();
@@ -371,6 +378,7 @@ public final class MainWindowController implements IAudioTimer {
      * Hide the tray icon
      */
     public void hideTrayIcon() {
+        logger.info("Hiding tray icon");
         if (trayIcon == null) {
             logger.warn("TrayIcon cannot be null!");
             return;
@@ -378,6 +386,8 @@ public final class MainWindowController implements IAudioTimer {
 
         final SystemTray tray = SystemTray.getSystemTray();
         tray.remove(trayIcon);
+
+        trayIcon = null;
     }
 
     /**
