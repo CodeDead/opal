@@ -40,8 +40,6 @@ public final class MainWindowController implements IAudioTimer {
     @FXML
     private GridPane grpControls;
     @FXML
-    private GridPane grpMain;
-    @FXML
     private CheckMenuItem mniTimerEnabled;
 
     private TrayIcon trayIcon;
@@ -673,9 +671,9 @@ public final class MainWindowController implements IAudioTimer {
         if (!Boolean.parseBoolean(settingsController.getProperties().getProperty("dragDrop", "true")))
             return;
 
-        if (dragEvent.getGestureSource() != grpMain && dragEvent.getDragboard().hasFiles()) {
+        if (dragEvent.getDragboard().hasFiles())
             dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-        }
+
         dragEvent.consume();
     }
 

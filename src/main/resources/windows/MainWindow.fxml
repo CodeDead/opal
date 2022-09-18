@@ -24,7 +24,6 @@
         prefHeight="370"
         prefWidth="560"
         xmlns:fx="http://javafx.com/fxml/1"
-        fx:id="grpMain"
         fx:controller="com.codedead.opal.controller.MainWindowController"
         onDragOver="#onDragOver"
         onDragDropped="#onDragDropped"
