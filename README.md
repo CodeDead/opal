@@ -1,6 +1,6 @@
 # Opal
 
-![Opal](https://i.imgur.com/R987DH7.png)
+![Opal](https://i.imgur.com/qMAV8yS.png)
 
 ![GitHub](https://img.shields.io/badge/language-Java-green)
 ![GitHub](https://img.shields.io/github/license/CodeDead/opal)

@@ -5,7 +5,7 @@ plugins {
     id 'idea'
     id 'eclipse'
     id 'application'
-    id "org.beryx.jlink" version "2.25.0"
+    id 'org.beryx.jlink' version '2.25.0'
 }
 
 group 'com.codedead'
@@ -14,8 +14,8 @@ version '1.0.3'
 def currentOS = DefaultNativePlatform.currentOperatingSystem
 
 java {
-    targetCompatibility = JavaVersion.VERSION_18
-    sourceCompatibility = JavaVersion.VERSION_18
+    targetCompatibility = JavaVersion.VERSION_19
+    sourceCompatibility = JavaVersion.VERSION_19
 }
 
 application {
@@ -86,11 +86,9 @@ task AppImage() {
             from '.AppImage/.AppDir/Opal.png'
             into "${buildDir}/AppImage/Opal.AppDir/usr/lib"
         }
-
         exec {
             commandLine 'sh', "${project.rootDir}/.AppImage/createAppImage.sh", "${project.version.toString()}"
         }
-
         delete "${buildDir}/AppImage/Opal.AppDir"
     }
 }
@@ -121,13 +119,13 @@ if (currentOS.isWindows()) {
 }
 
 dependencies {
-    implementation "org.openjfx:javafx-base:19:${platform}"
-    implementation "org.openjfx:javafx-controls:19:${platform}"
-    implementation "org.openjfx:javafx-graphics:19:${platform}"
-    implementation "org.openjfx:javafx-fxml:19:${platform}"
-    implementation "org.openjfx:javafx-media:19:${platform}"
+    implementation "org.openjfx:javafx-base:20-ea+4:${platform}"
+    implementation "org.openjfx:javafx-controls:20-ea+4:${platform}"
+    implementation "org.openjfx:javafx-graphics:20-ea+4:${platform}"
+    implementation "org.openjfx:javafx-fxml:20-ea+4:${platform}"
+    implementation "org.openjfx:javafx-media:20-ea+4:${platform}"
     implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
-    implementation 'io.github.mkpaz:atlantafx-base:1.0.0'
+    implementation 'io.github.mkpaz:atlantafx-base:1.1.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
