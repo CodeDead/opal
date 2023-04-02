@@ -283,7 +283,7 @@ public final class SoundPane extends GridPane {
      */
     @FXML
     private void playPause() {
-        if (this.mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+        if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
             pause();
         } else {
             play();
