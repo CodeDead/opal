@@ -350,6 +350,7 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -359,22 +360,25 @@
                 <SoundPane GridPane.rowIndex="0" name="%Static"
                            mediaKey="static" mediaPath="/audio/static.mp3"
                            image="/images/radio.png"/>
-                <SoundPane GridPane.rowIndex="1" name="%Fantasy"
+                <SoundPane GridPane.rowIndex="1" name="%WhiteNoise"
+                           mediaKey="whitenoise" mediaPath="/audio/whitenoise.mp3"
+                           image="/images/whitenoise.png"/>
+                <SoundPane GridPane.rowIndex="2" name="%Fantasy"
                            mediaKey="fantasy" mediaPath="/audio/fantasy.mp3"
                            image="/images/star.png"/>
-                <SoundPane GridPane.rowIndex="2" name="%Zen"
+                <SoundPane GridPane.rowIndex="3" name="%Zen"
                            mediaKey="zen" mediaPath="/audio/zen.mp3"
                            image="/images/zen.png"/>
-                <SoundPane GridPane.rowIndex="3" name="%Sleepy"
+                <SoundPane GridPane.rowIndex="4" name="%Sleepy"
                            mediaKey="sleepy" mediaPath="/audio/sleepy.mp3"
                            image="/images/sleepy.png"/>
-                <SoundPane GridPane.rowIndex="4" name="%Gong"
+                <SoundPane GridPane.rowIndex="5" name="%Gong"
                            mediaKey="gong" mediaPath="/audio/gong.mp3"
                            image="/images/gong.png"/>
-                <SoundPane GridPane.rowIndex="5" name="%Space"
+                <SoundPane GridPane.rowIndex="6" name="%Space"
                            mediaKey="space" mediaPath="/audio/space.mp3"
                            image="/images/space.png"/>
-                <SoundPane GridPane.rowIndex="6" name="%Train"
+                <SoundPane GridPane.rowIndex="7" name="%Train"
                            mediaKey="train" mediaPath="/audio/train.mp3"
                            image="/images/train.png"/>
             </GridPane>

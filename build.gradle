@@ -14,8 +14,8 @@ version '1.0.3'
 def currentOS = DefaultNativePlatform.currentOperatingSystem
 
 java {
-    targetCompatibility = JavaVersion.VERSION_19
-    sourceCompatibility = JavaVersion.VERSION_19
+    targetCompatibility = JavaVersion.VERSION_20
+    sourceCompatibility = JavaVersion.VERSION_20
 }
 
 application {
@@ -32,11 +32,11 @@ jlink {
 
     mergedModule {
         additive = true
-        uses 'org.apache.logging.log4j.util.PropertySource';
-        uses 'org.apache.logging.log4j.core.util.ContextDataProvider';
-        uses 'org.apache.logging.log4j.core.util.WatchEventService';
-        uses 'org.apache.logging.log4j.spi.Provider';
-        uses 'org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory';
+        uses 'org.apache.logging.log4j.util.PropertySource'
+        uses 'org.apache.logging.log4j.core.util.ContextDataProvider'
+        uses 'org.apache.logging.log4j.core.util.WatchEventService'
+        uses 'org.apache.logging.log4j.spi.Provider'
+        uses 'org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory'
     }
 
     if (currentOS.isWindows()) {
@@ -119,11 +119,11 @@ if (currentOS.isWindows()) {
 }
 
 dependencies {
-    implementation "org.openjfx:javafx-base:21-ea+5:${platform}"
-    implementation "org.openjfx:javafx-controls:21-ea+5:${platform}"
-    implementation "org.openjfx:javafx-graphics:21-ea+5:${platform}"
-    implementation "org.openjfx:javafx-fxml:21-ea+5:${platform}"
-    implementation "org.openjfx:javafx-media:21-ea+5:${platform}"
+    implementation "org.openjfx:javafx-base:20:${platform}"
+    implementation "org.openjfx:javafx-controls:20:${platform}"
+    implementation "org.openjfx:javafx-graphics:20:${platform}"
+    implementation "org.openjfx:javafx-fxml:20:${platform}"
+    implementation "org.openjfx:javafx-media:20:${platform}"
     implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
     implementation 'io.github.mkpaz:atlantafx-base:1.2.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
@@ -131,6 +131,6 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
 }
 
-test {
+tasks.named('test') {
     useJUnitPlatform()
 }

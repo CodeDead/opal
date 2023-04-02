@@ -28,6 +28,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -174,7 +175,7 @@ public final class MainWindowController implements IAudioTimer {
             logger.error("Unable to check for updates", ex);
             FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             Thread.currentThread().interrupt();
-        } catch (final IOException | InvalidHttpResponseCodeException ex) {
+        } catch (final IOException | InvalidHttpResponseCodeException | URISyntaxException ex) {
             logger.error("Unable to check for updates", ex);
             FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
