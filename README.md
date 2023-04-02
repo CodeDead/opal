@@ -5,6 +5,7 @@
 ![GitHub](https://img.shields.io/badge/language-Java-green)
 ![GitHub](https://img.shields.io/github/license/CodeDead/opal)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/CodeDead/opal)
+[![Build](https://github.com/CodeDead/opal/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/CodeDead/opal/actions/workflows/gradle-build.yml)
 
 Opal is a free and open-source [JavaFX](https://openjfx.io/) application that can play relaxing music in the background.
 
