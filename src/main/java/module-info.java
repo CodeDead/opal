@@ -4,6 +4,7 @@ module Opal {
     requires javafx.fxml;
     requires java.desktop;
     requires javafx.media;
+    requires jdk.crypto.ec;
     requires org.apache.logging.log4j;
     requires org.apache.logging.log4j.core;
     requires com.fasterxml.jackson.core;
