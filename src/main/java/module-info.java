@@ -4,7 +4,8 @@ module Opal {
     requires javafx.fxml;
     requires java.desktop;
     requires javafx.media;
-    requires jdk.crypto.ec;
+    //noinspection Java9RedundantRequiresStatement
+    requires jdk.crypto.ec; // Added for SSL handshakes
     requires org.apache.logging.log4j;
     requires org.apache.logging.log4j.core;
     requires com.fasterxml.jackson.core;
