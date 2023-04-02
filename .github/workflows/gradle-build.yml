@@ -29,3 +29,9 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         arguments: build
+
+    - name: Build an AppImage with Gradle
+      if: matrix.platform == 'ubuntu-latest'
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: AppImage
