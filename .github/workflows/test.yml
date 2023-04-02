@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Test build
 
 on:
   pull_request:
@@ -25,13 +25,22 @@ jobs:
           java-version: 20
           distribution: 'temurin'
 
-      - name: Build with Gradle
+      - name: Build
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
 
-      - name: Build an AppImage with Gradle
+      - name: Install dependencies
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: sudo apt-get install -y fuse libfuse2
+
+      - name: Build (AppImage)
         if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: gradle/gradle-build-action@v2
         with:
           arguments: AppImage
+
+      - name: Build (jlink)
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: jlink
