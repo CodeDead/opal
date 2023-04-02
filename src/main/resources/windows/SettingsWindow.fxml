@@ -14,10 +14,11 @@
 <?import com.codedead.opal.domain.NumberTextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.codedead.opal.controller.SettingsWindowController"
-          prefHeight="250.0" prefWidth="400.0">
+          prefHeight="320.0" prefWidth="450.0">
 
     <rowConstraints>
         <RowConstraints vgrow="ALWAYS"/>
@@ -27,7 +28,7 @@
         <ColumnConstraints hgrow="ALWAYS"/>
     </columnConstraints>
 
-    <TabPane GridPane.rowIndex="0" tabClosingPolicy="UNAVAILABLE">
+    <TabPane GridPane.rowIndex="0" tabClosingPolicy="UNAVAILABLE" side="LEFT">
         <Tab text="%General">
             <graphic>
                 <ImageView>
@@ -36,6 +37,10 @@
             </graphic>
             <GridPane alignment="CENTER">
                 <rowConstraints>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                    <RowConstraints/>
                     <RowConstraints/>
                     <RowConstraints/>
                     <RowConstraints/>
@@ -52,12 +57,30 @@
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </CheckBox>
-                <Label GridPane.rowIndex="1" GridPane.columnIndex="0" text="%Language">
+                <CheckBox fx:id="chbMediaButtons" GridPane.columnSpan="2" GridPane.rowIndex="1"
+                          GridPane.columnIndex="0" text="%MediaButtons">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </CheckBox>
+                <CheckBox fx:id="chbDragDrop" GridPane.columnSpan="2" GridPane.rowIndex="2"
+                          GridPane.columnIndex="0" text="%DragDrop">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </CheckBox>
+                <CheckBox fx:id="chbTrayIcon" GridPane.columnSpan="2" GridPane.rowIndex="3"
+                          GridPane.columnIndex="0" text="%TrayIcon">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </CheckBox>
+                <Label GridPane.rowIndex="4" GridPane.columnIndex="0" text="%Language">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </Label>
-                <ComboBox fx:id="cboLanguage" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity">
+                <ComboBox fx:id="cboLanguage" GridPane.rowIndex="4" GridPane.columnIndex="1" maxWidth="Infinity">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
@@ -67,18 +90,30 @@
                             <String fx:value="Deutsch"/>
                             <String fx:value="Español"/>
                             <String fx:value="Français"/>
+                            <String fx:value="日本"/>
                             <String fx:value="Nederlands"/>
-                            <String fx:value="русский"/>
+                            <String fx:value="Русский"/>
                         </FXCollections>
                     </items>
                 </ComboBox>
 
-                <Label GridPane.rowIndex="2" GridPane.columnIndex="0" text="%LogLevel">
+                <Label GridPane.rowIndex="5" GridPane.columnIndex="0" text="%Theme">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </Label>
-                <ComboBox fx:id="cboLogLevel" GridPane.rowIndex="2" GridPane.columnIndex="1" maxWidth="Infinity">
+                <ComboBox fx:id="cboTheme" GridPane.rowIndex="5" GridPane.columnIndex="1" maxWidth="Infinity">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </ComboBox>
+
+                <Label GridPane.rowIndex="6" GridPane.columnIndex="0" text="%LogLevel">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </Label>
+                <ComboBox fx:id="cboLogLevel" GridPane.rowIndex="6" GridPane.columnIndex="1" maxWidth="Infinity">
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
@@ -146,17 +181,27 @@
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS"/>
             <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints/>
         </columnConstraints>
 
-        <Button GridPane.columnIndex="0" minWidth="100" text="%Reset" onAction="#resetSettingsAction">
+        <!--suppress JavaFxUnresolvedStyleClassReference -->
+        <Button GridPane.columnIndex="0" minWidth="100" text="%Reset"
+                onAction="#resetSettingsAction" styleClass="danger">
             <GridPane.margin>
                 <Insets bottom="5" left="5" right="5" top="5"/>
             </GridPane.margin>
         </Button>
-        <Button GridPane.columnIndex="1" GridPane.halignment="RIGHT" minWidth="100" text="%Save"
-                onAction="#saveSettingsAction">
+        <Button GridPane.columnIndex="1" GridPane.halignment="RIGHT" minWidth="100" text="%Cancel"
+                onAction="#cancelAction" cancelButton="true">
             <GridPane.margin>
-                <Insets bottom="5" left="5" right="5" top="5"/>
+                <Insets bottom="5" right="5" top="5"/>
+            </GridPane.margin>
+        </Button>
+        <!--suppress JavaFxUnresolvedStyleClassReference -->
+        <Button GridPane.columnIndex="2" GridPane.halignment="RIGHT" minWidth="100" text="%Save"
+                onAction="#saveSettingsAction" styleClass="success">
+            <GridPane.margin>
+                <Insets bottom="5" top="5" right="5"/>
             </GridPane.margin>
         </Button>
     </GridPane>

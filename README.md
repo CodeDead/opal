@@ -1,12 +1,13 @@
 # Opal
 
-![Opal](https://i.imgur.com/tNBWTPS.png)
+![Opal](https://i.imgur.com/qMAV8yS.png)
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/CodeDead/opal)
 ![GitHub](https://img.shields.io/badge/language-Java-green)
 ![GitHub](https://img.shields.io/github/license/CodeDead/opal)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/CodeDead/opal)
+[![Test build](https://github.com/CodeDead/opal/actions/workflows/test.yml/badge.svg)](https://github.com/CodeDead/opal/actions/workflows/test.yml)
 
-Opal is a free and open-source JavaFX application that can play relaxing music in the background.
+Opal is a free and open-source [JavaFX](https://openjfx.io/) application that can play relaxing music in the background.
 
 ## Building
 
@@ -59,13 +60,13 @@ especially if you're targeting a specific platform and installation method.
 
 The following dependencies are universal:
 
-* [JDK18](https://openjdk.java.net/projects/jdk/18/)
+* [JDK20](https://openjdk.java.net/projects/jdk/20/)
 * [JavaFX](https://openjfx.io)
 * [Gradle](https://gradle.org)
 * [FasterXML/jackson](https://github.com/FasterXML/jackson)
 * [badass-jlink-plugin](https://github.com/beryx/badass-jlink-plugin)
 * [Log4j2](https://logging.apache.org/log4j/2.x/)
-
+* [AtlantaFX](https://github.com/mkpaz/atlantafx)
 ### Windows
 
 #### MSI
@@ -98,4 +99,4 @@ This library is maintained by CodeDead. You can find more about us using the fol
 * [Twitter](https://twitter.com/C0DEDEAD)
 * [Facebook](https://facebook.com/deadlinecodedead)
 
-Copyright © 2022 CodeDead
+Copyright © 2023 CodeDead

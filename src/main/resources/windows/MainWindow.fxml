@@ -17,11 +17,13 @@
 <?import javafx.scene.text.Font?>
 
 <?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <GridPane
         prefHeight="370"
         prefWidth="560"
         xmlns:fx="http://javafx.com/fxml/1"
-        fx:id="grpMain"
         fx:controller="com.codedead.opal.controller.MainWindowController"
         onDragOver="#onDragOver"
         onDragDropped="#onDragDropped"
@@ -38,35 +40,113 @@
 
     <MenuBar GridPane.rowIndex="0">
         <Menu text="%File">
-            <MenuItem fx:id="mniOpenSoundPreset" onAction="#openSoundPresetAction" text="%OpenSoundPreset"/>
-            <MenuItem fx:id="mniSaveSoundPreset" onAction="#saveSoundPresetAction" text="%SaveSoundPreset"/>
+            <MenuItem onAction="#openSoundPresetAction" text="%OpenSoundPreset">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/open.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
+            <MenuItem onAction="#saveSoundPresetAction" text="%SaveSoundPreset">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/save.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
             <SeparatorMenuItem/>
-            <MenuItem fx:id="mniReset" onAction="#resetAction" text="%Reset"/>
+            <MenuItem onAction="#resetAction" text="%Reset">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/refresh.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
             <SeparatorMenuItem/>
-            <MenuItem fx:id="mniExit" onAction="#exitAction" text="%Exit"/>
+            <MenuItem onAction="#exitAction" text="%Exit">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/remove.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
         </Menu>
         <Menu text="%Tools">
-            <MenuItem fx:id="mniSettings" onAction="#settingsAction" text="%Settings"/>
-            <Menu text="%Timer" fx:id="mnuTimer">
+            <MenuItem onAction="#settingsAction" text="%Settings">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/settings.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
+            <Menu text="%Timer">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/timer.png"/>
+                    </ImageView>
+                </graphic>
                 <CheckMenuItem fx:id="mniTimerEnabled" text="%Enabled"/>
             </Menu>
         </Menu>
         <Menu text="%HelpMenu">
-            <MenuItem fx:id="mniHelp" onAction="#helpAction" text="%Help"/>
+            <MenuItem onAction="#helpAction" text="%Help">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/help.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
             <SeparatorMenuItem/>
-            <MenuItem fx:id="mniUpdate" onAction="#updateAction" text="%CheckForUpdates"/>
+            <MenuItem onAction="#updateAction" text="%CheckForUpdates">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/update.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
             <SeparatorMenuItem/>
-            <MenuItem fx:id="mniHomepage" onAction="#homepageAction" text="%Homepage"/>
-            <MenuItem fx:id="mniLicense" onAction="#licenseAction" text="%License"/>
+            <MenuItem onAction="#homepageAction" text="%Homepage">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/home.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
+            <MenuItem onAction="#licenseAction" text="%License">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/license.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
             <SeparatorMenuItem/>
-            <MenuItem fx:id="mniDonate" onAction="#donateAction" text="%Donate"/>
-            <MenuItem fx:id="mniAbout" onAction="#aboutAction" text="%About"/>
+            <MenuItem onAction="#donateAction" text="%Donate">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/donate.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
+            <MenuItem onAction="#aboutAction" text="%About">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/about.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
         </Menu>
     </MenuBar>
 
-    <ScrollPane GridPane.rowIndex="1" fitToHeight="true" fitToWidth="true" style="-fx-background-color:transparent;">
-        <GridPane>
+    <ScrollPane GridPane.rowIndex="1" fitToHeight="true" fitToWidth="true">
+        <GridPane fx:id="grpControls">
             <rowConstraints>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
                 <RowConstraints/>
                 <RowConstraints/>
                 <RowConstraints/>
@@ -88,13 +168,19 @@
                     <Font name="System Bold" size="14"/>
                 </font>
                 <GridPane.margin>
-                    <Insets left="5" right="5" bottom="10" top="10"/>
+                    <Insets left="5" right="5" top="10"/>
                 </GridPane.margin>
             </Label>
 
-            <GridPane GridPane.rowIndex="1" GridPane.columnIndex="1"
-                      style="-fx-background-color: white;-fx-background-radius: 10px;">
+            <Separator GridPane.rowIndex="1" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="3.0" left="5" right="5"/>
+                </GridPane.margin>
+            </Separator>
+
+            <GridPane GridPane.rowIndex="2" GridPane.columnIndex="1">
                 <rowConstraints>
+                    <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
@@ -110,37 +196,54 @@
                     <ColumnConstraints hgrow="ALWAYS"/>
                 </columnConstraints>
 
-                <SoundPane fx:id="snpRain" GridPane.rowIndex="0" volume="0" name="%Rain"
+                <SoundPane GridPane.rowIndex="0" name="%Rain"
+                           mediaKey="rain" mediaPath="/audio/rain.mp3"
                            image="/images/rain.png"/>
-                <SoundPane fx:id="snpWind" GridPane.rowIndex="1" volume="0" name="%Wind"
+                <SoundPane GridPane.rowIndex="1" name="%Wind"
+                           mediaKey="wind" mediaPath="/audio/wind.mp3"
                            image="/images/wind.png"/>
-                <SoundPane fx:id="snpThunder" GridPane.rowIndex="2" volume="0" name="%Thunder"
+                <SoundPane GridPane.rowIndex="2" name="%Thunder"
+                           mediaKey="thunder" mediaPath="/audio/thunder.mp3"
                            image="/images/thunder.png"/>
-                <SoundPane fx:id="snpBird" GridPane.rowIndex="3" volume="0" name="%Birds"
+                <SoundPane GridPane.rowIndex="3" name="%Birds"
+                           mediaKey="birds" mediaPath="/audio/birds.mp3"
                            image="/images/bird.png"/>
-                <SoundPane fx:id="snpRiver" GridPane.rowIndex="4" volume="0" name="%River"
+                <SoundPane GridPane.rowIndex="4" name="%Ocean"
+                           mediaKey="ocean" mediaPath="/audio/ocean.mp3"
+                           image="/images/ocean.png"/>
+                <SoundPane GridPane.rowIndex="5" name="%River"
+                           mediaKey="river" mediaPath="/audio/river.mp3"
                            image="/images/river.png"/>
-                <SoundPane fx:id="snpFireplace" GridPane.rowIndex="5" volume="0" name="%Fireplace"
+                <SoundPane GridPane.rowIndex="6" name="%Fireplace"
+                           mediaKey="fireplace" mediaPath="/audio/fireplace.mp3"
                            image="/images/fire.png"/>
-                <SoundPane fx:id="snpCave" GridPane.rowIndex="6" volume="0" name="%Cave"
+                <SoundPane GridPane.rowIndex="7" name="%Cave"
+                           mediaKey="cave" mediaPath="/audio/cave.mp3"
                            image="/images/cave.png"/>
-                <SoundPane fx:id="snpFrogs" GridPane.rowIndex="7" volume="0" name="%Frogs"
+                <SoundPane GridPane.rowIndex="8" name="%Frogs"
+                           mediaKey="frogs" mediaPath="/audio/frogs.mp3"
                            image="/images/frogs.png"/>
-                <SoundPane fx:id="snpZoo" GridPane.rowIndex="8" volume="0" name="%Zoo"
+                <SoundPane GridPane.rowIndex="9" name="%Zoo"
+                           mediaKey="zoo" mediaPath="/audio/zoo.mp3"
                            image="/images/zoo.png"/>
             </GridPane>
 
-            <Label GridPane.rowIndex="2" GridPane.columnIndex="1" text="%Office">
+            <Label GridPane.rowIndex="3" GridPane.columnIndex="1" text="%Office">
                 <font>
                     <Font name="System Bold" size="14"/>
                 </font>
                 <GridPane.margin>
-                    <Insets left="5" right="5" bottom="10" top="10"/>
+                    <Insets left="5" right="5" top="10"/>
                 </GridPane.margin>
             </Label>
 
-            <GridPane GridPane.rowIndex="3" GridPane.columnIndex="1"
-                      style="-fx-background-color: white;-fx-background-radius: 10px;">
+            <Separator GridPane.rowIndex="4" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="3.0" left="5" right="5"/>
+                </GridPane.margin>
+            </Separator>
+
+            <GridPane GridPane.rowIndex="5" GridPane.columnIndex="1">
                 <rowConstraints>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
@@ -155,33 +258,93 @@
                     <ColumnConstraints hgrow="ALWAYS"/>
                 </columnConstraints>
 
-                <SoundPane fx:id="snpTyping" GridPane.rowIndex="0" volume="0" name="%Typing"
+                <SoundPane GridPane.rowIndex="0" name="%Typing"
+                           mediaKey="keyboard" mediaPath="/audio/typing.mp3"
                            image="/images/keyboard.png"/>
-                <SoundPane fx:id="snpTelephone" GridPane.rowIndex="1" volume="0" name="%Phone"
+                <SoundPane GridPane.rowIndex="1" name="%Phone"
+                           mediaKey="telephone" mediaPath="/audio/telephone.mp3"
                            image="/images/phone.png"/>
-                <SoundPane fx:id="snpChatter" GridPane.rowIndex="2" volume="0" name="%Chatter"
+                <SoundPane GridPane.rowIndex="2" name="%Chatter"
+                           mediaKey="officeChatter" mediaPath="/audio/office.mp3"
                            image="/images/group.png"/>
-                <SoundPane fx:id="snpTraffic" GridPane.rowIndex="3" volume="0" name="%Traffic"
+                <SoundPane GridPane.rowIndex="3" name="%Traffic"
+                           mediaKey="traffic" mediaPath="/audio/traffic.mp3"
                            image="/images/car.png"/>
-                <SoundPane fx:id="snpClock" GridPane.rowIndex="4" volume="0" name="%Clock"
+                <SoundPane GridPane.rowIndex="4" name="%Clock"
+                           mediaKey="clock" mediaPath="/audio/clock.mp3"
                            image="/images/clock.png"/>
-                <SoundPane fx:id="snpFan" GridPane.rowIndex="5" volume="0" name="%Fan"
+                <SoundPane GridPane.rowIndex="5" name="%Fan"
+                           mediaKey="fan" mediaPath="/audio/fan.mp3"
                            image="/images/fan.png"/>
-                <SoundPane fx:id="snpCoffee" GridPane.rowIndex="6" volume="0" name="%Coffee"
+                <SoundPane GridPane.rowIndex="6" name="%Coffee"
+                           mediaKey="coffee" mediaPath="/audio/coffee.mp3"
                            image="/images/coffee.png"/>
             </GridPane>
 
-            <Label GridPane.rowIndex="4" GridPane.columnIndex="1" text="%Audiences">
+            <Label GridPane.rowIndex="6" GridPane.columnIndex="1" text="%Audiences">
                 <font>
                     <Font name="System Bold" size="14"/>
                 </font>
                 <GridPane.margin>
-                    <Insets left="5" right="5" bottom="10" top="10"/>
+                    <Insets left="5" right="5" top="10"/>
                 </GridPane.margin>
             </Label>
 
-            <GridPane GridPane.rowIndex="5" GridPane.columnIndex="1"
-                      style="-fx-background-color: white;-fx-background-radius: 10px;">
+            <Separator GridPane.rowIndex="7" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="3.0" left="5" right="5"/>
+                </GridPane.margin>
+            </Separator>
+
+            <GridPane GridPane.rowIndex="8" GridPane.columnIndex="1">
+                <rowConstraints>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
+                </rowConstraints>
+
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <SoundPane GridPane.rowIndex="0" name="%NetworkingEvent"
+                           mediaKey="networking" mediaPath="/audio/networking.mp3"
+                           image="/images/networking.png"/>
+                <SoundPane GridPane.rowIndex="1" name="%Restaurant"
+                           mediaKey="restaurant" mediaPath="/audio/restaurant.mp3"
+                           image="/images/restaurant.png"/>
+                <SoundPane GridPane.rowIndex="2" name="%TribalFestival"
+                           mediaKey="tribal" mediaPath="/audio/tribal.mp3"
+                           image="/images/tribal.png"/>
+                <SoundPane GridPane.rowIndex="3" name="%DrumTribalFestival"
+                           mediaKey="drumtribal" mediaPath="/audio/tribal2.mp3"
+                           image="/images/tribal2.png"/>
+                <SoundPane GridPane.rowIndex="4" name="%RugbyFootball"
+                           mediaKey="rugbyfootball" mediaPath="/audio/football.mp3"
+                           image="/images/rugbyfootball.png"/>
+            </GridPane>
+
+            <Label GridPane.rowIndex="9" GridPane.columnIndex="1" text="%RadioFrequencyStatic">
+                <font>
+                    <Font name="System Bold" size="14"/>
+                </font>
+                <GridPane.margin>
+                    <Insets left="5" right="5" top="10"/>
+                </GridPane.margin>
+            </Label>
+
+            <Separator GridPane.rowIndex="10" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="3.0" left="5" right="5"/>
+                </GridPane.margin>
+            </Separator>
+
+            <GridPane GridPane.rowIndex="11" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="10"/>
+                </GridPane.margin>
                 <rowConstraints>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
@@ -193,27 +356,36 @@
                     <ColumnConstraints hgrow="ALWAYS"/>
                 </columnConstraints>
 
-                <SoundPane fx:id="snpNetworkingEvent" GridPane.rowIndex="0" volume="0" name="%NetworkingEvent"
-                           image="/images/networking.png"/>
-                <SoundPane fx:id="snpTribal" GridPane.rowIndex="1" volume="0" name="%TribalFestival"
-                           image="/images/tribal.png"/>
-                <SoundPane fx:id="snpDrumTribal" GridPane.rowIndex="2" volume="0" name="%DrumTribalFestival"
-                           image="/images/tribal2.png"/>
-                <SoundPane fx:id="snpFootball" GridPane.rowIndex="3" volume="0" name="%Football"
-                           image="/images/football.png"/>
+                <SoundPane GridPane.rowIndex="0" name="%Static"
+                           mediaKey="static" mediaPath="/audio/static.mp3"
+                           image="/images/radio.png"/>
+                <SoundPane GridPane.rowIndex="1" name="%WhiteNoise"
+                           mediaKey="whitenoise" mediaPath="/audio/whitenoise.mp3"
+                           image="/images/radio.png"/>
+                <SoundPane GridPane.rowIndex="2" name="%PinkNoise"
+                           mediaKey="pinknoise" mediaPath="/audio/pinknoise.mp3"
+                           image="/images/radio.png"/>
+                <SoundPane GridPane.rowIndex="3" name="%BrownNoise"
+                           mediaKey="brownnoise" mediaPath="/audio/brownnoise.mp3"
+                           image="/images/radio.png"/>
             </GridPane>
 
-            <Label GridPane.rowIndex="6" GridPane.columnIndex="1" text="%Other">
+            <Label GridPane.rowIndex="12" GridPane.columnIndex="1" text="%Other">
                 <font>
                     <Font name="System Bold" size="14"/>
                 </font>
                 <GridPane.margin>
-                    <Insets left="5" right="5" bottom="10" top="10"/>
+                    <Insets left="5" right="5" top="10"/>
                 </GridPane.margin>
             </Label>
 
-            <GridPane GridPane.rowIndex="7" GridPane.columnIndex="1"
-                      style="-fx-background-color: white;-fx-background-radius: 10px;">
+            <Separator GridPane.rowIndex="13" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="3.0" left="5" right="5"/>
+                </GridPane.margin>
+            </Separator>
+
+            <GridPane GridPane.rowIndex="14" GridPane.columnIndex="1">
                 <GridPane.margin>
                     <Insets bottom="10"/>
                 </GridPane.margin>
@@ -223,22 +395,31 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
                     <ColumnConstraints hgrow="ALWAYS"/>
                 </columnConstraints>
 
-                <SoundPane fx:id="snpStatic" GridPane.rowIndex="0" volume="0" name="%Static"
-                           image="/images/radio.png"/>
-                <SoundPane fx:id="snpFantasy" GridPane.rowIndex="1" volume="0" name="%Fantasy"
+                <SoundPane GridPane.rowIndex="0" name="%Fantasy"
+                           mediaKey="fantasy" mediaPath="/audio/fantasy.mp3"
                            image="/images/star.png"/>
-                <SoundPane fx:id="snpZen" GridPane.rowIndex="2" volume="0" name="%Zen"
+                <SoundPane GridPane.rowIndex="1" name="%Zen"
+                           mediaKey="zen" mediaPath="/audio/zen.mp3"
                            image="/images/zen.png"/>
-                <SoundPane fx:id="snpSleepy" GridPane.rowIndex="3" volume="0" name="%Sleepy"
+                <SoundPane GridPane.rowIndex="2" name="%Sleepy"
+                           mediaKey="sleepy" mediaPath="/audio/sleepy.mp3"
                            image="/images/sleepy.png"/>
-                <SoundPane fx:id="snpGong" GridPane.rowIndex="4" volume="0" name="%Gong"
+                <SoundPane GridPane.rowIndex="3" name="%Gong"
+                           mediaKey="gong" mediaPath="/audio/gong.mp3"
                            image="/images/gong.png"/>
+                <SoundPane GridPane.rowIndex="4" name="%Space"
+                           mediaKey="space" mediaPath="/audio/space.mp3"
+                           image="/images/space.png"/>
+                <SoundPane GridPane.rowIndex="5" name="%Train"
+                           mediaKey="train" mediaPath="/audio/train.mp3"
+                           image="/images/train.png"/>
             </GridPane>
         </GridPane>
     </ScrollPane>

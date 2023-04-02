@@ -31,15 +31,6 @@ public final class RunnableSiteOpener implements Runnable {
     }
 
     /**
-     * Get the URL
-     *
-     * @return The URL
-     */
-    public String getUrl() {
-        return url;
-    }
-
-    /**
      * Method that is invoked to run the task
      */
     @Override

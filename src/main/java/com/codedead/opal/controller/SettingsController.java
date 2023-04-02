@@ -58,6 +58,12 @@ public final class SettingsController {
         try (final InputStream is = getClass().getClassLoader().getResourceAsStream(getPropertiesResourceLocation())) {
             if (is != null) {
                 logger.info("Creating default properties file at {}", getPropertiesFileLocation());
+                try {
+                    final Path p = Paths.get(new File(propertiesPath.toString()).getParent());
+                    Files.createDirectories(p);
+                } catch (final IOException ex) {
+                    logger.error("Could not create the parent directories for the properties file", ex);
+                }
                 Files.copy(is, propertiesPath);
             } else {
                 throw new IOException(String.format("Could not load default properties from application resources (%s)!", getPropertiesResourceLocation()));

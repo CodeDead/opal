@@ -1,12 +1,11 @@
 package com.codedead.opal.controller;
 
-import com.codedead.opal.domain.InvalidHttpResponseCodeException;
-import com.codedead.opal.domain.OsCheck;
-import com.codedead.opal.domain.PlatformUpdate;
-import com.codedead.opal.domain.SoundPane;
+import com.codedead.opal.domain.*;
 import com.codedead.opal.interfaces.IAudioTimer;
 import com.codedead.opal.interfaces.IRunnableHelper;
 import com.codedead.opal.utils.*;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,126 +13,62 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.List;
 
 import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
 public final class MainWindowController implements IAudioTimer {
 
     @FXML
-    private SoundPane snpGong;
-    @FXML
-    private SoundPane snpDrumTribal;
-    @FXML
-    private SoundPane snpSleepy;
-    @FXML
-    private SoundPane snpFootball;
-    @FXML
-    private SoundPane snpTribal;
-    @FXML
-    private SoundPane snpNetworkingEvent;
-    @FXML
-    private SoundPane snpZoo;
-    @FXML
-    private SoundPane snpCoffee;
-    @FXML
-    private SoundPane snpZen;
-    @FXML
-    private SoundPane snpFrogs;
-    @FXML
-    private GridPane grpMain;
-    @FXML
-    private SoundPane snpCave;
-    @FXML
-    private SoundPane snpFan;
-    @FXML
-    private SoundPane snpFantasy;
+    private GridPane grpControls;
     @FXML
     private CheckMenuItem mniTimerEnabled;
-    @FXML
-    private SoundPane snpStatic;
-    @FXML
-    private SoundPane snpFireplace;
-    @FXML
-    private SoundPane snpTraffic;
-    @FXML
-    private SoundPane snpChatter;
-    @FXML
-    private SoundPane snpTelephone;
-    @FXML
-    private SoundPane snpTyping;
-    @FXML
-    private SoundPane snpClock;
-    @FXML
-    private SoundPane snpBird;
-    @FXML
-    private SoundPane snpThunder;
-    @FXML
-    private SoundPane snpWind;
-    @FXML
-    private SoundPane snpRain;
-    @FXML
-    private SoundPane snpRiver;
-    @FXML
-    private MenuItem mniUpdate;
-    @FXML
-    private MenuItem mniHomepage;
-    @FXML
-    private MenuItem mniLicense;
-    @FXML
-    private MenuItem mniDonate;
-    @FXML
-    private MenuItem mniAbout;
-    @FXML
-    private MenuItem mniHelp;
-    @FXML
-    private Menu mnuTimer;
-    @FXML
-    private MenuItem mniSettings;
-    @FXML
-    private MenuItem mniExit;
-    @FXML
-    private MenuItem mniReset;
-    @FXML
-    private MenuItem mniSaveSoundPreset;
-    @FXML
-    private MenuItem mniOpenSoundPreset;
 
-    private final String platformName;
-    private final AudioController audioController;
-    private final HelpUtils helpUtils;
-
+    private TrayIcon trayIcon;
     private SettingsController settingsController;
     private UpdateController updateController;
     private ResourceBundle translationBundle;
-
+    private TimerTask timerTask;
+    private boolean timerEnabled;
+    private final String platformName;
+    private final HelpUtils helpUtils;
+    private final ObjectMapper objectMapper;
+    private final Timer timer;
+    private final IAudioTimer audioTimer;
     private final Logger logger;
 
     /**
      * Initialize a new MainWindowController
-     *
-     * @throws URISyntaxException When the URI could not be formed
      */
-    public MainWindowController() throws URISyntaxException {
+    public MainWindowController() {
         logger = LogManager.getLogger(MainWindowController.class);
         logger.info("Initializing new MainWindowController object");
 
         platformName = OsCheck.getOperatingSystemType().name();
-        audioController = new AudioController(this);
         helpUtils = new HelpUtils();
+
+        this.timer = new Timer();
+        this.audioTimer = this;
+        this.objectMapper = new ObjectMapper();
     }
 
     /**
@@ -170,9 +105,24 @@ public final class MainWindowController implements IAudioTimer {
         final Locale locale = Locale.forLanguageTag(languageTag);
         translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
 
+        final boolean mediaButtons = Boolean.parseBoolean(properties.getProperty("mediaButtons", "true"));
+
+        if (!mediaButtons) {
+            loadMediaButtonVisibility(false);
+        }
+
         if (shouldUpdate) {
             checkForUpdates(false);
         }
+    }
+
+    /**
+     * Load the media button visibility for all {@link SoundPane} objects
+     *
+     * @param visible True if the media button should be visible, otherwise false
+     */
+    public void loadMediaButtonVisibility(final boolean visible) {
+        getAllSoundPanes(grpControls).forEach(s -> s.setMediaButton(visible));
     }
 
     /**
@@ -225,10 +175,30 @@ public final class MainWindowController implements IAudioTimer {
             logger.error("Unable to check for updates", ex);
             FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             Thread.currentThread().interrupt();
-        } catch (final IOException | InvalidHttpResponseCodeException ex) {
+        } catch (final IOException | InvalidHttpResponseCodeException | URISyntaxException ex) {
             logger.error("Unable to check for updates", ex);
             FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
+    }
+
+    /**
+     * Get all {@link SoundPane} objects from a {@link GridPane} object
+     *
+     * @param parent The {@link GridPane} object
+     * @return The {@link List} of {@link SoundPane} objects inside the given {@link GridPane} object
+     */
+    private List<SoundPane> getAllSoundPanes(final GridPane parent) {
+        if (parent == null)
+            throw new NullPointerException("GridPane cannot be null!");
+
+        final List<SoundPane> elements = new ArrayList<>();
+        parent.getChildren().forEach(e -> {
+            if (e instanceof GridPane p)
+                elements.addAll(getAllSoundPanes(p));
+            if (e instanceof SoundPane s)
+                elements.add(s);
+        });
+        return elements;
     }
 
     /**
@@ -267,73 +237,123 @@ public final class MainWindowController implements IAudioTimer {
     }
 
     /**
-     * Get the {@link UpdateController} object
-     *
-     * @return The {@link UpdateController} object
-     */
-    public UpdateController getUpdateController() {
-        return updateController;
-    }
-
-    /**
-     * Method that is invoked to initialize the FXML window
+     * Method that is invoked to initialize the FXML object
      */
     @FXML
     private void initialize() {
-        logger.info("Initializing MainWindow");
-
-        mniOpenSoundPreset.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/open.png")))));
-        mniSaveSoundPreset.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/save.png")))));
-        mniReset.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/refresh.png")))));
-        mniExit.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/remove.png")))));
-        mniSettings.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/settings.png")))));
-        mniAbout.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/about.png")))));
-        mniDonate.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/donate.png")))));
-        mniLicense.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/license.png")))));
-        mniHomepage.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/home.png")))));
-        mniUpdate.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/update.png")))));
-        mniHelp.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/help.png")))));
-        mnuTimer.setGraphic(new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/timer.png")))));
-
-        snpRain.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("rain", newValue.doubleValue() / 100));
-        snpWind.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("wind", newValue.doubleValue() / 100));
-        snpThunder.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("thunder", newValue.doubleValue() / 100));
-        snpBird.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("birds", newValue.doubleValue() / 100));
-        snpRiver.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("river", newValue.doubleValue() / 100));
-        snpTyping.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("keyboard", newValue.doubleValue() / 100));
-        snpTelephone.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("telephone", newValue.doubleValue() / 100));
-        snpChatter.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("officeChatter", newValue.doubleValue() / 100));
-        snpTraffic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("traffic", newValue.doubleValue() / 100));
-        snpClock.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("clock", newValue.doubleValue() / 100));
-        snpFireplace.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fireplace", newValue.doubleValue() / 100));
-        snpStatic.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("static", newValue.doubleValue() / 100));
-        snpFantasy.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fantasy", newValue.doubleValue() / 100));
-        snpFan.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("fan", newValue.doubleValue() / 100));
-        snpCave.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("cave", newValue.doubleValue() / 100));
-        snpFrogs.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("frogs", newValue.doubleValue() / 100));
-        snpZen.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("zen", newValue.doubleValue() / 100));
-        snpCoffee.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("coffee", newValue.doubleValue() / 100));
-        snpZoo.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("zoo", newValue.doubleValue() / 100));
-        snpSleepy.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("sleepy", newValue.doubleValue() / 100));
-        snpGong.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("gong", newValue.doubleValue() / 100));
-
-        // Audiences
-        snpNetworkingEvent.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("networking", newValue.doubleValue() / 100));
-        snpTribal.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("tribal", newValue.doubleValue() / 100));
-        snpDrumTribal.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("drumtribal", newValue.doubleValue() / 100));
-        snpFootball.getSlider().valueProperty().addListener((observableValue, oldValue, newValue) -> audioController.setPlayerVolume("football", newValue.doubleValue() / 100));
-
         mniTimerEnabled.setOnAction(e ->
         {
             if (mniTimerEnabled.isSelected()) {
                 final Properties properties = settingsController.getProperties();
                 final long timerDelay = Long.parseLong(properties.getProperty("timerDelay", "3600000"));
 
-                audioController.scheduleTimer(timerDelay);
+                scheduleTimer(timerDelay);
             } else {
-                audioController.cancelTimer();
+                cancelTimer();
             }
         });
+    }
+
+    /**
+     * Create a tray icon
+     *
+     * @throws IOException When the {@link TrayIcon} could not be created
+     */
+    private void createTrayIcon() throws IOException {
+        logger.info("Creating tray icon");
+        if (!SystemTray.isSupported()) {
+            logger.warn("SystemTray is not supported");
+            return;
+        }
+
+        final SystemTray tray = SystemTray.getSystemTray();
+        final Dimension trayIconSize = tray.getTrayIconSize();
+        final PopupMenu popup = new PopupMenu();
+        final BufferedImage trayIconImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/opal.png")));
+        final TrayIcon localTrayIcon = new TrayIcon(trayIconImage.getScaledInstance(trayIconSize.width, trayIconSize.height, java.awt.Image.SCALE_SMOOTH));
+        final java.awt.MenuItem displayItem = new java.awt.MenuItem(translationBundle.getString("Display"));
+        final java.awt.MenuItem settingsItem = new java.awt.MenuItem(translationBundle.getString("Settings"));
+        final java.awt.MenuItem aboutItem = new java.awt.MenuItem(translationBundle.getString("About"));
+        final java.awt.MenuItem exitItem = new java.awt.MenuItem(translationBundle.getString("Exit"));
+
+        // Platform.runLater to run on the JavaFX thread
+        displayItem.addActionListener(e -> Platform.runLater(this::hideShowStage));
+        settingsItem.addActionListener(e -> Platform.runLater(this::settingsAction));
+        aboutItem.addActionListener(e -> Platform.runLater(this::aboutAction));
+        exitItem.addActionListener(e -> Platform.runLater(this::exitAction));
+
+        popup.add(displayItem);
+        popup.addSeparator();
+        popup.add(settingsItem);
+        popup.add(aboutItem);
+        popup.addSeparator();
+        popup.add(exitItem);
+
+        localTrayIcon.setToolTip("Opal");
+        localTrayIcon.setPopupMenu(popup);
+        localTrayIcon.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(final java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
+                    Platform.runLater(MainWindowController.this::hideShowStage);
+                }
+            }
+        });
+
+        this.trayIcon = localTrayIcon;
+    }
+
+    /**
+     * Display the tray icon
+     *
+     * @throws IOException When the {@link TrayIcon} could not be created
+     */
+    public void showTrayIcon() throws IOException {
+        logger.info("Displaying tray icon");
+        if (trayIcon == null) {
+            createTrayIcon();
+            if (trayIcon == null) {
+                logger.warn("TrayIcon cannot be null!");
+                return;
+            }
+        }
+
+        final SystemTray tray = SystemTray.getSystemTray();
+        try {
+            if (!Arrays.asList(tray.getTrayIcons()).contains(trayIcon)) {
+                tray.add(trayIcon);
+            }
+        } catch (final AWTException e) {
+            logger.error("TrayIcon could not be added", e);
+        }
+    }
+
+    /**
+     * Hide the tray icon
+     */
+    public void hideTrayIcon() {
+        logger.info("Hiding tray icon");
+        if (trayIcon == null) {
+            logger.warn("TrayIcon cannot be null!");
+            return;
+        }
+
+        final SystemTray tray = SystemTray.getSystemTray();
+        tray.remove(trayIcon);
+
+        trayIcon = null;
+    }
+
+    /**
+     * Hide the current stage
+     */
+    private void hideShowStage() {
+        final Stage stage = (Stage) grpControls.getScene().getWindow();
+        if (stage.isShowing()) {
+            stage.hide();
+        } else {
+            stage.show();
+        }
     }
 
     /**
@@ -357,43 +377,32 @@ public final class MainWindowController implements IAudioTimer {
     /**
      * Open a sound preset
      *
-     * @param filePath The absolute path of the sound preset file
+     * @param path The absolute path of the sound preset file
      */
-    private void openSoundPreset(final String filePath) {
+    private void openSoundPreset(final String path) {
+        if (path == null)
+            throw new NullPointerException("Path cannot be null!");
+        if (path.isEmpty())
+            throw new IllegalArgumentException("Path cannot be empty!");
+
+        logger.info("Loading sound preset from {}", path);
+
         try {
-            audioController.loadSoundPreset(filePath);
-            for (final Map.Entry<String, Double> entry : audioController.getVolumes()) {
-                switch (entry.getKey()) {
-                    case "rain" -> snpRain.getSlider().setValue(entry.getValue() * 100);
-                    case "wind" -> snpWind.getSlider().setValue(entry.getValue() * 100);
-                    case "thunder" -> snpThunder.getSlider().setValue(entry.getValue() * 100);
-                    case "birds" -> snpBird.getSlider().setValue(entry.getValue() * 100);
-                    case "river" -> snpRiver.getSlider().setValue(entry.getValue() * 100);
-                    case "keyboard" -> snpTyping.getSlider().setValue(entry.getValue() * 100);
-                    case "telephone" -> snpTelephone.getSlider().setValue(entry.getValue() * 100);
-                    case "officeChatter" -> snpChatter.getSlider().setValue(entry.getValue() * 100);
-                    case "traffic" -> snpTraffic.getSlider().setValue(entry.getValue() * 100);
-                    case "fireplace" -> snpFireplace.getSlider().setValue(entry.getValue() * 100);
-                    case "static" -> snpStatic.getSlider().setValue(entry.getValue() * 100);
-                    case "fantasy" -> snpFantasy.getSlider().setValue(entry.getValue() * 100);
-                    case "fan" -> snpFan.getSlider().setValue(entry.getValue() * 100);
-                    case "clock" -> snpClock.getSlider().setValue(entry.getValue() * 100);
-                    case "cave" -> snpCave.getSlider().setValue(entry.getValue() * 100);
-                    case "frogs" -> snpFrogs.getSlider().setValue(entry.getValue() * 100);
-                    case "zen" -> snpZen.getSlider().setValue(entry.getValue() * 100);
-                    case "coffee" -> snpCoffee.getSlider().setValue(entry.getValue() * 100);
-                    case "zoo" -> snpZoo.getSlider().setValue(entry.getValue() * 100);
-                    case "networking" -> snpNetworkingEvent.getSlider().setValue(entry.getValue() * 100);
-                    case "tribal" -> snpTribal.getSlider().setValue(entry.getValue() * 100);
-                    case "football" -> snpFootball.getSlider().setValue(entry.getValue() * 100);
-                    case "sleepy" -> snpSleepy.getSlider().setValue(entry.getValue() * 100);
-                    case "drumtribal" -> snpDrumTribal.getSlider().setValue(entry.getValue() * 100);
-                    case "gong" -> snpGong.getSlider().setValue(entry.getValue() * 100);
-                    default -> logger.info("Unknown key found: {}", entry.getKey());
-                }
-            }
+            final Path filePath = Path.of(path);
+            final String actual = Files.readString(filePath);
+
+            if (actual == null || actual.isEmpty())
+                throw new IllegalArgumentException("Sound preset cannot be null or empty!");
+
+            final TypeReference<HashMap<String, Double>> typeRef = new TypeReference<>() {
+            };
+
+            final Map<String, Double> mediaVolumes = objectMapper.readValue(actual, typeRef);
+            final List<SoundPane> soundPanes = getAllSoundPanes(grpControls);
+
+            mediaVolumes.forEach((key, value) -> soundPanes.stream().filter(e -> e.getMediaKey().equals(key)).forEach(e -> e.getSlider().setValue(value)));
         } catch (final IOException ex) {
-            logger.error("Unable to open the sound preset from {}", filePath, ex);
+            logger.error("Unable to open the sound preset from {}", path, ex);
             FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
@@ -413,11 +422,15 @@ public final class MainWindowController implements IAudioTimer {
 
         if (file != null) {
             String filePath = file.getAbsolutePath();
+            if (!filePath.toLowerCase().contains(".json")) {
+                filePath += ".json";
+            }
+
+            final Map<String, Double> mediaVolumes = new HashMap<>();
+            getAllSoundPanes(grpControls).forEach(e -> mediaVolumes.put(e.getMediaKey(), e.getSlider().getValue()));
+
             try {
-                if (!filePath.toLowerCase().contains(".json")) {
-                    filePath += ".json";
-                }
-                audioController.saveSoundPreset(filePath);
+                objectMapper.writeValue(new File(filePath), mediaVolumes);
             } catch (final IOException ex) {
                 logger.error("Unable to save the sound settings to {}", filePath, ex);
                 FxUtils.showErrorAlert(translationBundle.getString("SaveSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
@@ -433,32 +446,7 @@ public final class MainWindowController implements IAudioTimer {
     @FXML
     private void resetAction() {
         logger.info("Resetting all audio sliders");
-
-        snpRain.getSlider().setValue(0);
-        snpWind.getSlider().setValue(0);
-        snpBird.getSlider().setValue(0);
-        snpRiver.getSlider().setValue(0);
-        snpThunder.getSlider().setValue(0);
-        snpTyping.getSlider().setValue(0);
-        snpTelephone.getSlider().setValue(0);
-        snpChatter.getSlider().setValue(0);
-        snpTraffic.getSlider().setValue(0);
-        snpClock.getSlider().setValue(0);
-        snpFireplace.getSlider().setValue(0);
-        snpStatic.getSlider().setValue(0);
-        snpFantasy.getSlider().setValue(0);
-        snpFan.getSlider().setValue(0);
-        snpCave.getSlider().setValue(0);
-        snpFrogs.getSlider().setValue(0);
-        snpZen.getSlider().setValue(0);
-        snpCoffee.getSlider().setValue(0);
-        snpZoo.getSlider().setValue(0);
-        snpNetworkingEvent.getSlider().setValue(0);
-        snpTribal.getSlider().setValue(0);
-        snpFootball.getSlider().setValue(0);
-        snpSleepy.getSlider().setValue(0);
-        snpDrumTribal.getSlider().setValue(0);
-        snpGong.getSlider().setValue(0);
+        getAllSoundPanes(grpControls).forEach(e -> e.getSlider().setValue(0));
     }
 
     /**
@@ -483,6 +471,7 @@ public final class MainWindowController implements IAudioTimer {
 
             final SettingsWindowController settingsWindowController = loader.getController();
             settingsWindowController.setSettingsController(getSettingsController());
+            settingsWindowController.setMainWindowController(this);
 
             final Stage primaryStage = new Stage();
 
@@ -492,7 +481,7 @@ public final class MainWindowController implements IAudioTimer {
 
             logger.info("Showing the SettingsWindow");
             primaryStage.show();
-        } catch (final IOException | NumberFormatException ex) {
+        } catch (final IOException ex) {
             logger.error("Unable to open the SettingsWindow", ex);
             FxUtils.showErrorAlert(translationBundle.getString("SettingsWindowError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
@@ -534,27 +523,7 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void homepageAction() {
-        logger.info("Opening the CodeDead website");
-
-        final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com", new IRunnableHelper() {
-            @Override
-            public void executed() {
-                Platform.runLater(() -> logger.info("Successfully opened website"));
-            }
-
-            @Override
-            public void exceptionOccurred(final Exception ex) {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        logger.error("Error opening the CodeDead website", ex);
-                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-                    }
-                });
-            }
-        });
-
-        new Thread(runnableSiteOpener).start();
+        helpUtils.openCodeDeadWebSite(translationBundle);
     }
 
     /**
@@ -562,30 +531,7 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void licenseAction() {
-        logger.info("Attempting to open the license file");
-
-        try {
-            helpUtils.openFileFromResources(new RunnableFileOpener(SharedVariables.LICENSE_FILE_LOCATION, new IRunnableHelper() {
-                @Override
-                public void executed() {
-                    Platform.runLater(() -> logger.info("Successfully opened the license file"));
-                }
-
-                @Override
-                public void exceptionOccurred(final Exception ex) {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            logger.error("Error opening the license file", ex);
-                            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-                        }
-                    });
-                }
-            }), SharedVariables.LICENSE_RESOURCE_LOCATION);
-        } catch (final IOException ex) {
-            logger.error("Error opening the license file", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-        }
+        helpUtils.openLicenseFile(translationBundle);
     }
 
     /**
@@ -628,7 +574,7 @@ public final class MainWindowController implements IAudioTimer {
             final Parent root = loader.load();
 
             final AboutWindowController aboutWindowController = loader.getController();
-            aboutWindowController.setSettingsController(getSettingsController());
+            aboutWindowController.setResourceBundle(translationBundle);
 
             final Stage primaryStage = new Stage();
 
@@ -638,7 +584,7 @@ public final class MainWindowController implements IAudioTimer {
 
             logger.info("Showing the AboutWindow");
             primaryStage.show();
-        } catch (final IOException | NumberFormatException ex) {
+        } catch (final IOException ex) {
             logger.error("Unable to open the AboutWindow", ex);
             FxUtils.showErrorAlert(translationBundle.getString("AboutWindowError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
@@ -653,11 +599,11 @@ public final class MainWindowController implements IAudioTimer {
     }
 
     /**
-     * Method that is called when the {@link AudioController} object's {@link Timer} object has fired
+     * Method that is called when the {@link Timer} object has fired
      */
     @Override
     public void fired() {
-        resetAction();
+        getAllSoundPanes(grpControls).forEach(SoundPane::pause);
         mniTimerEnabled.setSelected(false);
 
         if (Boolean.parseBoolean(settingsController.getProperties().getProperty("timerApplicationShutdown", "false"))) {
@@ -666,7 +612,7 @@ public final class MainWindowController implements IAudioTimer {
     }
 
     /**
-     * Method that is invoked when the {@link AudioController} object's {@link Timer} object has cancelled
+     * Method that is invoked when the object's {@link Timer} object has cancelled
      */
     @Override
     public void cancelled() {
@@ -680,9 +626,12 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void onDragOver(final DragEvent dragEvent) {
-        if (dragEvent.getGestureSource() != grpMain && dragEvent.getDragboard().hasFiles()) {
+        if (!Boolean.parseBoolean(settingsController.getProperties().getProperty("dragDrop", "true")))
+            return;
+
+        if (dragEvent.getDragboard().hasFiles())
             dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-        }
+
         dragEvent.consume();
     }
 
@@ -693,6 +642,9 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void onDragDropped(final DragEvent dragEvent) {
+        if (!Boolean.parseBoolean(settingsController.getProperties().getProperty("dragDrop", "true")))
+            return;
+
         final Dragboard db = dragEvent.getDragboard();
         boolean success = false;
 
@@ -703,5 +655,55 @@ public final class MainWindowController implements IAudioTimer {
 
         dragEvent.setDropCompleted(success);
         dragEvent.consume();
+    }
+
+    /**
+     * Cancel the {@link Timer} object
+     */
+    public void cancelTimer() {
+        logger.info("Cancelling the Timer to stop all MediaPlayer objects");
+
+        timerEnabled = false;
+
+        if (timerTask != null) {
+            timerTask.cancel();
+            timer.purge();
+        }
+
+        if (audioTimer != null) {
+            audioTimer.cancelled();
+        }
+    }
+
+    /**
+     * Schedule the {@link Timer} object to cancel all {@link MediaPlayer} objects
+     *
+     * @param delay The delay in milliseconds before the {@link Timer} object executes its function
+     */
+    public void scheduleTimer(final long delay) {
+        if (delay < 1)
+            throw new IllegalArgumentException("Delay cannot be smaller than 1");
+
+        logger.info("Scheduling the Timer to stop all MediaPlayer objects after {} millisecond(s)", delay);
+
+        timerEnabled = true;
+
+        if (timerTask != null) {
+            timerTask.cancel();
+            timer.purge();
+        }
+
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                logger.info("Timer has fired");
+                if (timerEnabled) {
+                    audioTimer.fired();
+                }
+                timerEnabled = false;
+            }
+        };
+
+        timer.schedule(timerTask, delay);
     }
 }

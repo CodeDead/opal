@@ -7,6 +7,7 @@
 
 <?import javafx.geometry.Insets?>
 
+<?import javafx.scene.image.Image?>
 <fx:root type="javafx.scene.layout.GridPane"
          xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml">
@@ -14,6 +15,7 @@
     <columnConstraints>
         <ColumnConstraints/>
         <ColumnConstraints hgrow="ALWAYS"/>
+        <ColumnConstraints/>
     </columnConstraints>
 
     <ImageView GridPane.rowIndex="0" GridPane.columnIndex="0" fx:id="soundImage">
@@ -37,10 +39,21 @@
                 <Insets left="5" right="5" bottom="5" top="5"/>
             </GridPane.margin>
         </Label>
-        <Slider GridPane.rowIndex="1" fx:id="sldVolume">
+        <Slider GridPane.rowIndex="1" fx:id="sldVolume" max="1">
             <GridPane.margin>
                 <Insets left="5" right="5" bottom="5" top="5"/>
             </GridPane.margin>
         </Slider>
     </GridPane>
+
+    <Button GridPane.rowIndex="0" GridPane.columnIndex="2" fx:id="btnPlayPause" onAction="#playPause">
+        <GridPane.margin>
+            <Insets left="5" right="5" bottom="5" top="5"/>
+        </GridPane.margin>
+        <graphic>
+            <ImageView fx:id="imgMediaButton">
+                <Image url="@../images/play.png"/>
+            </ImageView>
+        </graphic>
+    </Button>
 </fx:root>

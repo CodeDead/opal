@@ -1,5 +1,7 @@
 package com.codedead.opal.utils;
 
+import com.codedead.opal.interfaces.IRunnableHelper;
+import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,6 +12,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ResourceBundle;
 
 public final class HelpUtils {
 
@@ -37,9 +40,8 @@ public final class HelpUtils {
 
         final Path filePath = Paths.get(runnableFileOpener.getFileLocation());
 
-        if (!Files.exists(filePath)) {
+        if (!Files.exists(filePath))
             throw new FileNotFoundException(String.format("File (%s) does not exist!", runnableFileOpener.getFileLocation()));
-        }
 
         new Thread(runnableFileOpener).start();
     }
@@ -77,5 +79,67 @@ public final class HelpUtils {
         }
 
         new Thread(runnableFileOpener).start();
+    }
+
+    /**
+     * Open the license file
+     *
+     * @param translationBundle The {@link ResourceBundle} object that contains translations
+     */
+    public void openLicenseFile(final ResourceBundle translationBundle) {
+        logger.info("Attempting to open the license file");
+
+        try {
+            openFileFromResources(new RunnableFileOpener(SharedVariables.LICENSE_FILE_LOCATION, new IRunnableHelper() {
+                @Override
+                public void executed() {
+                    Platform.runLater(() -> logger.info("Successfully opened the license file"));
+                }
+
+                @Override
+                public void exceptionOccurred(final Exception ex) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            logger.error("Error opening the license file", ex);
+                            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                        }
+                    });
+
+                }
+            }), SharedVariables.LICENSE_RESOURCE_LOCATION);
+        } catch (final IOException ex) {
+            logger.error("Error opening the license file", ex);
+            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+        }
+    }
+
+    /**
+     * Open the CodeDead website
+     *
+     * @param translationBundle The {@link ResourceBundle} object that contains translations
+     */
+    public void openCodeDeadWebSite(final ResourceBundle translationBundle) {
+        logger.info("Opening the CodeDead website");
+
+        final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com", new IRunnableHelper() {
+            @Override
+            public void executed() {
+                Platform.runLater(() -> logger.info("Successfully opened website"));
+            }
+
+            @Override
+            public void exceptionOccurred(final Exception ex) {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        logger.error("Error opening the CodeDead website", ex);
+                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                    }
+                });
+            }
+        });
+
+        new Thread(runnableSiteOpener).start();
     }
 }
