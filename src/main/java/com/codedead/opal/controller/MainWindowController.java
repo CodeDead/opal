@@ -523,27 +523,7 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void homepageAction() {
-        logger.info("Opening the CodeDead website");
-
-        final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com", new IRunnableHelper() {
-            @Override
-            public void executed() {
-                Platform.runLater(() -> logger.info("Successfully opened website"));
-            }
-
-            @Override
-            public void exceptionOccurred(final Exception ex) {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        logger.error("Error opening the CodeDead website", ex);
-                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-                    }
-                });
-            }
-        });
-
-        new Thread(runnableSiteOpener).start();
+        helpUtils.openCodeDeadWebSite(translationBundle);
     }
 
     /**
@@ -551,30 +531,7 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void licenseAction() {
-        logger.info("Attempting to open the license file");
-
-        try {
-            helpUtils.openFileFromResources(new RunnableFileOpener(SharedVariables.LICENSE_FILE_LOCATION, new IRunnableHelper() {
-                @Override
-                public void executed() {
-                    Platform.runLater(() -> logger.info("Successfully opened the license file"));
-                }
-
-                @Override
-                public void exceptionOccurred(final Exception ex) {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            logger.error("Error opening the license file", ex);
-                            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-                        }
-                    });
-                }
-            }), SharedVariables.LICENSE_RESOURCE_LOCATION);
-        } catch (final IOException ex) {
-            logger.error("Error opening the license file", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-        }
+        helpUtils.openLicenseFile(translationBundle);
     }
 
     /**

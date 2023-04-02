@@ -1,8 +1,6 @@
 package com.codedead.opal.controller;
 
-import com.codedead.opal.interfaces.IRunnableHelper;
 import com.codedead.opal.utils.*;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,7 +8,6 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.util.ResourceBundle;
 
 public final class AboutWindowController {
@@ -55,31 +52,7 @@ public final class AboutWindowController {
      */
     @FXML
     private void licenseAction() {
-        logger.info("Attempting to open the license file");
-
-        try {
-            helpUtils.openFileFromResources(new RunnableFileOpener(SharedVariables.LICENSE_FILE_LOCATION, new IRunnableHelper() {
-                @Override
-                public void executed() {
-                    Platform.runLater(() -> logger.info("Successfully opened the license file"));
-                }
-
-                @Override
-                public void exceptionOccurred(final Exception ex) {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            logger.error("Error opening the license file", ex);
-                            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-                        }
-                    });
-
-                }
-            }), SharedVariables.LICENSE_RESOURCE_LOCATION);
-        } catch (final IOException ex) {
-            logger.error("Error opening the license file", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-        }
+        helpUtils.openLicenseFile(translationBundle);
     }
 
     /**
@@ -87,26 +60,6 @@ public final class AboutWindowController {
      */
     @FXML
     private void codeDeadAction() {
-        logger.info("Opening the CodeDead website");
-
-        final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com", new IRunnableHelper() {
-            @Override
-            public void executed() {
-                Platform.runLater(() -> logger.info("Successfully opened website"));
-            }
-
-            @Override
-            public void exceptionOccurred(final Exception ex) {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        logger.error("Error opening the CodeDead website", ex);
-                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-                    }
-                });
-            }
-        });
-
-        new Thread(runnableSiteOpener).start();
+        helpUtils.openCodeDeadWebSite(translationBundle);
     }
 }

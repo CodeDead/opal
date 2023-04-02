@@ -173,6 +173,9 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
      */
     @Override
     public int compareTo(final PlatformUpdate o) {
+        if (o == null)
+            return -1;
+
         if (getMajorVersion() < o.getMajorVersion()) {
             return 1;
         } else if (getMajorVersion() > o.getMajorVersion()) {
