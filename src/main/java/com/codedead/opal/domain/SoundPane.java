@@ -66,28 +66,63 @@ public final class SoundPane extends GridPane {
                 play();
             }
         });
+    }
 
-        mediaPath.addListener(new ChangeListener<>() {
+    /**
+     * Initialize the {@link MediaPlayer} object and the {@link ChangeListener} for the <i>mediaPath</i> property
+     *
+     * @throws URISyntaxException When the media path could not be converted to a URI
+     */
+    private void initializeMediaPlayerProperties() throws URISyntaxException {
+        initializeMediaPlayer(mediaPath.getValue());
+
+        mediaPath.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.isEmpty()) {
+                try {
+                    initializeMediaPlayer(newValue);
+                } catch (final URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                if (mediaPlayer != null) {
+                    mediaPlayer.stop();
+                    mediaPlayer.dispose();
+
+                    mediaPlayer = null;
+                }
+            }
+        });
+    }
+
+    /**
+     * Initialize the {@link MediaPlayer} object
+     *
+     * @param value The value of the media path
+     * @throws URISyntaxException When the media path could not be converted to a URI
+     */
+    private void initializeMediaPlayer(final String value) throws URISyntaxException {
+        if (value == null)
+            throw new NullPointerException("Value cannot be null!");
+        if (value.isEmpty())
+            throw new IllegalArgumentException("Value cannot be empty!");
+
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+
+            mediaPlayer = null;
+        }
+
+        mediaPlayer = new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource(value)).toURI().toString()));
+        mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
+        mediaPlayer.volumeProperty().bindBidirectional(sldVolume.valueProperty());
+        mediaPlayer.statusProperty().addListener(new ChangeListener<>() {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (newValue != null && !newValue.isEmpty()) {
-                    try {
-                        mediaPlayer = new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource(newValue)).toURI().toString()));
-                        mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
-                        mediaPlayer.volumeProperty().bindBidirectional(sldVolume.valueProperty());
-                        mediaPlayer.statusProperty().addListener(new ChangeListener<>() {
-                            @Override
-                            public void changed(ObservableValue<? extends MediaPlayer.Status> observable, MediaPlayer.Status oldValue, MediaPlayer.Status newValue) {
-                                if (newValue == MediaPlayer.Status.PLAYING) {
-                                    imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
-                                } else {
-                                    imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/play.png"))));
-                                }
-                            }
-                        });
-                    } catch (final URISyntaxException e) {
-                        throw new RuntimeException(e);
-                    }
+            public void changed(ObservableValue<? extends MediaPlayer.Status> observable, MediaPlayer.Status oldValue, MediaPlayer.Status newValue) {
+                if (newValue == MediaPlayer.Status.PLAYING) {
+                    imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
+                } else {
+                    imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/play.png"))));
                 }
             }
         });
@@ -226,6 +261,13 @@ public final class SoundPane extends GridPane {
      * Play the {@link Media} object
      */
     public void play() {
+        if (mediaPlayer == null) {
+            try {
+                initializeMediaPlayerProperties();
+            } catch (final URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        }
         this.mediaPlayer.play();
     }
 
