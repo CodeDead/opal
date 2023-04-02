@@ -103,6 +103,7 @@ clean.doFirst {
     delete 'license.pdf'
     delete 'help.pdf'
     delete 'logs'
+    delete '.opal'
 }
 
 repositories {

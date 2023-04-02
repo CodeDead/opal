@@ -38,3 +38,4 @@ logs/*
 
 /default.properties
 /help.pdf
+.opal/
