@@ -59,7 +59,7 @@ especially if you're targeting a specific platform and installation method.
 
 The following dependencies are universal:
 
-* [JDK18](https://openjdk.java.net/projects/jdk/18/)
+* [JDK20](https://openjdk.java.net/projects/jdk/20/)
 * [JavaFX](https://openjfx.io)
 * [Gradle](https://gradle.org)
 * [FasterXML/jackson](https://github.com/FasterXML/jackson)

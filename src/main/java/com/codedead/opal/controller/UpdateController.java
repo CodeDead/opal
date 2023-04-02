@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -143,9 +144,10 @@ public final class UpdateController {
      *
      * @param url  The URL of the file that should be downloaded
      * @param path The path on the local filesystem where the file should be stored
-     * @throws IOException If the transfer failed
+     * @throws IOException        If the transfer failed
+     * @throws URISyntaxException If the URL is invalid
      */
-    public void downloadFile(final String url, final String path) throws IOException {
+    public void downloadFile(final String url, final String path) throws IOException, URISyntaxException {
         if (url == null)
             throw new NullPointerException("URL cannot be null!");
         if (url.isEmpty())
@@ -157,7 +159,7 @@ public final class UpdateController {
 
         logger.info("Attempting to download file from {} and store it at {}", url, path);
 
-        final URL website = new URL(url);
+        final URL website = new URI(url).toURL();
         try (final InputStream inputStream = website.openStream()) {
             try (final ReadableByteChannel rbc = Channels.newChannel(inputStream)) {
                 try (final FileOutputStream fos = new FileOutputStream(path)) {
