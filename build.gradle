@@ -6,6 +6,7 @@ plugins {
     id 'eclipse'
     id 'application'
     id 'org.beryx.jlink' version '2.26.0'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 
 group 'com.codedead'
@@ -21,6 +22,12 @@ java {
 application {
     mainModule = 'Opal'
     mainClass = 'com.codedead.opal.OpalApplication'
+}
+
+javafx {
+    version = '20'
+    configuration = 'implementation'
+    modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.media']
 }
 
 jlink {
@@ -110,21 +117,7 @@ repositories {
     mavenCentral()
 }
 
-def platform
-if (currentOS.isWindows()) {
-    platform = 'win'
-} else if (currentOS.isLinux()) {
-    platform = 'linux'
-} else if (currentOS.isMacOsX()) {
-    platform = 'mac'
-}
-
 dependencies {
-    implementation "org.openjfx:javafx-base:20:${platform}"
-    implementation "org.openjfx:javafx-controls:20:${platform}"
-    implementation "org.openjfx:javafx-graphics:20:${platform}"
-    implementation "org.openjfx:javafx-fxml:20:${platform}"
-    implementation "org.openjfx:javafx-media:20:${platform}"
     implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
     implementation 'io.github.mkpaz:atlantafx-base:1.2.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
