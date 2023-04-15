@@ -119,7 +119,7 @@ public final class MainWindowController implements IAudioTimer {
     /**
      * Load the media button visibility for all {@link SoundPane} objects
      *
-     * @param visible True if the media button should be visible, otherwise false
+     * @param visible True if the media buttons should be visible, otherwise false
      */
     public void loadMediaButtonVisibility(final boolean visible) {
         getAllSoundPanes(grpControls).forEach(s -> s.setMediaButton(visible));
