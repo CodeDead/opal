@@ -7,14 +7,18 @@ public final class SharedVariables {
     public static final boolean PORTABLE = false;
     public static final String DEFAULT_LOCALE = "en-US";
 
+    public static final String PROPERTIES_BASE_PATH = PORTABLE
+            ? System.getProperty("user.dir") + "/.opal"
+            : System.getProperty("user.home") + "/.opal";
+
     public static final String PROPERTIES_RESOURCE_LOCATION = "default.properties";
-    public static final String PROPERTIES_FILE_LOCATION = System.getProperty("user.home") + "/.opal/opal.properties";
+    public static final String PROPERTIES_FILE_LOCATION = PROPERTIES_BASE_PATH + "/opal.properties";
 
     public static final String HELP_DOCUMENTATION_RESOURCE_LOCATION = "/documents/help.pdf";
-    public static final String HELP_DOCUMENTATION_FILE_LOCATION = System.getProperty("user.home") + "/.opal/help.pdf";
+    public static final String HELP_DOCUMENTATION_FILE_LOCATION = PROPERTIES_BASE_PATH + "/help.pdf";
 
     public static final String LICENSE_RESOURCE_LOCATION = "/documents/license.pdf";
-    public static final String LICENSE_FILE_LOCATION = System.getProperty("user.home") + "/.opal/license.pdf";
+    public static final String LICENSE_FILE_LOCATION = PROPERTIES_BASE_PATH + "/license.pdf";
 
     /**
      * Initialize a new SharedVariables

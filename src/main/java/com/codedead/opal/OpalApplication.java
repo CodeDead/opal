@@ -30,7 +30,7 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
 public class OpalApplication extends Application {
 
-    private static final Logger logger = LogManager.getLogger(OpalApplication.class);
+    private static Logger logger;
 
     /**
      * Initialize the application
@@ -38,6 +38,9 @@ public class OpalApplication extends Application {
      * @param args The application arguments
      */
     public static void main(final String[] args) {
+        System.setProperty("logBasePath", SharedVariables.PROPERTIES_BASE_PATH);
+        logger = LogManager.getLogger(OpalApplication.class);
+
         Level logLevel = Level.ERROR;
         try (final FileInputStream fis = new FileInputStream(SharedVariables.PROPERTIES_FILE_LOCATION)) {
             final Properties prop = new Properties();

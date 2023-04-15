@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="INFO">
     <Properties>
-        <Property name="basePath">.opal/logs</Property>
+        <Property name="basePath">/logs</Property>
     </Properties>
 
     <Appenders>
-        <RollingFile name="fileLogger" fileName="${sys:user.home}/${basePath}/opal-info.log"
-                     filePattern="${sys:user.home}/${basePath}/opal-info-%d{yyyy-MM-dd}.log.gz"
+        <RollingFile name="fileLogger" fileName="${sys:logBasePath}/${basePath}/opal-info.log"
+                     filePattern="${sys:logBasePath}/${basePath}/opal-info-%d{yyyy-MM-dd}.log.gz"
                      ignoreExceptions="false">
             <PatternLayout>
                 <pattern>[%level][%d{yyyy-MM-dd HH:mm:ss.SSS}][%t] %c{1}\t-\t%msg%n</pattern>
@@ -15,7 +15,7 @@
                 <TimeBasedTriggeringPolicy interval="1"/>
             </Policies>
             <DefaultRolloverStrategy>
-                <Delete basePath="${sys:user.home}/${basePath}/" maxDepth="1">
+                <Delete basePath="${sys:logBasePath}/${basePath}/" maxDepth="1">
                     <IfFileName glob="opal-info-????-??-??.log.gz">
                         <IfAny>
                             <IfAccumulatedFileSize exceeds="10 MB"/>
