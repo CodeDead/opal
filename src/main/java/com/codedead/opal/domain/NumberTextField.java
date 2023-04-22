@@ -73,7 +73,7 @@ public final class NumberTextField extends TextField {
     /**
      * Get the minimum allowed value
      *
-     * @return The mimium allowed value
+     * @return The minimum allowed value
      */
     @FXML
     public int getMin() {
