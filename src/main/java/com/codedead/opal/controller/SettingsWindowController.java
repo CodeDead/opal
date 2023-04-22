@@ -66,6 +66,21 @@ public final class SettingsWindowController {
     }
 
     /**
+     * FXML initialize method
+     */
+    @FXML
+    private void initialize() {
+        cboTheme.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            switch (cboTheme.getSelectionModel().getSelectedIndex()) {
+                case 1 -> Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+                case 2 -> Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
+                case 3 -> Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+                default -> Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+            }
+        });
+    }
+
+    /**
      * Set the {@link SettingsController} object
      *
      * @param settingsController The {@link SettingsController} object
@@ -316,6 +331,14 @@ public final class SettingsWindowController {
     @FXML
     private void cancelAction(final ActionEvent event) {
         logger.info("Closing SettingsWindow");
+
+        switch (settingsController.getProperties().getProperty("theme", "Light")) {
+            case "Dark" -> Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+            case "NordLight" -> Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
+            case "NordDark" -> Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+            default -> Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+        }
+
         ((Stage) (((Button) event.getSource()).getScene().getWindow())).close();
     }
 }
