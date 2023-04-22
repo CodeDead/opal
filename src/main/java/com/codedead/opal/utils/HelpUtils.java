@@ -102,7 +102,7 @@ public final class HelpUtils {
                         @Override
                         public void run() {
                             logger.error("Error opening the license file", ex);
-                            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                         }
                     });
 
@@ -110,7 +110,7 @@ public final class HelpUtils {
             }), SharedVariables.LICENSE_RESOURCE_LOCATION);
         } catch (final IOException ex) {
             logger.error("Error opening the license file", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(translationBundle.getString("LicenseFileError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -134,7 +134,7 @@ public final class HelpUtils {
                     @Override
                     public void run() {
                         logger.error("Error opening the CodeDead website", ex);
-                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                     }
                 });
             }

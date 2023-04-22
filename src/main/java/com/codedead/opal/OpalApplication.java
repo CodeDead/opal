@@ -78,7 +78,7 @@ public class OpalApplication extends Application {
             settingsController = new SettingsController(SharedVariables.PROPERTIES_FILE_LOCATION, SharedVariables.PROPERTIES_RESOURCE_LOCATION);
         } catch (final IOException ex) {
             logger.error("Unable to initialize the SettingsController", ex);
-            FxUtils.showErrorAlert("Exception occurred", ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert("Exception occurred", ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             Platform.exit();
             return;
         }
@@ -129,7 +129,7 @@ public class OpalApplication extends Application {
                 mainWindowController.showTrayIcon();
             } catch (final IOException ex) {
                 logger.error("Unable to create tray icon", ex);
-                FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         }
     }

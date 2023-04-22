@@ -112,7 +112,7 @@ public final class MainWindowController implements IAudioTimer {
         }
 
         if (shouldUpdate) {
-            checkForUpdates(false);
+            checkForUpdates(false, false);
         }
     }
 
@@ -129,8 +129,9 @@ public final class MainWindowController implements IAudioTimer {
      * Check for application updates
      *
      * @param showNoUpdates Show an {@link Alert} object when no updates are available
+     * @param showErrors    Show an {@link Alert} object when an error occurs
      */
-    private void checkForUpdates(final boolean showNoUpdates) {
+    private void checkForUpdates(final boolean showNoUpdates, final boolean showErrors) {
         logger.info("Attempting to check for updates");
 
         try {
@@ -172,12 +173,16 @@ public final class MainWindowController implements IAudioTimer {
                 }
             }
         } catch (final InterruptedException ex) {
-            logger.error("Unable to check for updates", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             Thread.currentThread().interrupt();
+            logger.error("Unable to check for updates", ex);
+            if (showErrors) {
+                FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            }
         } catch (final IOException | InvalidHttpResponseCodeException | URISyntaxException ex) {
             logger.error("Unable to check for updates", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            if (showErrors) {
+                FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            }
         }
     }
 
@@ -225,14 +230,14 @@ public final class MainWindowController implements IAudioTimer {
                         @Override
                         public void run() {
                             logger.error("Error opening the file", ex);
-                            FxUtils.showErrorAlert(translationBundle.getString("FileExecutionError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                            FxUtils.showErrorAlert(translationBundle.getString("FileExecutionError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                         }
                     });
                 }
             }));
         } catch (final IOException ex) {
             logger.error("Error opening the file", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("FileExecutionError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(translationBundle.getString("FileExecutionError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -403,7 +408,7 @@ public final class MainWindowController implements IAudioTimer {
             mediaVolumes.forEach((key, value) -> soundPanes.stream().filter(e -> e.getMediaKey().equals(key)).forEach(e -> e.getSlider().setValue(value)));
         } catch (final IOException ex) {
             logger.error("Unable to open the sound preset from {}", path, ex);
-            FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -433,7 +438,7 @@ public final class MainWindowController implements IAudioTimer {
                 objectMapper.writeValue(new File(filePath), mediaVolumes);
             } catch (final IOException ex) {
                 logger.error("Unable to save the sound settings to {}", filePath, ex);
-                FxUtils.showErrorAlert(translationBundle.getString("SaveSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                FxUtils.showErrorAlert(translationBundle.getString("SaveSoundPresetError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         } else {
             logger.info("Cancelled saving a sound settings");
@@ -483,7 +488,7 @@ public final class MainWindowController implements IAudioTimer {
             primaryStage.show();
         } catch (final IOException ex) {
             logger.error("Unable to open the SettingsWindow", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("SettingsWindowError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(translationBundle.getString("SettingsWindowError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -507,14 +512,14 @@ public final class MainWindowController implements IAudioTimer {
                         @Override
                         public void run() {
                             logger.error("Error opening the help file", ex);
-                            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                         }
                     });
                 }
             }), SharedVariables.HELP_DOCUMENTATION_RESOURCE_LOCATION);
         } catch (final IOException ex) {
             logger.error("Error opening the help file", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -553,7 +558,7 @@ public final class MainWindowController implements IAudioTimer {
                     @Override
                     public void run() {
                         logger.error("Error opening the CodeDead donation website", ex);
-                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                     }
                 });
             }
@@ -586,7 +591,7 @@ public final class MainWindowController implements IAudioTimer {
             primaryStage.show();
         } catch (final IOException ex) {
             logger.error("Unable to open the AboutWindow", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("AboutWindowError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(translationBundle.getString("AboutWindowError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -595,7 +600,7 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void updateAction() {
-        checkForUpdates(true);
+        checkForUpdates(true, true);
     }
 
     /**

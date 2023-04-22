@@ -201,7 +201,7 @@ public final class SettingsWindowController {
                 loadSettings();
             } catch (final IOException ex) {
                 logger.error("Unable to reset all settings", ex);
-                FxUtils.showErrorAlert(translationBundle.getString("ResetSettingsError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                FxUtils.showErrorAlert(translationBundle.getString("ResetSettingsError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         }
     }
@@ -224,7 +224,7 @@ public final class SettingsWindowController {
                 mainWindowController.showTrayIcon();
             } catch (final IOException ex) {
                 logger.error("Unable to create tray icon", ex);
-                FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         } else {
             mainWindowController.hideTrayIcon();
@@ -298,7 +298,7 @@ public final class SettingsWindowController {
             settingsController.saveProperties();
         } catch (final IOException ex) {
             logger.error("Unable to save all settings", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
