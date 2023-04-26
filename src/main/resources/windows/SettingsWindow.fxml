@@ -181,6 +181,13 @@
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </CheckBox>
+
+                <CheckBox fx:id="chbTimerComputerShutdown" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                          GridPane.columnSpan="3" text="%TimerComputerShutdown">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </CheckBox>
             </GridPane>
         </Tab>
     </TabPane>
