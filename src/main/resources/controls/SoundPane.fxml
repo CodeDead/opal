@@ -8,6 +8,7 @@
 <?import javafx.geometry.Insets?>
 
 <?import javafx.scene.image.Image?>
+<!--suppress XmlHighlighting -->
 <fx:root type="javafx.scene.layout.GridPane"
          xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml">
