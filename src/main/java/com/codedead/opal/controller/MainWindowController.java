@@ -1,11 +1,17 @@
 package com.codedead.opal.controller;
 
+import atlantafx.base.theme.NordDark;
+import atlantafx.base.theme.NordLight;
+import atlantafx.base.theme.PrimerDark;
+import atlantafx.base.theme.PrimerLight;
 import com.codedead.opal.domain.*;
 import com.codedead.opal.interfaces.IAudioTimer;
 import com.codedead.opal.interfaces.IRunnableHelper;
+import com.codedead.opal.interfaces.TrayIconListener;
 import com.codedead.opal.utils.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,9 +29,6 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -36,14 +39,13 @@ import java.util.List;
 
 import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
-public final class MainWindowController implements IAudioTimer {
+public final class MainWindowController implements IAudioTimer, TrayIconListener {
 
     @FXML
     private GridPane grpControls;
     @FXML
     private CheckMenuItem mniTimerEnabled;
-
-    private TrayIcon trayIcon;
+    private TrayIconController trayIconController;
     private SettingsController settingsController;
     private UpdateController updateController;
     private ResourceBundle translationBundle;
@@ -106,6 +108,18 @@ public final class MainWindowController implements IAudioTimer {
         translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
 
         final boolean mediaButtons = Boolean.parseBoolean(properties.getProperty("mediaButtons", "true"));
+
+        trayIconController = new TrayIconController(translationBundle, this);
+
+        // Load tray icons after displaying the main stage to display the proper icon in the task bar / activities bar (linux)
+        if (Boolean.parseBoolean(properties.getProperty("trayIcon", "false"))) {
+            try {
+                trayIconController.showTrayIcon();
+            } catch (final IOException ex) {
+                logger.error("Unable to create tray icon", ex);
+                FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            }
+        }
 
         if (!mediaButtons) {
             loadMediaButtonVisibility(false);
@@ -260,96 +274,6 @@ public final class MainWindowController implements IAudioTimer {
     }
 
     /**
-     * Create a tray icon
-     *
-     * @throws IOException When the {@link TrayIcon} could not be created
-     */
-    private void createTrayIcon() throws IOException {
-        logger.info("Creating tray icon");
-        if (!SystemTray.isSupported()) {
-            logger.warn("SystemTray is not supported");
-            return;
-        }
-
-        final SystemTray tray = SystemTray.getSystemTray();
-        final Dimension trayIconSize = tray.getTrayIconSize();
-        final PopupMenu popup = new PopupMenu();
-        final BufferedImage trayIconImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/opal.png")));
-        final TrayIcon localTrayIcon = new TrayIcon(trayIconImage.getScaledInstance(trayIconSize.width, trayIconSize.height, java.awt.Image.SCALE_SMOOTH));
-        final java.awt.MenuItem displayItem = new java.awt.MenuItem(translationBundle.getString("Display"));
-        final java.awt.MenuItem settingsItem = new java.awt.MenuItem(translationBundle.getString("Settings"));
-        final java.awt.MenuItem aboutItem = new java.awt.MenuItem(translationBundle.getString("About"));
-        final java.awt.MenuItem exitItem = new java.awt.MenuItem(translationBundle.getString("Exit"));
-
-        // Platform.runLater to run on the JavaFX thread
-        displayItem.addActionListener(e -> Platform.runLater(this::hideShowStage));
-        settingsItem.addActionListener(e -> Platform.runLater(this::settingsAction));
-        aboutItem.addActionListener(e -> Platform.runLater(this::aboutAction));
-        exitItem.addActionListener(e -> Platform.runLater(this::exitAction));
-
-        popup.add(displayItem);
-        popup.addSeparator();
-        popup.add(settingsItem);
-        popup.add(aboutItem);
-        popup.addSeparator();
-        popup.add(exitItem);
-
-        localTrayIcon.setToolTip("Opal");
-        localTrayIcon.setPopupMenu(popup);
-        localTrayIcon.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(final java.awt.event.MouseEvent evt) {
-                if (evt.getClickCount() == 2) {
-                    Platform.runLater(MainWindowController.this::hideShowStage);
-                }
-            }
-        });
-
-        this.trayIcon = localTrayIcon;
-    }
-
-    /**
-     * Display the tray icon
-     *
-     * @throws IOException When the {@link TrayIcon} could not be created
-     */
-    public void showTrayIcon() throws IOException {
-        logger.info("Displaying tray icon");
-        if (trayIcon == null) {
-            createTrayIcon();
-            if (trayIcon == null) {
-                logger.warn("TrayIcon cannot be null!");
-                return;
-            }
-        }
-
-        final SystemTray tray = SystemTray.getSystemTray();
-        try {
-            if (!Arrays.asList(tray.getTrayIcons()).contains(trayIcon)) {
-                tray.add(trayIcon);
-            }
-        } catch (final AWTException e) {
-            logger.error("TrayIcon could not be added", e);
-        }
-    }
-
-    /**
-     * Hide the tray icon
-     */
-    public void hideTrayIcon() {
-        logger.info("Hiding tray icon");
-        if (trayIcon == null) {
-            logger.warn("TrayIcon cannot be null!");
-            return;
-        }
-
-        final SystemTray tray = SystemTray.getSystemTray();
-        tray.remove(trayIcon);
-
-        trayIcon = null;
-    }
-
-    /**
      * Hide the current stage
      */
     private void hideShowStage() {
@@ -477,12 +401,22 @@ public final class MainWindowController implements IAudioTimer {
             final SettingsWindowController settingsWindowController = loader.getController();
             settingsWindowController.setSettingsController(getSettingsController());
             settingsWindowController.setMainWindowController(this);
+            settingsWindowController.setTrayIconController(trayIconController);
 
             final Stage primaryStage = new Stage();
 
             primaryStage.setTitle(translationBundle.getString("SettingsWindowTitle"));
             primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(SharedVariables.ICON_URL))));
             primaryStage.setScene(new Scene(root));
+
+            primaryStage.setOnHiding(event -> {
+                switch (settingsController.getProperties().getProperty("theme", "Light").toLowerCase()) {
+                    case "dark" -> Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+                    case "nordlight" -> Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
+                    case "norddark" -> Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+                    default -> Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+                }
+            });
 
             logger.info("Showing the SettingsWindow");
             primaryStage.show();
@@ -710,5 +644,37 @@ public final class MainWindowController implements IAudioTimer {
         };
 
         timer.schedule(timerTask, delay);
+    }
+
+    /**
+     * Method that is called when the Window should be hidden or shown
+     */
+    @Override
+    public void onShowHide() {
+        hideShowStage();
+    }
+
+    /**
+     * Method that is called when the SettingsWindow should be opened
+     */
+    @Override
+    public void onSettings() {
+        settingsAction();
+    }
+
+    /**
+     * Method that is called when the AboutWindow should be opened
+     */
+    @Override
+    public void onAbout() {
+        aboutAction();
+    }
+
+    /**
+     * Method that is called when the application should exit
+     */
+    @Override
+    public void onExit() {
+        exitAction();
     }
 }

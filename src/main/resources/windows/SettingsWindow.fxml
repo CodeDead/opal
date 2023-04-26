@@ -106,6 +106,14 @@
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Light"/>
+                            <String fx:value="Dark"/>
+                            <String fx:value="NordLight"/>
+                            <String fx:value="NordDark"/>
+                        </FXCollections>
+                    </items>
                 </ComboBox>
 
                 <Label GridPane.rowIndex="6" GridPane.columnIndex="0" text="%LogLevel">

@@ -53,6 +53,7 @@ public final class SettingsWindowController {
 
     private MainWindowController mainWindowController;
     private SettingsController settingsController;
+    private TrayIconController trayIconController;
     private ResourceBundle translationBundle;
 
     private final Logger logger;
@@ -102,17 +103,7 @@ public final class SettingsWindowController {
                 translationBundle.getString("Minutes"),
                 translationBundle.getString("Hours")
         );
-
-        final ObservableList<String> themes = FXCollections.observableArrayList(
-                translationBundle.getString("Light"),
-                translationBundle.getString("Dark"),
-                translationBundle.getString("NordLight"),
-                translationBundle.getString("NordDark")
-        );
-
-        cboTheme.setItems(themes);
         cboDelayType.setItems(options);
-
         loadSettings();
     }
 
@@ -123,6 +114,18 @@ public final class SettingsWindowController {
      */
     public void setMainWindowController(final MainWindowController mainWindowController) {
         this.mainWindowController = mainWindowController;
+    }
+
+    /**
+     * Set the {@link TrayIconController} object
+     *
+     * @param trayIconController The {@link TrayIconController} object
+     */
+    public void setTrayIconController(final TrayIconController trayIconController) {
+        if (trayIconController == null)
+            throw new NullPointerException("TrayIconController cannot be null!");
+
+        this.trayIconController = trayIconController;
     }
 
     /**
@@ -196,7 +199,7 @@ public final class SettingsWindowController {
                 settingsController.createDefaultProperties();
                 settingsController.setProperties(settingsController.readPropertiesFile());
                 mainWindowController.loadMediaButtonVisibility(Boolean.parseBoolean(settingsController.getProperties().getProperty("mediaButtons", "true")));
-                mainWindowController.hideTrayIcon();
+                trayIconController.hideTrayIcon();
 
                 loadSettings();
             } catch (final IOException ex) {
@@ -221,13 +224,13 @@ public final class SettingsWindowController {
         mainWindowController.loadMediaButtonVisibility(chbMediaButtons.isSelected());
         if (chbTrayIcon.isSelected()) {
             try {
-                mainWindowController.showTrayIcon();
+                trayIconController.showTrayIcon();
             } catch (final IOException ex) {
                 logger.error("Unable to create tray icon", ex);
                 FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         } else {
-            mainWindowController.hideTrayIcon();
+            trayIconController.hideTrayIcon();
         }
 
         showAlertIfLanguageMismatch(settingsController.getProperties().getProperty("locale", DEFAULT_LOCALE));
@@ -242,25 +245,7 @@ public final class SettingsWindowController {
             default -> settingsController.getProperties().setProperty("locale", DEFAULT_LOCALE);
         }
 
-        switch (cboTheme.getSelectionModel().getSelectedIndex()) {
-            case 1 -> {
-                settingsController.getProperties().setProperty("theme", "dark");
-                Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
-            }
-            case 2 -> {
-                settingsController.getProperties().setProperty("theme", "nordlight");
-                Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
-            }
-            case 3 -> {
-                settingsController.getProperties().setProperty("theme", "norddark");
-                Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
-            }
-            default -> {
-                settingsController.getProperties().setProperty("theme", "light");
-                Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
-            }
-        }
-
+        settingsController.getProperties().setProperty("theme", cboTheme.getSelectionModel().getSelectedItem());
         settingsController.getProperties().setProperty("loglevel", cboLogLevel.getValue());
 
         final Level level = switch (cboLogLevel.getValue()) {
@@ -331,14 +316,6 @@ public final class SettingsWindowController {
     @FXML
     private void cancelAction(final ActionEvent event) {
         logger.info("Closing SettingsWindow");
-
-        switch (settingsController.getProperties().getProperty("theme", "Light")) {
-            case "Dark" -> Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
-            case "NordLight" -> Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
-            case "NordDark" -> Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
-            default -> Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
-        }
-
         ((Stage) (((Button) event.getSource()).getScene().getWindow())).close();
     }
 }
