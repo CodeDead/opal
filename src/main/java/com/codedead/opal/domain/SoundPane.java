@@ -275,7 +275,9 @@ public final class SoundPane extends GridPane {
      * Pause the {@link Media} object
      */
     public void pause() {
-        this.mediaPlayer.pause();
+        if (mediaPlayer != null) {
+            this.mediaPlayer.pause();
+        }
     }
 
     /**

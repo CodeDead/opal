@@ -29,8 +29,10 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -544,6 +546,33 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     public void fired() {
         getAllSoundPanes(grpControls).forEach(SoundPane::pause);
         mniTimerEnabled.setSelected(false);
+
+        if (Boolean.parseBoolean(settingsController.getProperties().getProperty("timerComputerShutdown", "false"))) {
+            final String command = switch (platformName.toLowerCase()) {
+                case "windows" -> "shutdown -s -t 0";
+                case "linux", "macos" -> "shutdown -h now";
+                default -> null;
+            };
+
+            if (command != null) {
+                try {
+                    final ProcessBuilder p = new ProcessBuilder(command.split(" "));
+
+                    try (final BufferedReader reader = new BufferedReader(new InputStreamReader(p.start().getInputStream()))) {
+                        final StringBuilder builder = new StringBuilder();
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            builder.append(line);
+                            builder.append(System.getProperty("line.separator"));
+                        }
+                        final String result = builder.toString();
+                        logger.info("Shutdown command result", result);
+                    }
+                } catch (final IOException ex) {
+                    logger.error("Unable to execute shutdown command", ex);
+                }
+            }
+        }
 
         if (Boolean.parseBoolean(settingsController.getProperties().getProperty("timerApplicationShutdown", "false"))) {
             exitAction();

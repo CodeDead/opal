@@ -31,6 +31,8 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 public final class SettingsWindowController {
 
     @FXML
+    private CheckBox chbTimerComputerShutdown;
+    @FXML
     private CheckBox chbTrayIcon;
     @FXML
     private ComboBox<String> cboTheme;
@@ -183,6 +185,7 @@ public final class SettingsWindowController {
         cboDelayType.getSelectionModel().select(delayType);
         cboTheme.getSelectionModel().select(themeIndex);
         numDelay.setText(String.valueOf(correctDelay));
+        chbTimerComputerShutdown.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("timerComputerShutdown", "false")));
     }
 
     /**
@@ -277,6 +280,7 @@ public final class SettingsWindowController {
         settingsController.getProperties().setProperty("timerDelay", String.valueOf(correctDelay));
         settingsController.getProperties().setProperty("timerDelayType", String.valueOf(delayType));
         settingsController.getProperties().setProperty("timerApplicationShutdown", String.valueOf(chbTimerApplicationShutdown.isSelected()));
+        settingsController.getProperties().setProperty("timerComputerShutdown", String.valueOf(chbTimerComputerShutdown.isSelected()));
 
         Configurator.setAllLevels(LogManager.getRootLogger().getName(), level);
         try {
