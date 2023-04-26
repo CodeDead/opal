@@ -77,7 +77,7 @@ public class OpalApplication extends Application {
         try {
             settingsController = new SettingsController(SharedVariables.PROPERTIES_FILE_LOCATION, SharedVariables.PROPERTIES_RESOURCE_LOCATION);
         } catch (final IOException ex) {
-            logger.error("Unable to initialize the SettingsController", ex);
+            logger.fatal("Unable to initialize the SettingsController", ex);
             FxUtils.showErrorAlert("Exception occurred", ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             Platform.exit();
             return;
@@ -102,7 +102,7 @@ public class OpalApplication extends Application {
         try {
             root = loader.load();
         } catch (final IOException ex) {
-            logger.error("Unable to load FXML for MainWindow", ex);
+            logger.fatal("Unable to load FXML for MainWindow", ex);
             Platform.exit();
             return;
         }
@@ -122,15 +122,5 @@ public class OpalApplication extends Application {
 
         logger.info("Showing the MainWindow");
         primaryStage.show();
-
-        // Load tray icons after displaying the main stage to display the proper icon in the task bar / activities bar (linux)
-        if (Boolean.parseBoolean(properties.getProperty("trayIcon", "false"))) {
-            try {
-                mainWindowController.showTrayIcon();
-            } catch (final IOException ex) {
-                logger.error("Unable to create tray icon", ex);
-                FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-            }
-        }
     }
 }
