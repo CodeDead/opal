@@ -85,6 +85,7 @@ public final class NumberTextField extends TextField {
      *
      * @param min The minimum allowed value
      */
+    @SuppressWarnings("unused")
     @FXML
     public void setMin(final int min) {
         this.min = min;

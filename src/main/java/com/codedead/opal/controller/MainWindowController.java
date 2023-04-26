@@ -37,7 +37,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.List;
 
 import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
@@ -188,13 +187,10 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                     FxUtils.showInformationAlert(translationBundle.getString("NoUpdateAvailable"), null);
                 }
             }
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            logger.error("Unable to check for updates", ex);
-            if (showErrors) {
-                FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-            }
-        } catch (final IOException | InvalidHttpResponseCodeException | URISyntaxException ex) {
+        } catch (final InterruptedException | IOException | InvalidHttpResponseCodeException | URISyntaxException ex) {
+            if (ex instanceof InterruptedException)
+                Thread.currentThread().interrupt();
+
             logger.error("Unable to check for updates", ex);
             if (showErrors) {
                 FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
@@ -566,7 +562,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                             builder.append(System.getProperty("line.separator"));
                         }
                         final String result = builder.toString();
-                        logger.info("Shutdown command result", result);
+                        logger.info("Shutdown command result: {}", result);
                     }
                 } catch (final IOException ex) {
                     logger.error("Unable to execute shutdown command", ex);

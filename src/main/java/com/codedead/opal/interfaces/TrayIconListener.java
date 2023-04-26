@@ -1,6 +1,6 @@
 package com.codedead.opal.interfaces;
 
-public interface TrayIconListener {
+public sealed interface TrayIconListener permits com.codedead.opal.controller.MainWindowController {
 
     void onShowHide();
 
