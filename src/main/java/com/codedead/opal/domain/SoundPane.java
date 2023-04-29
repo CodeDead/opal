@@ -1,9 +1,6 @@
 package com.codedead.opal.domain;
 
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -39,7 +36,7 @@ public final class SoundPane extends GridPane {
     @FXML
     private ImageView imgMediaButton;
     @FXML
-    private final StringProperty mediaPath = new SimpleStringProperty();
+    private String mediaPath;
     @FXML
     private String mediaKey;
     private MediaPlayer mediaPlayer;
@@ -67,38 +64,13 @@ public final class SoundPane extends GridPane {
         sldVolume.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue.doubleValue() == 0 && (oldValue != null && oldValue.doubleValue() != 0)) {
                 pause();
+                disposeMediaPlayer();
             } else if (newValue != null && newValue.doubleValue() > 0 && (oldValue != null && oldValue.doubleValue() == 0)) {
                 try {
                     play();
                 } catch (final MediaPlayerException e) {
                     logger.fatal("Could not play the media file!", e);
                     Platform.exit();
-                }
-            }
-        });
-    }
-
-    /**
-     * Initialize the {@link MediaPlayer} object and the {@link ChangeListener} for the <i>mediaPath</i> property
-     *
-     * @throws URISyntaxException When the media path could not be converted to a {@link java.net.URI} object
-     */
-    private void initializeMediaPlayerProperties() throws URISyntaxException {
-        initializeMediaPlayer(mediaPath.getValue());
-
-        mediaPath.addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.isEmpty()) {
-                try {
-                    initializeMediaPlayer(newValue);
-                } catch (final URISyntaxException e) {
-                    logger.fatal("Could not convert the media path to a URI!", e);
-                }
-            } else {
-                if (mediaPlayer != null) {
-                    mediaPlayer.stop();
-                    mediaPlayer.dispose();
-
-                    mediaPlayer = null;
                 }
             }
         });
@@ -116,15 +88,14 @@ public final class SoundPane extends GridPane {
         if (value.isEmpty())
             throw new IllegalArgumentException("Value cannot be empty!");
 
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.dispose();
-
-            mediaPlayer = null;
-        }
+        disposeMediaPlayer();
 
         mediaPlayer = new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource(value)).toURI().toString()));
-        mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
+        mediaPlayer.setOnEndOfMedia(() -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.seek(Duration.ZERO);
+            }
+        });
         mediaPlayer.volumeProperty().bindBidirectional(sldVolume.valueProperty());
         mediaPlayer.statusProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == MediaPlayer.Status.PLAYING) {
@@ -221,7 +192,7 @@ public final class SoundPane extends GridPane {
      */
     @FXML
     public String getMediaPath() {
-        return mediaPath.getValue();
+        return mediaPath;
     }
 
     /**
@@ -236,7 +207,7 @@ public final class SoundPane extends GridPane {
         if (mediaPath.isEmpty())
             throw new IllegalArgumentException("Media path cannot be empty!");
 
-        this.mediaPath.setValue(mediaPath);
+        this.mediaPath = mediaPath;
     }
 
     /**
@@ -272,7 +243,7 @@ public final class SoundPane extends GridPane {
     public void play() throws MediaPlayerException {
         if (mediaPlayer == null) {
             try {
-                initializeMediaPlayerProperties();
+                initializeMediaPlayer(mediaPath);
             } catch (final URISyntaxException e) {
                 logger.fatal("Could not convert the media path to a URI!", e);
                 throw new MediaPlayerException(e.getMessage());
@@ -301,6 +272,19 @@ public final class SoundPane extends GridPane {
             pause();
         } else {
             play();
+        }
+    }
+
+    /**
+     * Dispose of the {@link MediaPlayer} object and all bindings
+     */
+    private void disposeMediaPlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.volumeProperty().unbindBidirectional(sldVolume.valueProperty());
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+
+            mediaPlayer = null;
         }
     }
 }
