@@ -36,7 +36,9 @@ public final class RunnableSiteOpener implements Runnable {
     @Override
     public void run() {
         try {
-            Desktop.getDesktop().browse(new URI(url));
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                Desktop.getDesktop().browse(new URI(url));
+            }
             if (iRunnableHelper != null) {
                 iRunnableHelper.executed();
             }

@@ -115,14 +115,20 @@ public final class HelpUtils {
     }
 
     /**
-     * Open the CodeDead website
+     * Open a website
      *
-     * @param translationBundle The {@link ResourceBundle} object that contains translations
+     * @param url            The URL of the website
+     * @param resourceBundle The {@link ResourceBundle} object that contains translations
      */
-    public void openCodeDeadWebSite(final ResourceBundle translationBundle) {
-        logger.info("Opening the CodeDead website");
+    public void openWebsite(final String url, final ResourceBundle resourceBundle) {
+        if (url == null)
+            throw new NullPointerException("URL cannot be null!");
+        if (url.isEmpty())
+            throw new IllegalArgumentException("URL cannot be empty!");
 
-        final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com", new IRunnableHelper() {
+        logger.info("Opening the website {}", url);
+
+        final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener(url, new IRunnableHelper() {
             @Override
             public void executed() {
                 Platform.runLater(() -> logger.info("Successfully opened website"));
@@ -133,8 +139,8 @@ public final class HelpUtils {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        logger.error("Error opening the CodeDead website", ex);
-                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                        logger.error("Error opening the website {}", url, ex);
+                        FxUtils.showErrorAlert(resourceBundle.getString("WebsiteError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                     }
                 });
             }

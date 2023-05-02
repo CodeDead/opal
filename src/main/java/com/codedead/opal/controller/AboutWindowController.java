@@ -62,6 +62,6 @@ public final class AboutWindowController {
      */
     @FXML
     private void codeDeadAction() {
-        helpUtils.openCodeDeadWebSite(translationBundle);
+        helpUtils.openWebsite("https://codedead.com", translationBundle);
     }
 }
