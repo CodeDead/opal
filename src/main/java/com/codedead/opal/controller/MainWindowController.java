@@ -129,6 +129,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         if (shouldUpdate) {
             checkForUpdates(false, false);
         }
+
+        setAudioBalance(Double.parseDouble(properties.getProperty("audioBalance", "0.0")));
     }
 
     /**
@@ -652,6 +654,15 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         };
 
         timer.schedule(timerTask, delay);
+    }
+
+    /**
+     * Set the audio balance
+     *
+     * @param audioBalance The audio balance
+     */
+    public void setAudioBalance(final double audioBalance) {
+        getAllSoundPanes(grpControls).forEach(s -> s.setBalance(audioBalance));
     }
 
     /**

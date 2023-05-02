@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Slider;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -30,6 +31,8 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
 public final class SettingsWindowController {
 
+    @FXML
+    private Slider sldAudioBalance;
     @FXML
     private CheckBox chbTimerComputerShutdown;
     @FXML
@@ -186,6 +189,8 @@ public final class SettingsWindowController {
         cboTheme.getSelectionModel().select(themeIndex);
         numDelay.setText(String.valueOf(correctDelay));
         chbTimerComputerShutdown.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("timerComputerShutdown", "false")));
+
+        sldAudioBalance.setValue(Double.parseDouble(settingsController.getProperties().getProperty("audioBalance", "0.0")));
     }
 
     /**
@@ -201,7 +206,10 @@ public final class SettingsWindowController {
             try {
                 settingsController.createDefaultProperties();
                 settingsController.setProperties(settingsController.readPropertiesFile());
+
                 mainWindowController.loadMediaButtonVisibility(Boolean.parseBoolean(settingsController.getProperties().getProperty("mediaButtons", "true")));
+                mainWindowController.setAudioBalance(Double.parseDouble(settingsController.getProperties().getProperty("audioBalance", "0.0")));
+
                 trayIconController.hideTrayIcon();
 
                 loadSettings();
@@ -281,6 +289,9 @@ public final class SettingsWindowController {
         settingsController.getProperties().setProperty("timerDelayType", String.valueOf(delayType));
         settingsController.getProperties().setProperty("timerApplicationShutdown", String.valueOf(chbTimerApplicationShutdown.isSelected()));
         settingsController.getProperties().setProperty("timerComputerShutdown", String.valueOf(chbTimerComputerShutdown.isSelected()));
+
+        settingsController.getProperties().setProperty("audioBalance", String.valueOf(sldAudioBalance.getValue()));
+        mainWindowController.setAudioBalance(sldAudioBalance.getValue());
 
         Configurator.setAllLevels(LogManager.getRootLogger().getName(), level);
         try {

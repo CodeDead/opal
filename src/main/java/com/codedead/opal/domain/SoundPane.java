@@ -39,6 +39,7 @@ public final class SoundPane extends GridPane {
     private String mediaPath;
     @FXML
     private String mediaKey;
+    private double balance;
     private MediaPlayer mediaPlayer;
     private final Logger logger;
 
@@ -104,6 +105,7 @@ public final class SoundPane extends GridPane {
                 imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/play.png"))));
             }
         });
+        mediaPlayer.setBalance(balance);
     }
 
     /**
@@ -285,6 +287,30 @@ public final class SoundPane extends GridPane {
             mediaPlayer.dispose();
 
             mediaPlayer = null;
+        }
+    }
+
+    /**
+     * Get the audio balance
+     *
+     * @return The audio balance
+     */
+    public double getBalance() {
+        return balance;
+    }
+
+    /**
+     * Set the audio balance
+     *
+     * @param balance The audio balance
+     */
+    public void setBalance(final double balance) {
+        if (balance < -1.0 || balance > 1.0)
+            throw new IllegalArgumentException("Balance must be between -1.0 and 1.0!");
+
+        this.balance = balance;
+        if (mediaPlayer != null) {
+            mediaPlayer.setBalance(balance);
         }
     }
 }
