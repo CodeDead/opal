@@ -460,7 +460,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      */
     @FXML
     private void homepageAction() {
-        helpUtils.openCodeDeadWebSite(translationBundle);
+        helpUtils.openWebsite("https://codedead.com", translationBundle);
     }
 
     /**
@@ -476,27 +476,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      */
     @FXML
     private void donateAction() {
-        logger.info("Opening the CodeDead donation website");
-
-        final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com/donate", new IRunnableHelper() {
-            @Override
-            public void executed() {
-                Platform.runLater(() -> logger.info("Successfully opened website"));
-            }
-
-            @Override
-            public void exceptionOccurred(final Exception ex) {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        logger.error("Error opening the CodeDead donation website", ex);
-                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-                    }
-                });
-            }
-        });
-
-        new Thread(runnableSiteOpener).start();
+        helpUtils.openWebsite("https://codedead.com/donate", translationBundle);
     }
 
     /**
@@ -564,9 +544,12 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                         final String result = builder.toString();
                         logger.info("Shutdown command result: {}", result);
                     }
+                    exitAction();
                 } catch (final IOException ex) {
                     logger.error("Unable to execute shutdown command", ex);
                 }
+            } else {
+                logger.error("Unable to execute shutdown command, unsupported platform {}", platformName);
             }
         }
 

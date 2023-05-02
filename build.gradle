@@ -58,7 +58,8 @@ jlink {
                     '--copyright', 'Copyright (c) 2023 CodeDead',
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
-                    '--license-file', 'LICENSE'
+                    '--license-file', 'LICENSE',
+                    '--app-version', "${project.version.toString()}"
             ]
         }
     } else if (currentOS.isLinux()) {
@@ -72,7 +73,8 @@ jlink {
                     '--copyright', 'Copyright (c) 2023 CodeDead',
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
-                    '--license-file', 'LICENSE'
+                    '--license-file', 'LICENSE',
+                    '--app-version', "${project.version.toString()}"
             ]
         }
     }
