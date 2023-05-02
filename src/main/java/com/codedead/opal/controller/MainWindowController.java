@@ -662,6 +662,10 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      * @param audioBalance The audio balance
      */
     public void setAudioBalance(final double audioBalance) {
+        if (audioBalance < -1 || audioBalance > 1)
+            throw new IllegalArgumentException("Balance must be between -1.0 and 1.0!");
+
+        logger.info("Setting the audio balance to {}", audioBalance);
         getAllSoundPanes(grpControls).forEach(s -> s.setBalance(audioBalance));
     }
 

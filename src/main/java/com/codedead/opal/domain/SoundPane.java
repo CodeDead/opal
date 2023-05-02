@@ -308,6 +308,8 @@ public final class SoundPane extends GridPane {
         if (balance < -1.0 || balance > 1.0)
             throw new IllegalArgumentException("Balance must be between -1.0 and 1.0!");
 
+        logger.info("Setting audio balance to {}", balance);
+
         this.balance = balance;
         if (mediaPlayer != null) {
             mediaPlayer.setBalance(balance);
