@@ -108,6 +108,9 @@
                     </GridPane.margin>
                     <items>
                         <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="CupertinoDark"/>
+                            <String fx:value="CupertinoLight"/>
+                            <String fx:value="Dracula"/>
                             <String fx:value="Light"/>
                             <String fx:value="Dark"/>
                             <String fx:value="NordLight"/>
