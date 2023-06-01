@@ -1,9 +1,6 @@
 package com.codedead.opal.controller;
 
-import atlantafx.base.theme.NordDark;
-import atlantafx.base.theme.NordLight;
-import atlantafx.base.theme.PrimerDark;
-import atlantafx.base.theme.PrimerLight;
+import atlantafx.base.theme.*;
 import com.codedead.opal.domain.NumberTextField;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.SharedVariables;
@@ -78,9 +75,12 @@ public final class SettingsWindowController {
     private void initialize() {
         cboTheme.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             switch (cboTheme.getSelectionModel().getSelectedIndex()) {
-                case 1 -> Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
-                case 2 -> Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
-                case 3 -> Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
+                case 0 -> Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
+                case 1 -> Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
+                case 2 -> Application.setUserAgentStylesheet(new Dracula().getUserAgentStylesheet());
+                case 4 -> Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+                case 5 -> Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
+                case 6 -> Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
                 default -> Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
             }
         });
@@ -167,10 +167,13 @@ public final class SettingsWindowController {
         }
 
         final int themeIndex = switch (settingsController.getProperties().getProperty("theme", "light").toLowerCase()) {
-            case "dark" -> 1;
-            case "nordlight" -> 2;
-            case "norddark" -> 3;
-            default -> 0;
+            case "cupertinodark" -> 0;
+            case "cupertinolight" -> 1;
+            case "dracula" -> 2;
+            case "dark" -> 4;
+            case "nordlight" -> 5;
+            case "norddark" -> 6;
+            default -> 3;
         };
 
         final long correctDelay = switch (delayType) {

@@ -1,9 +1,6 @@
 package com.codedead.opal;
 
-import atlantafx.base.theme.NordDark;
-import atlantafx.base.theme.NordLight;
-import atlantafx.base.theme.PrimerDark;
-import atlantafx.base.theme.PrimerLight;
+import atlantafx.base.theme.*;
 import com.codedead.opal.controller.UpdateController;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.SharedVariables;
@@ -91,6 +88,9 @@ public class OpalApplication extends Application {
             case "nordlight" -> Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
             case "norddark" -> Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
             case "dark" -> Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+            case "cupertinodark" -> Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
+            case "cuptertinolight" -> Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
+            case "dracula" -> Application.setUserAgentStylesheet(new Dracula().getUserAgentStylesheet());
             default -> Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
         }
 
