@@ -6,7 +6,7 @@ plugins {
     id 'eclipse'
     id 'application'
     id 'org.beryx.jlink' version '2.26.0'
-    id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'org.openjfx.javafxplugin' version '0.0.14'
 }
 
 group 'com.codedead'
@@ -125,10 +125,10 @@ repositories {
 
 dependencies {
     implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
-    implementation 'io.github.mkpaz:atlantafx-base:1.2.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+    implementation 'io.github.mkpaz:atlantafx-base:2.0.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
 }
 
 tasks.named('test') {
