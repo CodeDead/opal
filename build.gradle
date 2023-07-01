@@ -125,7 +125,7 @@ repositories {
 
 dependencies {
     implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
-    implementation 'io.github.mkpaz:atlantafx-base:2.0.0'
+    implementation 'io.github.mkpaz:atlantafx-base:2.0.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
