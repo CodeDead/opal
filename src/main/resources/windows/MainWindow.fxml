@@ -166,7 +166,7 @@
 
             <Label GridPane.rowIndex="0" GridPane.columnIndex="1" text="%Nature">
                 <font>
-                    <Font name="System Bold" size="14"/>
+                    <Font name="System Bold" size="16"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>
@@ -235,7 +235,7 @@
 
             <Label GridPane.rowIndex="3" GridPane.columnIndex="1" text="%Office">
                 <font>
-                    <Font name="System Bold" size="14"/>
+                    <Font name="System Bold" size="16"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>
@@ -288,7 +288,7 @@
 
             <Label GridPane.rowIndex="6" GridPane.columnIndex="1" text="%Audiences">
                 <font>
-                    <Font name="System Bold" size="14"/>
+                    <Font name="System Bold" size="16"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>
@@ -333,7 +333,7 @@
 
             <Label GridPane.rowIndex="9" GridPane.columnIndex="1" text="%RadioFrequencyStatic">
                 <font>
-                    <Font name="System Bold" size="14"/>
+                    <Font name="System Bold" size="16"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>
@@ -377,7 +377,7 @@
 
             <Label GridPane.rowIndex="12" GridPane.columnIndex="1" text="%Other">
                 <font>
-                    <Font name="System Bold" size="14"/>
+                    <Font name="System Bold" size="16"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>

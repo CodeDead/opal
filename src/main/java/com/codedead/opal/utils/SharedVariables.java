@@ -4,12 +4,12 @@ public final class SharedVariables {
 
     public static final String ICON_URL = "/images/opal.png";
     public static final String CURRENT_VERSION = "1.1.0.0";
-    public static final boolean PORTABLE = false;
+    public static final boolean PORTABLE = true;
     public static final String DEFAULT_LOCALE = "en-US";
 
     public static final String PROPERTIES_BASE_PATH = PORTABLE
-            ? System.getProperty("user.dir") + "/.opal"
-            : System.getProperty("user.home") + "/.opal";
+            ? System.getProperty("user.dir") + "/.com.codedead.opal"
+            : System.getProperty("user.home") + "/.config/com.codedead.opal";
 
     public static final String PROPERTIES_RESOURCE_LOCATION = "default.properties";
     public static final String PROPERTIES_FILE_LOCATION = PROPERTIES_BASE_PATH + "/opal.properties";
