@@ -152,6 +152,7 @@ public final class SettingsWindowController {
             case "jp-jp" -> cboLanguage.getSelectionModel().select(4);
             case "nl-nl" -> cboLanguage.getSelectionModel().select(5);
             case "ru-ru" -> cboLanguage.getSelectionModel().select(6);
+            case "tr-tr" -> cboLanguage.getSelectionModel().select(7);
             default -> cboLanguage.getSelectionModel().select(0);
         }
 
@@ -256,6 +257,7 @@ public final class SettingsWindowController {
             case 4 -> settingsController.getProperties().setProperty("locale", "jp-JP");
             case 5 -> settingsController.getProperties().setProperty("locale", "nl-NL");
             case 6 -> settingsController.getProperties().setProperty("locale", "ru-RU");
+            case 7 -> settingsController.getProperties().setProperty("locale", "tr-TR");
             default -> settingsController.getProperties().setProperty("locale", DEFAULT_LOCALE);
         }
 
@@ -318,6 +320,7 @@ public final class SettingsWindowController {
             case 4 -> "jp-JP";
             case 5 -> "nl-NL";
             case 6 -> "ru-RU";
+            case 7 -> "tr-TR";
             default -> DEFAULT_LOCALE;
         };
 
