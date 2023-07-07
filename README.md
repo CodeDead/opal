@@ -19,7 +19,7 @@ You can create an executable installer by running the `jpackage` Gradle task on 
 ```shell
 ./gradlew jpackage
 ```
-*Do note that you will need the [WiX Toolset](https://wixtoolset.org/) in order to create MSI packages.*
+*Do note that you will need the [WiX Toolset](https://wixtoolset.org/) in order to create `msi` packages.*
 
 #### Portable image
 
@@ -32,11 +32,11 @@ You can create a portable image by running the `jpackageImage` Gradle task on a 
 
 #### rpm
 
-You can create an RPM, by running the `jpackage` Gradle task on a Linux host:
+You can create an `rpm`, by running the `jpackage` Gradle task on a Linux host:
 ```shell
 ./gradlew jpackage
 ```
-*Do note that you will need the `rpm-build` package in order to create an RPM.*
+*Do note that you will need the `rpm-build` package in order to create an `rpm`.*
 
 #### AppImage
 
@@ -44,11 +44,27 @@ You can create an [AppImage](https://appimage.github.io/) by executing the `AppI
 ```shell
 ./gradlew AppImage
 ```
-*Do note that running this task will execute a shell script in order to download and run the [appimagetool](https://appimage.github.io/appimagetool/) in order to create the AppImage file.*
+*Do note that running this task will execute a shell script in order to download and run the [appimagetool](https://appimage.github.io/appimagetool/) in order to create the `AppImage` file.*
 
 #### Portable image
 
 You can create a portable image by running the `jpackageImage` Gradle task on a Linux host:
+```shell
+./gradlew jpackageImage
+```
+
+### macOS
+
+#### dmg
+
+You can create a `dmg`, by running the `jpackage` Gradle task on a macOS host:
+```shell
+./gradlew jpackage
+```
+
+#### Portable image
+
+You can create a portable image by running the `jpackageImage` Gradle task on a macOS host:
 ```shell
 ./gradlew jpackageImage
 ```
