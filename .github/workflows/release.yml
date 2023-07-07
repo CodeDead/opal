@@ -6,10 +6,11 @@ on:
       - 'v*'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
+    if: startsWith(github.ref, 'refs/tags/')
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
@@ -49,15 +50,16 @@ jobs:
         with:
           arguments: jpackage
 
-      - name: Upload artifact (AppImage)
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: opal-appimage-release
-          path: build/AppImage
+      - name: ZIP artifacts
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: Compress-Archive -Path build/jpackage/Opal/* -Destination build/jpackage/Opal-portable-win.zip
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
+      - name: Publish artifacts
+        uses: softprops/action-gh-release@v1
         with:
-          name: opal-release
-          path: build/jpackage
+          prerelease: false
+          files: |
+            build/AppImage/*.AppImage
+            build/jpackage/*
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
