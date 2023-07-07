@@ -178,6 +178,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
                         updateController.downloadFile(update.getDownloadUrl(), filePath);
                         openFile(filePath);
+                        exitAction();
                     }
                 }
             } else {
