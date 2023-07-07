@@ -20,6 +20,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+
 <GridPane
         prefHeight="370"
         prefWidth="560"
@@ -47,7 +48,7 @@
                     </ImageView>
                 </graphic>
             </MenuItem>
-            <MenuItem onAction="#saveSoundPresetAction" text="%SaveSoundPreset">
+            <MenuItem onAction="#saveSoundPresetAction" text="%SaveSoundPreset" accelerator="Shortcut+S">
                 <graphic>
                     <ImageView>
                         <Image url="@../images/save.png"/>
@@ -55,7 +56,7 @@
                 </graphic>
             </MenuItem>
             <SeparatorMenuItem/>
-            <MenuItem onAction="#resetAction" text="%Reset">
+            <MenuItem onAction="#resetAction" text="%Reset" accelerator="Shortcut+R">
                 <graphic>
                     <ImageView>
                         <Image url="@../images/refresh.png"/>
@@ -63,7 +64,7 @@
                 </graphic>
             </MenuItem>
             <SeparatorMenuItem/>
-            <MenuItem onAction="#exitAction" text="%Exit">
+            <MenuItem onAction="#exitAction" text="%Exit" accelerator="Shortcut+Q">
                 <graphic>
                     <ImageView>
                         <Image url="@../images/remove.png"/>
@@ -72,7 +73,7 @@
             </MenuItem>
         </Menu>
         <Menu text="%Tools">
-            <MenuItem onAction="#settingsAction" text="%Settings">
+            <MenuItem onAction="#settingsAction" text="%Settings" accelerator="Shortcut+I">
                 <graphic>
                     <ImageView>
                         <Image url="@../images/settings.png"/>
@@ -89,7 +90,7 @@
             </Menu>
         </Menu>
         <Menu text="%HelpMenu">
-            <MenuItem onAction="#helpAction" text="%Help">
+            <MenuItem onAction="#helpAction" text="%Help" accelerator="F1">
                 <graphic>
                     <ImageView>
                         <Image url="@../images/help.png"/>
