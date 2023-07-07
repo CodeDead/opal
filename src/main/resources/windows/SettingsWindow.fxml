@@ -93,6 +93,7 @@
                             <String fx:value="日本"/>
                             <String fx:value="Nederlands"/>
                             <String fx:value="Русский"/>
+                            <String fx:value="Türkçe"/>
                         </FXCollections>
                     </items>
                 </ComboBox>
