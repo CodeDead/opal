@@ -1,10 +1,9 @@
 name: Test
 
 on:
-  pull_request:
-    branches:
-      - master
-      - development
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: read
@@ -29,11 +28,6 @@ jobs:
           java-version: '20.0.1'
           distribution: 'temurin'
 
-      - name: Test
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: test
-
       - name: Build
         uses: gradle/gradle-build-action@v2
         with:
@@ -54,3 +48,16 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: jpackage
+
+      - name: Upload artifact (AppImage)
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: opal-appimage-release
+          path: build/AppImage
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: opal-release
+          path: build/jpackage
