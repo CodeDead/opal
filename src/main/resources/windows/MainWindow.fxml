@@ -400,6 +400,7 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -418,10 +419,13 @@
                 <SoundPane GridPane.rowIndex="3" name="%Gong"
                            mediaKey="gong" mediaPath="/audio/gong.mp3"
                            image="/images/gong.png"/>
-                <SoundPane GridPane.rowIndex="4" name="%Space"
+                <SoundPane GridPane.rowIndex="4" name="%Belltower"
+                           mediaKey="belltower" mediaPath="/audio/belltower.mp3"
+                           image="/images/belltower.png"/>
+                <SoundPane GridPane.rowIndex="5" name="%Space"
                            mediaKey="space" mediaPath="/audio/space.mp3"
                            image="/images/space.png"/>
-                <SoundPane GridPane.rowIndex="5" name="%Train"
+                <SoundPane GridPane.rowIndex="6" name="%Train"
                            mediaKey="train" mediaPath="/audio/train.mp3"
                            image="/images/train.png"/>
             </GridPane>
