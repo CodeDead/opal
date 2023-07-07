@@ -127,12 +127,14 @@ configure(AppImage) {
     description = 'Create an AppImage after creating the image of the application'
 }
 
+def homeConfig = System.properties['user.home'] + '/.config/com.codedead.opal'
 clean.doFirst {
     delete 'default.properties'
     delete 'license.pdf'
     delete 'help.pdf'
     delete 'logs'
-    delete '.opal'
+    delete '.com.codedead.opal'
+    delete "$homeConfig"
 }
 
 repositories {
