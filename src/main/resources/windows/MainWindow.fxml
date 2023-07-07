@@ -190,6 +190,7 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -208,22 +209,25 @@
                 <SoundPane GridPane.rowIndex="3" name="%Birds"
                            mediaKey="birds" mediaPath="/audio/birds.mp3"
                            image="/images/bird.png"/>
-                <SoundPane GridPane.rowIndex="4" name="%Ocean"
+                <SoundPane GridPane.rowIndex="4" name="%Seagulls"
+                           mediaKey="seagulls" mediaPath="/audio/seagulls.mp3"
+                           image="/images/bird.png"/>
+                <SoundPane GridPane.rowIndex="5" name="%Ocean"
                            mediaKey="ocean" mediaPath="/audio/ocean.mp3"
                            image="/images/ocean.png"/>
-                <SoundPane GridPane.rowIndex="5" name="%River"
+                <SoundPane GridPane.rowIndex="6" name="%River"
                            mediaKey="river" mediaPath="/audio/river.mp3"
                            image="/images/river.png"/>
-                <SoundPane GridPane.rowIndex="6" name="%Fireplace"
+                <SoundPane GridPane.rowIndex="7" name="%Fireplace"
                            mediaKey="fireplace" mediaPath="/audio/fireplace.mp3"
                            image="/images/fire.png"/>
-                <SoundPane GridPane.rowIndex="7" name="%Cave"
+                <SoundPane GridPane.rowIndex="8" name="%Cave"
                            mediaKey="cave" mediaPath="/audio/cave.mp3"
                            image="/images/cave.png"/>
-                <SoundPane GridPane.rowIndex="8" name="%Frogs"
+                <SoundPane GridPane.rowIndex="9" name="%Frogs"
                            mediaKey="frogs" mediaPath="/audio/frogs.mp3"
                            image="/images/frogs.png"/>
-                <SoundPane GridPane.rowIndex="9" name="%Zoo"
+                <SoundPane GridPane.rowIndex="10" name="%Zoo"
                            mediaKey="zoo" mediaPath="/audio/zoo.mp3"
                            image="/images/zoo.png"/>
             </GridPane>
