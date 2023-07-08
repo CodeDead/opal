@@ -73,17 +73,9 @@ public final class SettingsWindowController {
      */
     @FXML
     private void initialize() {
-        cboTheme.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-            switch (cboTheme.getSelectionModel().getSelectedIndex()) {
-                case 0 -> Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
-                case 1 -> Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
-                case 2 -> Application.setUserAgentStylesheet(new Dracula().getUserAgentStylesheet());
-                case 4 -> Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
-                case 5 -> Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
-                case 6 -> Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
-                default -> Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
-            }
-        });
+        cboTheme.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((options, oldValue, newValue) -> ThemeController.setTheme(cboTheme.getValue()));
     }
 
     /**
@@ -167,16 +159,6 @@ public final class SettingsWindowController {
             default -> cboLogLevel.getSelectionModel().select(4);
         }
 
-        final int themeIndex = switch (settingsController.getProperties().getProperty("theme", "light").toLowerCase()) {
-            case "cupertinodark" -> 0;
-            case "cupertinolight" -> 1;
-            case "dracula" -> 2;
-            case "dark" -> 4;
-            case "nordlight" -> 5;
-            case "norddark" -> 6;
-            default -> 3;
-        };
-
         final long correctDelay = switch (delayType) {
             case 0 -> TimeUnit.MILLISECONDS.toSeconds(timerDelay);
             case 1 -> TimeUnit.MILLISECONDS.toMinutes(timerDelay);
@@ -190,7 +172,7 @@ public final class SettingsWindowController {
         chbTrayIcon.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("trayIcon", "false")));
         chbTimerApplicationShutdown.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("timerApplicationShutdown", "false")));
         cboDelayType.getSelectionModel().select(delayType);
-        cboTheme.getSelectionModel().select(themeIndex);
+        cboTheme.getSelectionModel().select(ThemeController.getThemeIndex(settingsController.getProperties().getProperty("theme", "light")));
         numDelay.setText(String.valueOf(correctDelay));
         chbTimerComputerShutdown.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("timerComputerShutdown", "false")));
 

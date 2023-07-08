@@ -116,6 +116,8 @@
                             <String fx:value="Dark"/>
                             <String fx:value="NordLight"/>
                             <String fx:value="NordDark"/>
+                            <String fx:value="Modena"/>
+                            <String fx:value="Caspian"/>
                         </FXCollections>
                     </items>
                 </ComboBox>

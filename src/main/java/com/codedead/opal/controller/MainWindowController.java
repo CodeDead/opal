@@ -1,6 +1,5 @@
 package com.codedead.opal.controller;
 
-import atlantafx.base.theme.*;
 import com.codedead.opal.domain.*;
 import com.codedead.opal.interfaces.IAudioTimer;
 import com.codedead.opal.interfaces.IRunnableHelper;
@@ -8,7 +7,6 @@ import com.codedead.opal.interfaces.TrayIconListener;
 import com.codedead.opal.utils.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -407,17 +405,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(SharedVariables.ICON_URL))));
             primaryStage.setScene(new Scene(root));
 
-            primaryStage.setOnHiding(event -> {
-                switch (settingsController.getProperties().getProperty("theme", "Light").toLowerCase()) {
-                    case "nordlight" -> Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
-                    case "norddark" -> Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
-                    case "dark" -> Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
-                    case "cupertinodark" -> Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
-                    case "cuptertinolight" -> Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
-                    case "dracula" -> Application.setUserAgentStylesheet(new Dracula().getUserAgentStylesheet());
-                    default -> Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
-                }
-            });
+            primaryStage.setOnHiding(event -> ThemeController.setTheme(settingsController.getProperties().getProperty("theme", "Light").toLowerCase()));
 
             logger.info("Showing the SettingsWindow");
             primaryStage.show();
