@@ -2,6 +2,8 @@ package com.codedead.opal.controller;
 
 import atlantafx.base.theme.*;
 import com.codedead.opal.domain.NumberTextField;
+import com.codedead.opal.domain.OSType;
+import com.codedead.opal.domain.OsCheck;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.SharedVariables;
 import javafx.application.Application;
@@ -21,6 +23,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
@@ -76,6 +79,10 @@ public final class SettingsWindowController {
         cboTheme.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((options, oldValue, newValue) -> ThemeController.setTheme(cboTheme.getValue()));
+
+        if (Objects.requireNonNull(OsCheck.getOperatingSystemType()) == OSType.OTHER) {
+            chbTimerComputerShutdown.setDisable(true);
+        }
     }
 
     /**
@@ -137,16 +144,7 @@ public final class SettingsWindowController {
             timerDelay = 1;
         }
 
-        switch (settingsController.getProperties().getProperty("locale", DEFAULT_LOCALE).toLowerCase()) {
-            case "de-de" -> cboLanguage.getSelectionModel().select(1);
-            case "es-es" -> cboLanguage.getSelectionModel().select(2);
-            case "fr-fr" -> cboLanguage.getSelectionModel().select(3);
-            case "jp-jp" -> cboLanguage.getSelectionModel().select(4);
-            case "nl-nl" -> cboLanguage.getSelectionModel().select(5);
-            case "ru-ru" -> cboLanguage.getSelectionModel().select(6);
-            case "tr-tr" -> cboLanguage.getSelectionModel().select(7);
-            default -> cboLanguage.getSelectionModel().select(0);
-        }
+        cboLanguage.getSelectionModel().select(LanguageController.getLanguageIndexFromLocale(settingsController.getProperties().getProperty("locale", DEFAULT_LOCALE)));
 
         switch (settingsController.getProperties().getProperty("loglevel", "INFO").toUpperCase()) {
             case "OFF" -> cboLogLevel.getSelectionModel().select(0);
@@ -232,16 +230,7 @@ public final class SettingsWindowController {
 
         showAlertIfLanguageMismatch(settingsController.getProperties().getProperty("locale", DEFAULT_LOCALE));
 
-        switch (cboLanguage.getSelectionModel().getSelectedIndex()) {
-            case 1 -> settingsController.getProperties().setProperty("locale", "de-DE");
-            case 2 -> settingsController.getProperties().setProperty("locale", "es-es");
-            case 3 -> settingsController.getProperties().setProperty("locale", "fr-FR");
-            case 4 -> settingsController.getProperties().setProperty("locale", "jp-JP");
-            case 5 -> settingsController.getProperties().setProperty("locale", "nl-NL");
-            case 6 -> settingsController.getProperties().setProperty("locale", "ru-RU");
-            case 7 -> settingsController.getProperties().setProperty("locale", "tr-TR");
-            default -> settingsController.getProperties().setProperty("locale", DEFAULT_LOCALE);
-        }
+        settingsController.getProperties().setProperty("locale", LanguageController.getLocaleFromLanguageIndex(cboLanguage.getSelectionModel().getSelectedIndex()));
 
         settingsController.getProperties().setProperty("theme", cboTheme.getSelectionModel().getSelectedItem());
         settingsController.getProperties().setProperty("loglevel", cboLogLevel.getValue());
@@ -295,16 +284,7 @@ public final class SettingsWindowController {
      * @param languageToMatch The language that needs to be matched to the combobox
      */
     private void showAlertIfLanguageMismatch(final String languageToMatch) {
-        final String newLanguage = switch (cboLanguage.getSelectionModel().getSelectedIndex()) {
-            case 1 -> "de-DE";
-            case 2 -> "es-es";
-            case 3 -> "fr-FR";
-            case 4 -> "jp-JP";
-            case 5 -> "nl-NL";
-            case 6 -> "ru-RU";
-            case 7 -> "tr-TR";
-            default -> DEFAULT_LOCALE;
-        };
+        final String newLanguage = LanguageController.getLocaleFromLanguageIndex(cboLanguage.getSelectionModel().getSelectedIndex());
 
         if (!languageToMatch.equals(newLanguage)) {
             FxUtils.showInformationAlert(translationBundle.getString("RestartRequired"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
