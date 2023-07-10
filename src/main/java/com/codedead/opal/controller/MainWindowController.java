@@ -256,8 +256,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      */
     @FXML
     private void initialize() {
-        mniTimerEnabled.setOnAction(e ->
-        {
+        mniTimerEnabled.setOnAction(e -> {
             if (mniTimerEnabled.isSelected()) {
                 final Properties properties = settingsController.getProperties();
                 final long timerDelay = Long.parseLong(properties.getProperty("timerDelay", "3600000"));

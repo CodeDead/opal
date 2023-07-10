@@ -22,8 +22,8 @@
 <?import javafx.scene.image.Image?>
 
 <GridPane
-        prefHeight="370"
-        prefWidth="560"
+        prefHeight="350"
+        prefWidth="550"
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="com.codedead.opal.controller.MainWindowController"
         onDragOver="#onDragOver"
@@ -86,7 +86,7 @@
                         <Image url="@../images/timer.png"/>
                     </ImageView>
                 </graphic>
-                <CheckMenuItem fx:id="mniTimerEnabled" text="%Enabled"/>
+                <CheckMenuItem fx:id="mniTimerEnabled" text="%Enabled" accelerator="Shortcut+T"/>
             </Menu>
         </Menu>
         <Menu text="%HelpMenu">
@@ -166,7 +166,7 @@
 
             <Label GridPane.rowIndex="0" GridPane.columnIndex="1" text="%Nature">
                 <font>
-                    <Font name="System Bold" size="16"/>
+                    <Font name="System Bold" size="15"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>
@@ -235,7 +235,7 @@
 
             <Label GridPane.rowIndex="3" GridPane.columnIndex="1" text="%Office">
                 <font>
-                    <Font name="System Bold" size="16"/>
+                    <Font name="System Bold" size="15"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>
@@ -288,7 +288,7 @@
 
             <Label GridPane.rowIndex="6" GridPane.columnIndex="1" text="%Audiences">
                 <font>
-                    <Font name="System Bold" size="16"/>
+                    <Font name="System Bold" size="15"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>
@@ -333,7 +333,7 @@
 
             <Label GridPane.rowIndex="9" GridPane.columnIndex="1" text="%RadioFrequencyStatic">
                 <font>
-                    <Font name="System Bold" size="16"/>
+                    <Font name="System Bold" size="15"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>
@@ -377,7 +377,7 @@
 
             <Label GridPane.rowIndex="12" GridPane.columnIndex="1" text="%Other">
                 <font>
-                    <Font name="System Bold" size="16"/>
+                    <Font name="System Bold" size="15"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>

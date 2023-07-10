@@ -94,6 +94,7 @@
                             <String fx:value="Nederlands"/>
                             <String fx:value="Русский"/>
                             <String fx:value="Türkçe"/>
+                            <String fx:value="中国人"/>
                         </FXCollections>
                     </items>
                 </ComboBox>
