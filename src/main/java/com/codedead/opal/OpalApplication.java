@@ -1,9 +1,6 @@
 package com.codedead.opal;
 
-import atlantafx.base.theme.NordDark;
-import atlantafx.base.theme.NordLight;
-import atlantafx.base.theme.PrimerDark;
-import atlantafx.base.theme.PrimerLight;
+import com.codedead.opal.controller.ThemeController;
 import com.codedead.opal.controller.UpdateController;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.SharedVariables;
@@ -30,7 +27,7 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
 public class OpalApplication extends Application {
 
-    private static final Logger logger = LogManager.getLogger(OpalApplication.class);
+    private static Logger logger;
 
     /**
      * Initialize the application
@@ -38,6 +35,9 @@ public class OpalApplication extends Application {
      * @param args The application arguments
      */
     public static void main(final String[] args) {
+        System.setProperty("logBasePath", SharedVariables.PROPERTIES_BASE_PATH);
+        logger = LogManager.getLogger(OpalApplication.class);
+
         Level logLevel = Level.ERROR;
         try (final FileInputStream fis = new FileInputStream(SharedVariables.PROPERTIES_FILE_LOCATION)) {
             final Properties prop = new Properties();
@@ -74,8 +74,8 @@ public class OpalApplication extends Application {
         try {
             settingsController = new SettingsController(SharedVariables.PROPERTIES_FILE_LOCATION, SharedVariables.PROPERTIES_RESOURCE_LOCATION);
         } catch (final IOException ex) {
-            logger.error("Unable to initialize the SettingsController", ex);
-            FxUtils.showErrorAlert("Exception occurred", ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            logger.fatal("Unable to initialize the SettingsController", ex);
+            FxUtils.showErrorAlert("Exception occurred", ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             Platform.exit();
             return;
         }
@@ -83,13 +83,7 @@ public class OpalApplication extends Application {
         final Properties properties = settingsController.getProperties();
         final String languageTag = properties.getProperty("locale", DEFAULT_LOCALE);
 
-        final String theme = properties.getProperty("theme", "light");
-        switch (theme.toLowerCase()) {
-            case "nordlight" -> Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
-            case "norddark" -> Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
-            case "dark" -> Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
-            default -> Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
-        }
+        ThemeController.setTheme(properties.getProperty("theme", "light"));
 
         final Locale locale = Locale.forLanguageTag(languageTag);
         final ResourceBundle translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
@@ -99,7 +93,7 @@ public class OpalApplication extends Application {
         try {
             root = loader.load();
         } catch (final IOException ex) {
-            logger.error("Unable to load FXML for MainWindow", ex);
+            logger.fatal("Unable to load FXML for MainWindow", ex);
             Platform.exit();
             return;
         }
@@ -119,15 +113,5 @@ public class OpalApplication extends Application {
 
         logger.info("Showing the MainWindow");
         primaryStage.show();
-
-        // Load tray icons after displaying the main stage to display the proper icon in the task bar / activities bar (linux)
-        if (Boolean.parseBoolean(properties.getProperty("trayIcon", "false"))) {
-            try {
-                mainWindowController.showTrayIcon();
-            } catch (final IOException ex) {
-                logger.error("Unable to create tray icon", ex);
-                FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-            }
-        }
     }
 }

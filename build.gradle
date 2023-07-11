@@ -6,10 +6,11 @@ plugins {
     id 'eclipse'
     id 'application'
     id 'org.beryx.jlink' version '2.26.0'
+    id 'org.openjfx.javafxplugin' version '0.0.14'
 }
 
 group 'com.codedead'
-version '1.1.0'
+version '1.2.0'
 
 def currentOS = DefaultNativePlatform.currentOperatingSystem
 
@@ -21,6 +22,12 @@ java {
 application {
     mainModule = 'Opal'
     mainClass = 'com.codedead.opal.OpalApplication'
+}
+
+javafx {
+    version = '20.0.1'
+    configuration = 'implementation'
+    modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.media']
 }
 
 jlink {
@@ -46,12 +53,16 @@ jlink {
             installerOptions = [
                     '--win-menu',
                     '--win-menu-group', 'CodeDead',
-                    '--win-shortcut',
+                    '--win-shortcut-prompt',
+                    '--win-upgrade-uuid', '876c5464-9a66-4913-89a4-c63a4b8b4bb9',
+                    '--win-help-url', 'https://codedead.com/contact',
                     '--win-dir-chooser',
                     '--copyright', 'Copyright (c) 2023 CodeDead',
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
-                    '--license-file', 'LICENSE'
+                    '--license-file', 'LICENSE',
+                    '--app-version', "${project.version.toString()}",
+                    '--about-url', 'https://codedead.com'
             ]
         }
     } else if (currentOS.isLinux()) {
@@ -65,7 +76,25 @@ jlink {
                     '--copyright', 'Copyright (c) 2023 CodeDead',
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
-                    '--license-file', 'LICENSE'
+                    '--license-file', 'LICENSE',
+                    '--app-version', "${project.version.toString()}",
+                    '--about-url', 'https://codedead.com'
+            ]
+        }
+    } else if (currentOS.isMacOsX()) {
+        jpackage {
+            installerType = 'dmg'
+            icon = "${project.rootDir}/src/main/resources/images/opal.png"
+            installerOptions = [
+                    '--mac-package-name', 'Opal',
+                    '--mac-package-identifier', 'com.codedead.opal',
+                    '--mac-app-category', 'public.app-category.music',
+                    '--copyright', 'Copyright (c) 2023 CodeDead',
+                    '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
+                    '--vendor', 'CodeDead',
+                    '--license-file', 'LICENSE',
+                    '--app-version', "${project.version.toString()}",
+                    '--about-url', 'https://codedead.com'
             ]
         }
     }
@@ -98,38 +127,26 @@ configure(AppImage) {
     description = 'Create an AppImage after creating the image of the application'
 }
 
+def homeConfig = System.properties['user.home'] + '/.config/com.codedead.opal'
 clean.doFirst {
     delete 'default.properties'
     delete 'license.pdf'
     delete 'help.pdf'
     delete 'logs'
-    delete '.opal'
+    delete '.com.codedead.opal'
+    delete "$homeConfig"
 }
 
 repositories {
     mavenCentral()
 }
 
-def platform
-if (currentOS.isWindows()) {
-    platform = 'win'
-} else if (currentOS.isLinux()) {
-    platform = 'linux'
-} else if (currentOS.isMacOsX()) {
-    platform = 'mac'
-}
-
 dependencies {
-    implementation "org.openjfx:javafx-base:20:${platform}"
-    implementation "org.openjfx:javafx-controls:20:${platform}"
-    implementation "org.openjfx:javafx-graphics:20:${platform}"
-    implementation "org.openjfx:javafx-fxml:20:${platform}"
-    implementation "org.openjfx:javafx-media:20:${platform}"
     implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
-    implementation 'io.github.mkpaz:atlantafx-base:1.2.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+    implementation 'io.github.mkpaz:atlantafx-base:2.0.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
 }
 
 tasks.named('test') {

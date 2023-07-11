@@ -15,6 +15,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
+<?import javafx.scene.control.Slider?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.codedead.opal.controller.SettingsWindowController"
@@ -28,7 +29,7 @@
         <ColumnConstraints hgrow="ALWAYS"/>
     </columnConstraints>
 
-    <TabPane GridPane.rowIndex="0" tabClosingPolicy="UNAVAILABLE" side="LEFT">
+    <TabPane GridPane.rowIndex="0" tabClosingPolicy="UNAVAILABLE">
         <Tab text="%General">
             <graphic>
                 <ImageView>
@@ -37,7 +38,6 @@
             </graphic>
             <GridPane alignment="CENTER">
                 <rowConstraints>
-                    <RowConstraints/>
                     <RowConstraints/>
                     <RowConstraints/>
                     <RowConstraints/>
@@ -93,6 +93,8 @@
                             <String fx:value="日本"/>
                             <String fx:value="Nederlands"/>
                             <String fx:value="Русский"/>
+                            <String fx:value="Türkçe"/>
+                            <String fx:value="中国人"/>
                         </FXCollections>
                     </items>
                 </ComboBox>
@@ -106,27 +108,17 @@
                     <GridPane.margin>
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
-                </ComboBox>
-
-                <Label GridPane.rowIndex="6" GridPane.columnIndex="0" text="%LogLevel">
-                    <GridPane.margin>
-                        <Insets bottom="3" left="3" right="3" top="3"/>
-                    </GridPane.margin>
-                </Label>
-                <ComboBox fx:id="cboLogLevel" GridPane.rowIndex="6" GridPane.columnIndex="1" maxWidth="Infinity">
-                    <GridPane.margin>
-                        <Insets bottom="3" left="3" right="3" top="3"/>
-                    </GridPane.margin>
                     <items>
                         <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="OFF"/>
-                            <String fx:value="FATAL"/>
-                            <String fx:value="ERROR"/>
-                            <String fx:value="WARN"/>
-                            <String fx:value="INFO"/>
-                            <String fx:value="DEBUG"/>
-                            <String fx:value="TRACE"/>
-                            <String fx:value="ALL"/>
+                            <String fx:value="CupertinoDark"/>
+                            <String fx:value="CupertinoLight"/>
+                            <String fx:value="Dracula"/>
+                            <String fx:value="Light"/>
+                            <String fx:value="Dark"/>
+                            <String fx:value="NordLight"/>
+                            <String fx:value="NordDark"/>
+                            <String fx:value="Modena"/>
+                            <String fx:value="Caspian"/>
                         </FXCollections>
                     </items>
                 </ComboBox>
@@ -140,6 +132,7 @@
             </graphic>
             <GridPane alignment="CENTER">
                 <rowConstraints>
+                    <RowConstraints/>
                     <RowConstraints/>
                     <RowConstraints/>
                 </rowConstraints>
@@ -173,6 +166,69 @@
                         <Insets bottom="3" left="3" right="3" top="3"/>
                     </GridPane.margin>
                 </CheckBox>
+
+                <CheckBox fx:id="chbTimerComputerShutdown" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                          GridPane.columnSpan="3" text="%TimerComputerShutdown">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </CheckBox>
+            </GridPane>
+        </Tab>
+        <Tab text="%Advanced">
+            <graphic>
+                <ImageView>
+                    <Image url="@../images/advanced.png"/>
+                </ImageView>
+            </graphic>
+            <GridPane alignment="CENTER">
+                <rowConstraints>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                </rowConstraints>
+                <columnConstraints>
+                    <ColumnConstraints/>
+                    <ColumnConstraints/>
+                </columnConstraints>
+
+                <Label GridPane.rowIndex="0" text="%AudioBalance">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </Label>
+                <Slider GridPane.rowIndex="0" GridPane.columnIndex="1"
+                        fx:id="sldAudioBalance" maxWidth="Infinity"
+                        min="-1" max="1" majorTickUnit="1.0"
+                        showTickLabels="true"
+                        showTickMarks="true"
+                        snapToTicks="true">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </Slider>
+
+                <Label GridPane.rowIndex="1" GridPane.columnIndex="0" text="%LogLevel">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                </Label>
+                <ComboBox fx:id="cboLogLevel" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity">
+                    <GridPane.margin>
+                        <Insets bottom="3" left="3" right="3" top="3"/>
+                    </GridPane.margin>
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="OFF"/>
+                            <String fx:value="FATAL"/>
+                            <String fx:value="ERROR"/>
+                            <String fx:value="WARN"/>
+                            <String fx:value="INFO"/>
+                            <String fx:value="DEBUG"/>
+                            <String fx:value="TRACE"/>
+                            <String fx:value="ALL"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
             </GridPane>
         </Tab>
     </TabPane>

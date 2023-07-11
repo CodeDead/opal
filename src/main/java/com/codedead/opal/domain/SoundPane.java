@@ -1,9 +1,6 @@
 package com.codedead.opal.domain;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -15,6 +12,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -37,10 +36,12 @@ public final class SoundPane extends GridPane {
     @FXML
     private ImageView imgMediaButton;
     @FXML
-    private final StringProperty mediaPath = new SimpleStringProperty();
+    private String mediaPath;
     @FXML
     private String mediaKey;
+    private double balance;
     private MediaPlayer mediaPlayer;
+    private final Logger logger;
 
     /**
      * Initialize a new SoundPane
@@ -52,6 +53,8 @@ public final class SoundPane extends GridPane {
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
         fxmlLoader.load();
+
+        this.logger = LogManager.getLogger(SoundPane.class);
     }
 
     /**
@@ -62,33 +65,13 @@ public final class SoundPane extends GridPane {
         sldVolume.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue.doubleValue() == 0 && (oldValue != null && oldValue.doubleValue() != 0)) {
                 pause();
+                disposeMediaPlayer();
             } else if (newValue != null && newValue.doubleValue() > 0 && (oldValue != null && oldValue.doubleValue() == 0)) {
-                play();
-            }
-        });
-    }
-
-    /**
-     * Initialize the {@link MediaPlayer} object and the {@link ChangeListener} for the <i>mediaPath</i> property
-     *
-     * @throws URISyntaxException When the media path could not be converted to a URI
-     */
-    private void initializeMediaPlayerProperties() throws URISyntaxException {
-        initializeMediaPlayer(mediaPath.getValue());
-
-        mediaPath.addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.isEmpty()) {
                 try {
-                    initializeMediaPlayer(newValue);
-                } catch (final URISyntaxException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                if (mediaPlayer != null) {
-                    mediaPlayer.stop();
-                    mediaPlayer.dispose();
-
-                    mediaPlayer = null;
+                    play();
+                } catch (final MediaPlayerException e) {
+                    logger.fatal("Could not play the media file!", e);
+                    Platform.exit();
                 }
             }
         });
@@ -106,26 +89,29 @@ public final class SoundPane extends GridPane {
         if (value.isEmpty())
             throw new IllegalArgumentException("Value cannot be empty!");
 
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.dispose();
-
-            mediaPlayer = null;
-        }
+        disposeMediaPlayer();
 
         mediaPlayer = new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource(value)).toURI().toString()));
-        mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
-        mediaPlayer.volumeProperty().bindBidirectional(sldVolume.valueProperty());
-        mediaPlayer.statusProperty().addListener(new ChangeListener<>() {
-            @Override
-            public void changed(ObservableValue<? extends MediaPlayer.Status> observable, MediaPlayer.Status oldValue, MediaPlayer.Status newValue) {
-                if (newValue == MediaPlayer.Status.PLAYING) {
-                    imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
-                } else {
-                    imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/play.png"))));
-                }
+        mediaPlayer.currentTimeProperty().addListener((observableValue, oldDuration, newDuration) -> {
+            // Quality of life improvement to reduce audio lag when restarting the media
+            if (mediaPlayer != null && newDuration.toSeconds() >= mediaPlayer.getMedia().getDuration().toSeconds() - 0.5) {
+                mediaPlayer.seek(Duration.ZERO);
             }
         });
+        mediaPlayer.setOnEndOfMedia(() -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.seek(Duration.ZERO);
+            }
+        });
+        mediaPlayer.volumeProperty().bindBidirectional(sldVolume.valueProperty());
+        mediaPlayer.statusProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == MediaPlayer.Status.PLAYING) {
+                imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/pause.png"))));
+            } else {
+                imgMediaButton.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/play.png"))));
+            }
+        });
+        mediaPlayer.setBalance(balance);
     }
 
     /**
@@ -214,7 +200,7 @@ public final class SoundPane extends GridPane {
      */
     @FXML
     public String getMediaPath() {
-        return mediaPath.getValue();
+        return mediaPath;
     }
 
     /**
@@ -229,7 +215,7 @@ public final class SoundPane extends GridPane {
         if (mediaPath.isEmpty())
             throw new IllegalArgumentException("Media path cannot be empty!");
 
-        this.mediaPath.setValue(mediaPath);
+        this.mediaPath = mediaPath;
     }
 
     /**
@@ -259,13 +245,16 @@ public final class SoundPane extends GridPane {
 
     /**
      * Play the {@link Media} object
+     *
+     * @throws MediaPlayerException When the {@link MediaPlayer} object could not be initialized
      */
-    public void play() {
+    public void play() throws MediaPlayerException {
         if (mediaPlayer == null) {
             try {
-                initializeMediaPlayerProperties();
+                initializeMediaPlayer(mediaPath);
             } catch (final URISyntaxException e) {
-                throw new RuntimeException(e);
+                logger.fatal("Could not convert the media path to a URI!", e);
+                throw new MediaPlayerException(e.getMessage());
             }
         }
         this.mediaPlayer.play();
@@ -275,18 +264,61 @@ public final class SoundPane extends GridPane {
      * Pause the {@link Media} object
      */
     public void pause() {
-        this.mediaPlayer.pause();
+        if (mediaPlayer != null) {
+            this.mediaPlayer.pause();
+        }
     }
 
     /**
      * Play or pause the {@link Media} object
+     *
+     * @throws MediaPlayerException When the {@link MediaPlayer} object could not be initialized
      */
     @FXML
-    private void playPause() {
+    private void playPause() throws MediaPlayerException {
         if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
             pause();
         } else {
             play();
+        }
+    }
+
+    /**
+     * Dispose of the {@link MediaPlayer} object and all bindings
+     */
+    private void disposeMediaPlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.volumeProperty().unbindBidirectional(sldVolume.valueProperty());
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+
+            mediaPlayer = null;
+        }
+    }
+
+    /**
+     * Get the audio balance
+     *
+     * @return The audio balance
+     */
+    public double getBalance() {
+        return balance;
+    }
+
+    /**
+     * Set the audio balance
+     *
+     * @param balance The audio balance
+     */
+    public void setBalance(final double balance) {
+        if (balance < -1.0 || balance > 1.0)
+            throw new IllegalArgumentException("Balance must be between -1.0 and 1.0!");
+
+        logger.info("Setting audio balance to {}", balance);
+
+        this.balance = balance;
+        if (mediaPlayer != null) {
+            mediaPlayer.setBalance(balance);
         }
     }
 }

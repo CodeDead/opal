@@ -39,3 +39,4 @@ logs/*
 /default.properties
 /help.pdf
 .opal/
+.com.codedead.opal/

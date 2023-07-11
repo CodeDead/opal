@@ -40,6 +40,8 @@ public final class AboutWindowController {
 
     /**
      * Method that is called when the close button is selected
+     *
+     * @param event The {@link ActionEvent} object
      */
     @FXML
     private void closeAction(final ActionEvent event) {
@@ -60,6 +62,6 @@ public final class AboutWindowController {
      */
     @FXML
     private void codeDeadAction() {
-        helpUtils.openCodeDeadWebSite(translationBundle);
+        helpUtils.openWebsite("https://codedead.com", translationBundle);
     }
 }

@@ -3,6 +3,7 @@ package com.codedead.opal.controller;
 import com.codedead.opal.domain.*;
 import com.codedead.opal.interfaces.IAudioTimer;
 import com.codedead.opal.interfaces.IRunnableHelper;
+import com.codedead.opal.interfaces.TrayIconListener;
 import com.codedead.opal.utils.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,27 +24,24 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.List;
 
 import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
-public final class MainWindowController implements IAudioTimer {
+public final class MainWindowController implements IAudioTimer, TrayIconListener {
 
     @FXML
     private GridPane grpControls;
     @FXML
     private CheckMenuItem mniTimerEnabled;
-
-    private TrayIcon trayIcon;
+    private TrayIconController trayIconController;
     private SettingsController settingsController;
     private UpdateController updateController;
     private ResourceBundle translationBundle;
@@ -107,19 +105,33 @@ public final class MainWindowController implements IAudioTimer {
 
         final boolean mediaButtons = Boolean.parseBoolean(properties.getProperty("mediaButtons", "true"));
 
+        trayIconController = new TrayIconController(translationBundle, this);
+
+        // Load tray icons after displaying the main stage to display the proper icon in the task bar / activities bar (linux)
+        if (Boolean.parseBoolean(properties.getProperty("trayIcon", "false"))) {
+            try {
+                trayIconController.showTrayIcon();
+            } catch (final IOException ex) {
+                logger.error("Unable to create tray icon", ex);
+                FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            }
+        }
+
         if (!mediaButtons) {
             loadMediaButtonVisibility(false);
         }
 
         if (shouldUpdate) {
-            checkForUpdates(false);
+            checkForUpdates(false, false);
         }
+
+        setAudioBalance(Double.parseDouble(properties.getProperty("audioBalance", "0.0")));
     }
 
     /**
      * Load the media button visibility for all {@link SoundPane} objects
      *
-     * @param visible True if the media button should be visible, otherwise false
+     * @param visible True if the media buttons should be visible, otherwise false
      */
     public void loadMediaButtonVisibility(final boolean visible) {
         getAllSoundPanes(grpControls).forEach(s -> s.setMediaButton(visible));
@@ -129,8 +141,9 @@ public final class MainWindowController implements IAudioTimer {
      * Check for application updates
      *
      * @param showNoUpdates Show an {@link Alert} object when no updates are available
+     * @param showErrors    Show an {@link Alert} object when an error occurs
      */
-    private void checkForUpdates(final boolean showNoUpdates) {
+    private void checkForUpdates(final boolean showNoUpdates, final boolean showErrors) {
         logger.info("Attempting to check for updates");
 
         try {
@@ -163,6 +176,7 @@ public final class MainWindowController implements IAudioTimer {
 
                         updateController.downloadFile(update.getDownloadUrl(), filePath);
                         openFile(filePath);
+                        exitAction();
                     }
                 }
             } else {
@@ -171,13 +185,14 @@ public final class MainWindowController implements IAudioTimer {
                     FxUtils.showInformationAlert(translationBundle.getString("NoUpdateAvailable"), null);
                 }
             }
-        } catch (final InterruptedException ex) {
+        } catch (final InterruptedException | IOException | InvalidHttpResponseCodeException | URISyntaxException ex) {
+            if (ex instanceof InterruptedException)
+                Thread.currentThread().interrupt();
+
             logger.error("Unable to check for updates", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-            Thread.currentThread().interrupt();
-        } catch (final IOException | InvalidHttpResponseCodeException | URISyntaxException ex) {
-            logger.error("Unable to check for updates", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            if (showErrors) {
+                FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            }
         }
     }
 
@@ -225,14 +240,14 @@ public final class MainWindowController implements IAudioTimer {
                         @Override
                         public void run() {
                             logger.error("Error opening the file", ex);
-                            FxUtils.showErrorAlert(translationBundle.getString("FileExecutionError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                            FxUtils.showErrorAlert(translationBundle.getString("FileExecutionError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                         }
                     });
                 }
             }));
         } catch (final IOException ex) {
             logger.error("Error opening the file", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("FileExecutionError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(translationBundle.getString("FileExecutionError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -241,8 +256,7 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void initialize() {
-        mniTimerEnabled.setOnAction(e ->
-        {
+        mniTimerEnabled.setOnAction(e -> {
             if (mniTimerEnabled.isSelected()) {
                 final Properties properties = settingsController.getProperties();
                 final long timerDelay = Long.parseLong(properties.getProperty("timerDelay", "3600000"));
@@ -252,96 +266,6 @@ public final class MainWindowController implements IAudioTimer {
                 cancelTimer();
             }
         });
-    }
-
-    /**
-     * Create a tray icon
-     *
-     * @throws IOException When the {@link TrayIcon} could not be created
-     */
-    private void createTrayIcon() throws IOException {
-        logger.info("Creating tray icon");
-        if (!SystemTray.isSupported()) {
-            logger.warn("SystemTray is not supported");
-            return;
-        }
-
-        final SystemTray tray = SystemTray.getSystemTray();
-        final Dimension trayIconSize = tray.getTrayIconSize();
-        final PopupMenu popup = new PopupMenu();
-        final BufferedImage trayIconImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/opal.png")));
-        final TrayIcon localTrayIcon = new TrayIcon(trayIconImage.getScaledInstance(trayIconSize.width, trayIconSize.height, java.awt.Image.SCALE_SMOOTH));
-        final java.awt.MenuItem displayItem = new java.awt.MenuItem(translationBundle.getString("Display"));
-        final java.awt.MenuItem settingsItem = new java.awt.MenuItem(translationBundle.getString("Settings"));
-        final java.awt.MenuItem aboutItem = new java.awt.MenuItem(translationBundle.getString("About"));
-        final java.awt.MenuItem exitItem = new java.awt.MenuItem(translationBundle.getString("Exit"));
-
-        // Platform.runLater to run on the JavaFX thread
-        displayItem.addActionListener(e -> Platform.runLater(this::hideShowStage));
-        settingsItem.addActionListener(e -> Platform.runLater(this::settingsAction));
-        aboutItem.addActionListener(e -> Platform.runLater(this::aboutAction));
-        exitItem.addActionListener(e -> Platform.runLater(this::exitAction));
-
-        popup.add(displayItem);
-        popup.addSeparator();
-        popup.add(settingsItem);
-        popup.add(aboutItem);
-        popup.addSeparator();
-        popup.add(exitItem);
-
-        localTrayIcon.setToolTip("Opal");
-        localTrayIcon.setPopupMenu(popup);
-        localTrayIcon.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(final java.awt.event.MouseEvent evt) {
-                if (evt.getClickCount() == 2) {
-                    Platform.runLater(MainWindowController.this::hideShowStage);
-                }
-            }
-        });
-
-        this.trayIcon = localTrayIcon;
-    }
-
-    /**
-     * Display the tray icon
-     *
-     * @throws IOException When the {@link TrayIcon} could not be created
-     */
-    public void showTrayIcon() throws IOException {
-        logger.info("Displaying tray icon");
-        if (trayIcon == null) {
-            createTrayIcon();
-            if (trayIcon == null) {
-                logger.warn("TrayIcon cannot be null!");
-                return;
-            }
-        }
-
-        final SystemTray tray = SystemTray.getSystemTray();
-        try {
-            if (!Arrays.asList(tray.getTrayIcons()).contains(trayIcon)) {
-                tray.add(trayIcon);
-            }
-        } catch (final AWTException e) {
-            logger.error("TrayIcon could not be added", e);
-        }
-    }
-
-    /**
-     * Hide the tray icon
-     */
-    public void hideTrayIcon() {
-        logger.info("Hiding tray icon");
-        if (trayIcon == null) {
-            logger.warn("TrayIcon cannot be null!");
-            return;
-        }
-
-        final SystemTray tray = SystemTray.getSystemTray();
-        tray.remove(trayIcon);
-
-        trayIcon = null;
     }
 
     /**
@@ -403,7 +327,7 @@ public final class MainWindowController implements IAudioTimer {
             mediaVolumes.forEach((key, value) -> soundPanes.stream().filter(e -> e.getMediaKey().equals(key)).forEach(e -> e.getSlider().setValue(value)));
         } catch (final IOException ex) {
             logger.error("Unable to open the sound preset from {}", path, ex);
-            FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -433,7 +357,7 @@ public final class MainWindowController implements IAudioTimer {
                 objectMapper.writeValue(new File(filePath), mediaVolumes);
             } catch (final IOException ex) {
                 logger.error("Unable to save the sound settings to {}", filePath, ex);
-                FxUtils.showErrorAlert(translationBundle.getString("SaveSoundPresetError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                FxUtils.showErrorAlert(translationBundle.getString("SaveSoundPresetError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         } else {
             logger.info("Cancelled saving a sound settings");
@@ -472,6 +396,7 @@ public final class MainWindowController implements IAudioTimer {
             final SettingsWindowController settingsWindowController = loader.getController();
             settingsWindowController.setSettingsController(getSettingsController());
             settingsWindowController.setMainWindowController(this);
+            settingsWindowController.setTrayIconController(trayIconController);
 
             final Stage primaryStage = new Stage();
 
@@ -479,11 +404,13 @@ public final class MainWindowController implements IAudioTimer {
             primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(SharedVariables.ICON_URL))));
             primaryStage.setScene(new Scene(root));
 
+            primaryStage.setOnHiding(event -> ThemeController.setTheme(settingsController.getProperties().getProperty("theme", "Light").toLowerCase()));
+
             logger.info("Showing the SettingsWindow");
             primaryStage.show();
         } catch (final IOException ex) {
             logger.error("Unable to open the SettingsWindow", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("SettingsWindowError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(translationBundle.getString("SettingsWindowError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -507,14 +434,14 @@ public final class MainWindowController implements IAudioTimer {
                         @Override
                         public void run() {
                             logger.error("Error opening the help file", ex);
-                            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                         }
                     });
                 }
             }), SharedVariables.HELP_DOCUMENTATION_RESOURCE_LOCATION);
         } catch (final IOException ex) {
             logger.error("Error opening the help file", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -523,7 +450,7 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void homepageAction() {
-        helpUtils.openCodeDeadWebSite(translationBundle);
+        helpUtils.openWebsite("https://codedead.com", translationBundle);
     }
 
     /**
@@ -539,27 +466,7 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void donateAction() {
-        logger.info("Opening the CodeDead donation website");
-
-        final RunnableSiteOpener runnableSiteOpener = new RunnableSiteOpener("https://codedead.com/donate", new IRunnableHelper() {
-            @Override
-            public void executed() {
-                Platform.runLater(() -> logger.info("Successfully opened website"));
-            }
-
-            @Override
-            public void exceptionOccurred(final Exception ex) {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        logger.error("Error opening the CodeDead donation website", ex);
-                        FxUtils.showErrorAlert(translationBundle.getString("WebsiteError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-                    }
-                });
-            }
-        });
-
-        new Thread(runnableSiteOpener).start();
+        helpUtils.openWebsite("https://codedead.com/donate", translationBundle);
     }
 
     /**
@@ -586,7 +493,7 @@ public final class MainWindowController implements IAudioTimer {
             primaryStage.show();
         } catch (final IOException ex) {
             logger.error("Unable to open the AboutWindow", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("AboutWindowError"), ex.getMessage(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(translationBundle.getString("AboutWindowError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -595,7 +502,7 @@ public final class MainWindowController implements IAudioTimer {
      */
     @FXML
     private void updateAction() {
-        checkForUpdates(true);
+        checkForUpdates(true, true);
     }
 
     /**
@@ -605,6 +512,36 @@ public final class MainWindowController implements IAudioTimer {
     public void fired() {
         getAllSoundPanes(grpControls).forEach(SoundPane::pause);
         mniTimerEnabled.setSelected(false);
+
+        if (Boolean.parseBoolean(settingsController.getProperties().getProperty("timerComputerShutdown", "false"))) {
+            final String command = switch (platformName.toLowerCase()) {
+                case "windows" -> "shutdown -s -t 0";
+                case "linux", "macos" -> "shutdown -h now";
+                default -> null;
+            };
+
+            if (command != null) {
+                try {
+                    final ProcessBuilder p = new ProcessBuilder(command.split(" "));
+
+                    try (final BufferedReader reader = new BufferedReader(new InputStreamReader(p.start().getInputStream()))) {
+                        final StringBuilder builder = new StringBuilder();
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            builder.append(line);
+                            builder.append(System.getProperty("line.separator"));
+                        }
+                        final String result = builder.toString();
+                        logger.info("Shutdown command result: {}", result);
+                    }
+                    exitAction();
+                } catch (final IOException ex) {
+                    logger.error("Unable to execute shutdown command", ex);
+                }
+            } else {
+                logger.error("Unable to execute shutdown command, unsupported platform {}", platformName);
+            }
+        }
 
         if (Boolean.parseBoolean(settingsController.getProperties().getProperty("timerApplicationShutdown", "false"))) {
             exitAction();
@@ -705,5 +642,50 @@ public final class MainWindowController implements IAudioTimer {
         };
 
         timer.schedule(timerTask, delay);
+    }
+
+    /**
+     * Set the audio balance
+     *
+     * @param audioBalance The audio balance
+     */
+    public void setAudioBalance(final double audioBalance) {
+        if (audioBalance < -1 || audioBalance > 1)
+            throw new IllegalArgumentException("Balance must be between -1.0 and 1.0!");
+
+        logger.info("Setting the audio balance to {}", audioBalance);
+        getAllSoundPanes(grpControls).forEach(s -> s.setBalance(audioBalance));
+    }
+
+    /**
+     * Method that is called when the Window should be hidden or shown
+     */
+    @Override
+    public void onShowHide() {
+        hideShowStage();
+    }
+
+    /**
+     * Method that is called when the SettingsWindow should be opened
+     */
+    @Override
+    public void onSettings() {
+        settingsAction();
+    }
+
+    /**
+     * Method that is called when the AboutWindow should be opened
+     */
+    @Override
+    public void onAbout() {
+        aboutAction();
+    }
+
+    /**
+     * Method that is called when the application should exit
+     */
+    @Override
+    public void onExit() {
+        exitAction();
     }
 }

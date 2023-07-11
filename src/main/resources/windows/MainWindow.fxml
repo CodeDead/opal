@@ -20,9 +20,10 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+
 <GridPane
-        prefHeight="370"
-        prefWidth="560"
+        prefHeight="350"
+        prefWidth="550"
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="com.codedead.opal.controller.MainWindowController"
         onDragOver="#onDragOver"
@@ -47,7 +48,7 @@
                     </ImageView>
                 </graphic>
             </MenuItem>
-            <MenuItem onAction="#saveSoundPresetAction" text="%SaveSoundPreset">
+            <MenuItem onAction="#saveSoundPresetAction" text="%SaveSoundPreset" accelerator="Shortcut+S">
                 <graphic>
                     <ImageView>
                         <Image url="@../images/save.png"/>
@@ -55,7 +56,7 @@
                 </graphic>
             </MenuItem>
             <SeparatorMenuItem/>
-            <MenuItem onAction="#resetAction" text="%Reset">
+            <MenuItem onAction="#resetAction" text="%Reset" accelerator="Shortcut+R">
                 <graphic>
                     <ImageView>
                         <Image url="@../images/refresh.png"/>
@@ -63,7 +64,7 @@
                 </graphic>
             </MenuItem>
             <SeparatorMenuItem/>
-            <MenuItem onAction="#exitAction" text="%Exit">
+            <MenuItem onAction="#exitAction" text="%Exit" accelerator="Shortcut+Q">
                 <graphic>
                     <ImageView>
                         <Image url="@../images/remove.png"/>
@@ -72,7 +73,7 @@
             </MenuItem>
         </Menu>
         <Menu text="%Tools">
-            <MenuItem onAction="#settingsAction" text="%Settings">
+            <MenuItem onAction="#settingsAction" text="%Settings" accelerator="Shortcut+I">
                 <graphic>
                     <ImageView>
                         <Image url="@../images/settings.png"/>
@@ -85,11 +86,11 @@
                         <Image url="@../images/timer.png"/>
                     </ImageView>
                 </graphic>
-                <CheckMenuItem fx:id="mniTimerEnabled" text="%Enabled"/>
+                <CheckMenuItem fx:id="mniTimerEnabled" text="%Enabled" accelerator="Shortcut+T"/>
             </Menu>
         </Menu>
         <Menu text="%HelpMenu">
-            <MenuItem onAction="#helpAction" text="%Help">
+            <MenuItem onAction="#helpAction" text="%Help" accelerator="F1">
                 <graphic>
                     <ImageView>
                         <Image url="@../images/help.png"/>
@@ -165,7 +166,7 @@
 
             <Label GridPane.rowIndex="0" GridPane.columnIndex="1" text="%Nature">
                 <font>
-                    <Font name="System Bold" size="14"/>
+                    <Font name="System Bold" size="15"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>
@@ -180,6 +181,7 @@
 
             <GridPane GridPane.rowIndex="2" GridPane.columnIndex="1">
                 <rowConstraints>
+                    <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
@@ -208,29 +210,32 @@
                 <SoundPane GridPane.rowIndex="3" name="%Birds"
                            mediaKey="birds" mediaPath="/audio/birds.mp3"
                            image="/images/bird.png"/>
-                <SoundPane GridPane.rowIndex="4" name="%Ocean"
+                <SoundPane GridPane.rowIndex="4" name="%Seagulls"
+                           mediaKey="seagulls" mediaPath="/audio/seagulls.mp3"
+                           image="/images/bird.png"/>
+                <SoundPane GridPane.rowIndex="5" name="%Ocean"
                            mediaKey="ocean" mediaPath="/audio/ocean.mp3"
                            image="/images/ocean.png"/>
-                <SoundPane GridPane.rowIndex="5" name="%River"
+                <SoundPane GridPane.rowIndex="6" name="%River"
                            mediaKey="river" mediaPath="/audio/river.mp3"
                            image="/images/river.png"/>
-                <SoundPane GridPane.rowIndex="6" name="%Fireplace"
+                <SoundPane GridPane.rowIndex="7" name="%Fireplace"
                            mediaKey="fireplace" mediaPath="/audio/fireplace.mp3"
                            image="/images/fire.png"/>
-                <SoundPane GridPane.rowIndex="7" name="%Cave"
+                <SoundPane GridPane.rowIndex="8" name="%Cave"
                            mediaKey="cave" mediaPath="/audio/cave.mp3"
                            image="/images/cave.png"/>
-                <SoundPane GridPane.rowIndex="8" name="%Frogs"
+                <SoundPane GridPane.rowIndex="9" name="%Frogs"
                            mediaKey="frogs" mediaPath="/audio/frogs.mp3"
                            image="/images/frogs.png"/>
-                <SoundPane GridPane.rowIndex="9" name="%Zoo"
+                <SoundPane GridPane.rowIndex="10" name="%Zoo"
                            mediaKey="zoo" mediaPath="/audio/zoo.mp3"
                            image="/images/zoo.png"/>
             </GridPane>
 
             <Label GridPane.rowIndex="3" GridPane.columnIndex="1" text="%Office">
                 <font>
-                    <Font name="System Bold" size="14"/>
+                    <Font name="System Bold" size="15"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>
@@ -283,7 +288,7 @@
 
             <Label GridPane.rowIndex="6" GridPane.columnIndex="1" text="%Audiences">
                 <font>
-                    <Font name="System Bold" size="14"/>
+                    <Font name="System Bold" size="15"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>
@@ -328,7 +333,7 @@
 
             <Label GridPane.rowIndex="9" GridPane.columnIndex="1" text="%RadioFrequencyStatic">
                 <font>
-                    <Font name="System Bold" size="14"/>
+                    <Font name="System Bold" size="15"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>
@@ -372,7 +377,7 @@
 
             <Label GridPane.rowIndex="12" GridPane.columnIndex="1" text="%Other">
                 <font>
-                    <Font name="System Bold" size="14"/>
+                    <Font name="System Bold" size="15"/>
                 </font>
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10"/>
@@ -390,6 +395,7 @@
                     <Insets bottom="10"/>
                 </GridPane.margin>
                 <rowConstraints>
+                    <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
@@ -414,10 +420,13 @@
                 <SoundPane GridPane.rowIndex="3" name="%Gong"
                            mediaKey="gong" mediaPath="/audio/gong.mp3"
                            image="/images/gong.png"/>
-                <SoundPane GridPane.rowIndex="4" name="%Space"
+                <SoundPane GridPane.rowIndex="4" name="%Belltower"
+                           mediaKey="belltower" mediaPath="/audio/belltower.mp3"
+                           image="/images/belltower.png"/>
+                <SoundPane GridPane.rowIndex="5" name="%Space"
                            mediaKey="space" mediaPath="/audio/space.mp3"
                            image="/images/space.png"/>
-                <SoundPane GridPane.rowIndex="5" name="%Train"
+                <SoundPane GridPane.rowIndex="6" name="%Train"
                            mediaKey="train" mediaPath="/audio/train.mp3"
                            image="/images/train.png"/>
             </GridPane>
