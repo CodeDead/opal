@@ -56,6 +56,13 @@
                 </graphic>
             </MenuItem>
             <SeparatorMenuItem/>
+            <MenuItem onAction="#playPauseAction" text="%PlayPause" accelerator="Shortcut+P">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/playpause.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
             <MenuItem onAction="#resetAction" text="%Reset" accelerator="Shortcut+R">
                 <graphic>
                     <ImageView>
