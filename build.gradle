@@ -15,8 +15,8 @@ version '1.2.0'
 def currentOS = DefaultNativePlatform.currentOperatingSystem
 
 java {
-    targetCompatibility = JavaVersion.VERSION_20
-    sourceCompatibility = JavaVersion.VERSION_20
+    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_21
 }
 
 application {
@@ -31,7 +31,7 @@ javafx {
 }
 
 jlink {
-    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+    options = ['--strip-debug', '--compress', 'zip-9', '--no-header-files', '--no-man-pages']
     forceMerge('log4j-api', 'jackson')
     launcher {
         name = 'Opal'
@@ -105,20 +105,20 @@ tasks.register('AppImage') {
     doLast {
         copy {
             from '.AppImage/.AppDir'
-            into "${buildDir}/AppImage/Opal.AppDir"
+            into layout.buildDirectory.dir("AppImage/Opal.AppDir")
         }
         copy {
-            from "${buildDir}/jpackage/Opal/"
-            into "${buildDir}/AppImage/Opal.AppDir/usr/"
+            from layout.buildDirectory.dir("jpackage/Opal/")
+            into layout.buildDirectory.dir("AppImage/Opal.AppDir/usr/")
         }
         copy {
             from '.AppImage/.AppDir/Opal.png'
-            into "${buildDir}/AppImage/Opal.AppDir/usr/lib"
+            into layout.buildDirectory.dir("AppImage/Opal.AppDir/usr/lib")
         }
         exec {
             commandLine 'sh', "${project.rootDir}/.AppImage/createAppImage.sh", "${project.version.toString()}"
         }
-        delete "${buildDir}/AppImage/Opal.AppDir"
+        delete layout.buildDirectory.dir("AppImage/Opal.AppDir")
     }
 }
 
