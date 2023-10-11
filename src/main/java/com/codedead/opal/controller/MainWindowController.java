@@ -8,6 +8,7 @@ import com.codedead.opal.utils.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,6 +19,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -361,6 +363,22 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             }
         } else {
             logger.info("Cancelled saving a sound settings");
+        }
+    }
+
+    /**
+     * Play or pause all media
+     */
+    @FXML
+    public void playPauseAction() {
+        logger.info("Play / pause all media");
+        try {
+            for (final SoundPane soundPane : getAllSoundPanes(grpControls)) {
+                soundPane.playPause();
+            }
+        } catch (final MediaPlayerException ex) {
+            logger.error("Unable to play / pause MediaPlayer", ex);
+            FxUtils.showErrorAlert(translationBundle.getString("PlayPauseError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 

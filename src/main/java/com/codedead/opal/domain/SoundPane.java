@@ -275,7 +275,7 @@ public final class SoundPane extends GridPane {
      * @throws MediaPlayerException When the {@link MediaPlayer} object could not be initialized
      */
     @FXML
-    private void playPause() throws MediaPlayerException {
+    public void playPause() throws MediaPlayerException {
         if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
             pause();
         } else {
