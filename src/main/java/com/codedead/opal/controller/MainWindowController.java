@@ -370,7 +370,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      * Play or pause all media
      */
     @FXML
-    public void playPauseAction() {
+    private void playPauseAction() {
         logger.info("Play / pause all media");
         try {
             for (final SoundPane soundPane : getAllSoundPanes(grpControls)) {
