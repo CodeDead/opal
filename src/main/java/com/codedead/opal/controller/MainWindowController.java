@@ -424,6 +424,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
             logger.info("Showing the SettingsWindow");
             primaryStage.show();
+            primaryStage.setWidth(450);
+            primaryStage.setHeight(320);
         } catch (final IOException ex) {
             logger.error("Unable to open the SettingsWindow", ex);
             FxUtils.showErrorAlert(translationBundle.getString("SettingsWindowError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
@@ -507,6 +509,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
             logger.info("Showing the AboutWindow");
             primaryStage.show();
+            primaryStage.setWidth(450);
+            primaryStage.setHeight(250);
         } catch (final IOException ex) {
             logger.error("Unable to open the AboutWindow", ex);
             FxUtils.showErrorAlert(translationBundle.getString("AboutWindowError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
