@@ -92,12 +92,6 @@ public final class SoundPane extends GridPane {
         disposeMediaPlayer();
 
         mediaPlayer = new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource(value)).toURI().toString()));
-        mediaPlayer.currentTimeProperty().addListener((observableValue, oldDuration, newDuration) -> {
-            // Quality of life improvement to reduce audio lag when restarting the media
-            if (mediaPlayer != null && newDuration.toSeconds() >= mediaPlayer.getMedia().getDuration().toSeconds() - 0.5) {
-                mediaPlayer.seek(Duration.ZERO);
-            }
-        });
         mediaPlayer.setOnEndOfMedia(() -> {
             if (mediaPlayer != null) {
                 mediaPlayer.seek(Duration.ZERO);
@@ -278,7 +272,7 @@ public final class SoundPane extends GridPane {
     public void playPause() throws MediaPlayerException {
         if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
             pause();
-        } else {
+        } else if (mediaPlayer != null && mediaPlayer.getVolume() != 0) {
             play();
         }
     }
