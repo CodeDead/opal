@@ -365,6 +365,22 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     }
 
     /**
+     * Play or pause all media
+     */
+    @FXML
+    private void playPauseAction() {
+        logger.info("Play / pause all media");
+        try {
+            for (final SoundPane soundPane : getAllSoundPanes(grpControls)) {
+                soundPane.playPause();
+            }
+        } catch (final MediaPlayerException ex) {
+            logger.error("Unable to play / pause MediaPlayer", ex);
+            FxUtils.showErrorAlert(translationBundle.getString("PlayPauseError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+        }
+    }
+
+    /**
      * Method that is called when all players should be reset
      */
     @FXML
@@ -408,6 +424,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
             logger.info("Showing the SettingsWindow");
             primaryStage.show();
+            primaryStage.setWidth(450);
+            primaryStage.setHeight(320);
         } catch (final IOException ex) {
             logger.error("Unable to open the SettingsWindow", ex);
             FxUtils.showErrorAlert(translationBundle.getString("SettingsWindowError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
@@ -491,6 +509,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
             logger.info("Showing the AboutWindow");
             primaryStage.show();
+            primaryStage.setWidth(450);
+            primaryStage.setHeight(250);
         } catch (final IOException ex) {
             logger.error("Unable to open the AboutWindow", ex);
             FxUtils.showErrorAlert(translationBundle.getString("AboutWindowError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));

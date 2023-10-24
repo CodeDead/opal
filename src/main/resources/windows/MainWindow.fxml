@@ -56,6 +56,13 @@
                 </graphic>
             </MenuItem>
             <SeparatorMenuItem/>
+            <MenuItem onAction="#playPauseAction" text="%PlayPause" accelerator="Shortcut+P">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/playpause.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
             <MenuItem onAction="#resetAction" text="%Reset" accelerator="Shortcut+R">
                 <graphic>
                     <ImageView>
@@ -402,6 +409,8 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -429,6 +438,12 @@
                 <SoundPane GridPane.rowIndex="6" name="%Train"
                            mediaKey="train" mediaPath="/audio/train.mp3"
                            image="/images/train.png"/>
+                <SoundPane GridPane.rowIndex="7" name="%SlowMetronome"
+                           mediaKey="slowmetronome" mediaPath="/audio/metronome.mp3"
+                           image="/images/metronome.png"/>
+                <SoundPane GridPane.rowIndex="8" name="%FastMetronome"
+                           mediaKey="fastmetronome" mediaPath="/audio/metronomefast.mp3"
+                           image="/images/metronome.png"/>
             </GridPane>
         </GridPane>
     </ScrollPane>

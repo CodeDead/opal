@@ -3,6 +3,8 @@ module Opal {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.desktop;
+    requires java.compiler;
+    requires java.naming;
     requires javafx.media;
     //noinspection Java9RedundantRequiresStatement
     requires jdk.crypto.ec; // Added for SSL handshakes
