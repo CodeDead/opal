@@ -126,17 +126,18 @@ public final class UpdateController {
     public List<PlatformUpdate> getUpdates() throws IOException, InterruptedException, InvalidHttpResponseCodeException {
         logger.info("Attempting to retrieve List of PlatformUpdate objects from {}", getUpdateUrl());
 
-        final HttpClient client = HttpClient.newHttpClient();
-        final HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(getUpdateUrl()))
-                .build();
+        try (final HttpClient client = HttpClient.newHttpClient()) {
+            final HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(getUpdateUrl()))
+                    .build();
 
-        final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() == 200)
-            return Arrays.asList(objectMapper.readValue(response.body(), PlatformUpdate[].class));
+            if (response.statusCode() == 200)
+                return Arrays.asList(objectMapper.readValue(response.body(), PlatformUpdate[].class));
 
-        throw new InvalidHttpResponseCodeException(String.format("Invalid HTTP response code (%s)", response.statusCode()));
+            throw new InvalidHttpResponseCodeException(String.format("Invalid HTTP response code (%s)", response.statusCode()));
+        }
     }
 
     /**
