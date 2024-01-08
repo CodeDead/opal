@@ -425,7 +425,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             logger.info("Showing the SettingsWindow");
             primaryStage.show();
             primaryStage.setWidth(450);
-            primaryStage.setHeight(320);
+            primaryStage.setHeight(350);
         } catch (final IOException ex) {
             logger.error("Unable to open the SettingsWindow", ex);
             FxUtils.showErrorAlert(translationBundle.getString("SettingsWindowError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
@@ -510,7 +510,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             logger.info("Showing the AboutWindow");
             primaryStage.show();
             primaryStage.setWidth(450);
-            primaryStage.setHeight(250);
+            primaryStage.setHeight(280);
         } catch (final IOException ex) {
             logger.error("Unable to open the AboutWindow", ex);
             FxUtils.showErrorAlert(translationBundle.getString("AboutWindowError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
@@ -549,7 +549,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                         String line;
                         while ((line = reader.readLine()) != null) {
                             builder.append(line);
-                            builder.append(System.getProperty("line.separator"));
+                            builder.append(System.lineSeparator());
                         }
                         final String result = builder.toString();
                         logger.info("Shutdown command result: {}", result);
@@ -606,7 +606,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         boolean success = false;
 
         if (db.hasFiles()) {
-            openSoundPreset(db.getFiles().get(0).getAbsolutePath());
+            openSoundPreset(db.getFiles().getFirst().getAbsolutePath());
             success = true;
         }
 
