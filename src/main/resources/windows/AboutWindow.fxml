@@ -10,7 +10,7 @@
           xmlns:fx="http://javafx.com/fxml"
           alignment="CENTER"
           fx:controller="com.codedead.opal.controller.AboutWindowController"
-          prefHeight="250.0" prefWidth="450.0">
+          prefHeight="280.0" prefWidth="450.0">
 
     <rowConstraints>
         <RowConstraints/>

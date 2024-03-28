@@ -19,7 +19,7 @@
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.codedead.opal.controller.SettingsWindowController"
-          prefHeight="320.0" prefWidth="450.0">
+          prefHeight="350.0" prefWidth="450.0">
 
     <rowConstraints>
         <RowConstraints vgrow="ALWAYS"/>

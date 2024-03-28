@@ -30,13 +30,10 @@ public final class FxUtils {
             throw new NullPointerException("Content cannot be null!");
 
         final Alert alert = new Alert(Alert.AlertType.INFORMATION, content, ButtonType.OK);
-        alert.setResizable(true);
-
         final Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 
-        if (imageStream != null) {
+        if (imageStream != null)
             stage.getIcons().add(new Image(imageStream));
-        }
 
         alert.showAndWait();
     }
@@ -50,13 +47,10 @@ public final class FxUtils {
      */
     public static boolean showConfirmationAlert(final String content, final InputStream imageStream) {
         final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, content, ButtonType.YES, ButtonType.NO);
-        alert.setResizable(true);
-
         final Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 
-        if (imageStream != null) {
+        if (imageStream != null)
             stage.getIcons().add(new Image(imageStream));
-        }
 
         alert.showAndWait();
 
@@ -110,9 +104,7 @@ public final class FxUtils {
         GridPane.setHgrow(textArea, Priority.ALWAYS);
 
         expContent.add(textArea, 0, 0);
-
         alert.getDialogPane().setExpandableContent(expContent);
-        alert.setResizable(true);
 
         return alert;
     }

@@ -5,12 +5,12 @@ plugins {
     id 'idea'
     id 'eclipse'
     id 'application'
-    id 'org.beryx.jlink' version '3.0.0'
+    id 'org.beryx.jlink' version '3.0.1'
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
 group 'com.codedead'
-version '1.3.0'
+version '1.3.1'
 
 def currentOS = DefaultNativePlatform.currentOperatingSystem
 
@@ -25,7 +25,7 @@ application {
 }
 
 javafx {
-    version = '21.0.1'
+    version = '22'
     configuration = 'implementation'
     modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.media']
 }
@@ -55,7 +55,7 @@ jlink {
                     '--win-upgrade-uuid', '876c5464-9a66-4913-89a4-c63a4b8b4bb9',
                     '--win-help-url', 'https://codedead.com/contact',
                     '--win-dir-chooser',
-                    '--copyright', 'Copyright (c) 2023 CodeDead',
+                    '--copyright', 'Copyright (c) 2024 CodeDead',
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
                     '--license-file', 'LICENSE',
@@ -71,7 +71,7 @@ jlink {
                     '--linux-shortcut',
                     '--linux-package-name', 'opal-codedead',
                     '--linux-rpm-license-type', 'GPLv3',
-                    '--copyright', 'Copyright (c) 2023 CodeDead',
+                    '--copyright', 'Copyright (c) 2024 CodeDead',
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
                     '--license-file', 'LICENSE',
@@ -87,7 +87,7 @@ jlink {
                     '--mac-package-name', 'Opal',
                     '--mac-package-identifier', 'com.codedead.opal',
                     '--mac-app-category', 'public.app-category.music',
-                    '--copyright', 'Copyright (c) 2023 CodeDead',
+                    '--copyright', 'Copyright (c) 2024 CodeDead',
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
                     '--license-file', 'LICENSE',
@@ -140,11 +140,11 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.apache.logging.log4j:log4j-core:2.21.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.23.1'
     implementation 'io.github.mkpaz:atlantafx-base:2.0.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.3'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
 }
 
 tasks.named('test') {
