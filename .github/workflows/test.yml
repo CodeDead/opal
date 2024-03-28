@@ -29,28 +29,21 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
       - name: Test
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: test
+        run: ./gradlew test
 
       - name: Build
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
+        run: ./gradlew build
 
       - name: Build (AppImage)
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: AppImage
+        run: ./gradlew AppImage
 
       - name: Build (jlink)
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: jlink
+        run: ./gradlew jlink
 
       - name: Build (jpackage)
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: jpackage
+        run: ./gradlew jpackage
