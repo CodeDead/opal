@@ -98,8 +98,7 @@ public final class TrayIconController {
         logger.info("Displaying tray icon");
         if (trayIcon == null) {
             createTrayIcon();
-            if (trayIcon == null) {
-                logger.warn("TrayIcon cannot be null!");
+            if (!validTrayIcon()) {
                 return;
             }
         }
@@ -119,8 +118,8 @@ public final class TrayIconController {
      */
     public void hideTrayIcon() {
         logger.info("Hiding tray icon");
-        if (trayIcon == null) {
-            logger.warn("TrayIcon cannot be null!");
+
+        if (!validTrayIcon()) {
             return;
         }
 
@@ -128,5 +127,18 @@ public final class TrayIconController {
         tray.remove(trayIcon);
 
         trayIcon = null;
+    }
+
+    /**
+     * Check if the tray icon is valid
+     *
+     * @return True if the tray icon is valid, false otherwise
+     */
+    private boolean validTrayIcon() {
+        if (trayIcon == null) {
+            logger.warn("TrayIcon cannot be null!");
+            return false;
+        }
+        return true;
     }
 }
