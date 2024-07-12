@@ -61,10 +61,10 @@ public final class TrayIconController {
 
         if (trayIconListener != null) {
             // Platform.runLater to run on the JavaFX thread
-            displayItem.addActionListener(e -> Platform.runLater(trayIconListener::onShowHide));
-            settingsItem.addActionListener(e -> Platform.runLater(trayIconListener::onSettings));
-            aboutItem.addActionListener(e -> Platform.runLater(trayIconListener::onAbout));
-            exitItem.addActionListener(e -> Platform.runLater(trayIconListener::onExit));
+            displayItem.addActionListener(_ -> Platform.runLater(trayIconListener::onShowHide));
+            settingsItem.addActionListener(_ -> Platform.runLater(trayIconListener::onSettings));
+            aboutItem.addActionListener(_ -> Platform.runLater(trayIconListener::onAbout));
+            exitItem.addActionListener(_ -> Platform.runLater(trayIconListener::onExit));
 
             localTrayIcon.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
@@ -98,7 +98,7 @@ public final class TrayIconController {
         logger.info("Displaying tray icon");
         if (trayIcon == null) {
             createTrayIcon();
-            if (!validTrayIcon()) {
+            if (invalidTrayIcon()) {
                 return;
             }
         }
@@ -119,7 +119,7 @@ public final class TrayIconController {
     public void hideTrayIcon() {
         logger.info("Hiding tray icon");
 
-        if (!validTrayIcon()) {
+        if (invalidTrayIcon()) {
             return;
         }
 
@@ -134,11 +134,11 @@ public final class TrayIconController {
      *
      * @return True if the tray icon is valid, false otherwise
      */
-    private boolean validTrayIcon() {
+    private boolean invalidTrayIcon() {
         if (trayIcon == null) {
             logger.warn("TrayIcon cannot be null!");
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }
