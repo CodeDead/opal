@@ -15,8 +15,8 @@ version '1.3.1'
 def currentOS = DefaultNativePlatform.currentOperatingSystem
 
 java {
-    targetCompatibility = JavaVersion.VERSION_21
-    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_22
+    sourceCompatibility = JavaVersion.VERSION_22
 }
 
 application {
@@ -25,7 +25,7 @@ application {
 }
 
 javafx {
-    version = '22'
+    version = '22.0.1'
     configuration = 'implementation'
     modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.media']
 }
@@ -142,9 +142,9 @@ repositories {
 dependencies {
     implementation 'org.apache.logging.log4j:log4j-core:2.23.1'
     implementation 'io.github.mkpaz:atlantafx-base:2.0.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.3'
 }
 
 tasks.named('test') {
