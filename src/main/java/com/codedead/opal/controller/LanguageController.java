@@ -22,7 +22,7 @@ public final class LanguageController {
             case "de-de" -> 1;
             case "es-es" -> 2;
             case "fr-fr" -> 3;
-            case "hi" -> 4;
+            case "hi-in" -> 4;
             case "jp-jp" -> 5;
             case "nl-nl" -> 6;
             case "ru-ru" -> 7;
@@ -43,7 +43,7 @@ public final class LanguageController {
             case 1 -> "de-DE";
             case 2 -> "es-ES";
             case 3 -> "fr-FR";
-            case 4 -> "hi";
+            case 4 -> "hi-in";
             case 5 -> "jp-JP";
             case 6 -> "nl-NL";
             case 7 -> "ru-RU";

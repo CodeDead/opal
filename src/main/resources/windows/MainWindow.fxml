@@ -415,6 +415,7 @@
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
                     <RowConstraints vgrow="ALWAYS"/>
+                    <RowConstraints vgrow="ALWAYS"/>
                 </rowConstraints>
 
                 <columnConstraints>
@@ -430,22 +431,25 @@
                 <SoundPane GridPane.rowIndex="2" name="%Sleepy"
                            mediaKey="sleepy" mediaPath="/audio/sleepy.mp3"
                            image="/images/sleepy.png"/>
-                <SoundPane GridPane.rowIndex="3" name="%Gong"
+                <SoundPane GridPane.rowIndex="3" name="%RollerCoaster"
+                           mediaKey="train" mediaPath="/audio/rollercoaster.mp3"
+                           image="/images/train.png"/>
+                <SoundPane GridPane.rowIndex="4" name="%Gong"
                            mediaKey="gong" mediaPath="/audio/gong.mp3"
                            image="/images/gong.png"/>
-                <SoundPane GridPane.rowIndex="4" name="%BellTower"
+                <SoundPane GridPane.rowIndex="5" name="%BellTower"
                            mediaKey="belltower" mediaPath="/audio/belltower.mp3"
                            image="/images/belltower.png"/>
-                <SoundPane GridPane.rowIndex="5" name="%Space"
+                <SoundPane GridPane.rowIndex="6" name="%Space"
                            mediaKey="space" mediaPath="/audio/space.mp3"
                            image="/images/space.png"/>
-                <SoundPane GridPane.rowIndex="6" name="%Train"
+                <SoundPane GridPane.rowIndex="7" name="%Train"
                            mediaKey="train" mediaPath="/audio/train.mp3"
                            image="/images/train.png"/>
-                <SoundPane GridPane.rowIndex="7" name="%SlowMetronome"
+                <SoundPane GridPane.rowIndex="8" name="%SlowMetronome"
                            mediaKey="slowmetronome" mediaPath="/audio/metronome.mp3"
                            image="/images/metronome.png"/>
-                <SoundPane GridPane.rowIndex="8" name="%FastMetronome"
+                <SoundPane GridPane.rowIndex="9" name="%FastMetronome"
                            mediaKey="fastmetronome" mediaPath="/audio/metronomefast.mp3"
                            image="/images/metronome.png"/>
             </GridPane>
