@@ -433,7 +433,7 @@
                 <SoundPane GridPane.rowIndex="3" name="%Gong"
                            mediaKey="gong" mediaPath="/audio/gong.mp3"
                            image="/images/gong.png"/>
-                <SoundPane GridPane.rowIndex="4" name="%Belltower"
+                <SoundPane GridPane.rowIndex="4" name="%BellTower"
                            mediaKey="belltower" mediaPath="/audio/belltower.mp3"
                            image="/images/belltower.png"/>
                 <SoundPane GridPane.rowIndex="5" name="%Space"

@@ -22,11 +22,12 @@ public final class LanguageController {
             case "de-de" -> 1;
             case "es-es" -> 2;
             case "fr-fr" -> 3;
-            case "jp-jp" -> 4;
-            case "nl-nl" -> 5;
-            case "ru-ru" -> 6;
-            case "tr-tr" -> 7;
-            case "zh-cn" -> 8;
+            case "hi" -> 4;
+            case "jp-jp" -> 5;
+            case "nl-nl" -> 6;
+            case "ru-ru" -> 7;
+            case "tr-tr" -> 8;
+            case "zh-cn" -> 9;
             default -> 0;
         };
     }
@@ -42,11 +43,12 @@ public final class LanguageController {
             case 1 -> "de-DE";
             case 2 -> "es-ES";
             case 3 -> "fr-FR";
-            case 4 -> "jp-JP";
-            case 5 -> "nl-NL";
-            case 6 -> "ru-RU";
-            case 7 -> "tr-TR";
-            case 8 -> "zh-CN";
+            case 4 -> "hi";
+            case 5 -> "jp-JP";
+            case 6 -> "nl-NL";
+            case 7 -> "ru-RU";
+            case 8 -> "tr-TR";
+            case 9 -> "zh-CN";
             default -> DEFAULT_LOCALE;
         };
     }
