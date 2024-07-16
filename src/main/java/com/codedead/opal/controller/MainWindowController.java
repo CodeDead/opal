@@ -182,7 +182,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             } else {
                 logger.info("No updates available");
                 if (showNoUpdates) {
-                    FxUtils.showInformationAlert(translationBundle.getString("NoUpdateAvailable"), null);
+                    FxUtils.showInformationAlert(translationBundle.getString("NoUpdateAvailable"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                 }
             }
         } catch (final InterruptedException | IOException | InvalidHttpResponseCodeException | URISyntaxException ex) {
