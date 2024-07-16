@@ -93,6 +93,7 @@
                         <Image url="@../images/timer.png"/>
                     </ImageView>
                 </graphic>
+                <MenuItem fx:id="mniCountDown" visible="false" disable="true" />
                 <CheckMenuItem fx:id="mniTimerEnabled" text="%Enabled" accelerator="Shortcut+T"/>
             </Menu>
         </Menu>

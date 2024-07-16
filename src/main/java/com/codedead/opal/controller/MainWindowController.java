@@ -41,16 +41,20 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     private GridPane grpControls;
     @FXML
     private CheckMenuItem mniTimerEnabled;
+    @FXML
+    private MenuItem mniCountDown;
+
     private TrayIconController trayIconController;
     private SettingsController settingsController;
     private UpdateController updateController;
     private ResourceBundle translationBundle;
     private TimerTask timerTask;
-    private boolean timerEnabled;
+    private TimerTask countDownTask;
     private final String platformName;
     private final HelpUtils helpUtils;
     private final ObjectMapper objectMapper;
     private final Timer timer;
+    private final Timer countDownTimer;
     private final IAudioTimer audioTimer;
     private final Logger logger;
 
@@ -65,6 +69,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         helpUtils = new HelpUtils();
 
         this.timer = new Timer();
+        this.countDownTimer = new Timer();
         this.audioTimer = this;
         this.objectMapper = new ObjectMapper();
     }
@@ -256,7 +261,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      */
     @FXML
     private void initialize() {
-        mniTimerEnabled.setOnAction(e -> {
+        mniTimerEnabled.setOnAction(_ -> {
             if (mniTimerEnabled.isSelected()) {
                 final Properties properties = settingsController.getProperties();
                 final long timerDelay = Long.parseLong(properties.getProperty("timerDelay", "3600000"));
@@ -420,7 +425,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(SharedVariables.ICON_URL))));
             primaryStage.setScene(new Scene(root));
 
-            primaryStage.setOnHiding(event -> ThemeController.setTheme(settingsController.getProperties().getProperty("theme", "Light").toLowerCase()));
+            primaryStage.setOnHiding(_ -> ThemeController.setTheme(settingsController.getProperties().getProperty("theme", "Light").toLowerCase()));
 
             logger.info("Showing the SettingsWindow");
             primaryStage.show();
@@ -530,8 +535,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      */
     @Override
     public void fired() {
+        cancelTimer();
         getAllSoundPanes(grpControls).forEach(SoundPane::pause);
-        mniTimerEnabled.setSelected(false);
 
         if (Boolean.parseBoolean(settingsController.getProperties().getProperty("timerComputerShutdown", "false"))) {
             final String command = switch (platformName.toLowerCase()) {
@@ -620,12 +625,17 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     public void cancelTimer() {
         logger.info("Cancelling the Timer to stop all MediaPlayer objects");
 
-        timerEnabled = false;
-
         if (timerTask != null) {
             timerTask.cancel();
             timer.purge();
         }
+
+        if (countDownTask != null) {
+            countDownTask.cancel();
+            countDownTimer.purge();
+        }
+
+        Platform.runLater(() -> mniCountDown.setVisible(false));
 
         if (audioTimer != null) {
             audioTimer.cancelled();
@@ -643,25 +653,48 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
         logger.info("Scheduling the Timer to stop all MediaPlayer objects after {} millisecond(s)", delay);
 
-        timerEnabled = true;
-
         if (timerTask != null) {
             timerTask.cancel();
             timer.purge();
+        }
+
+        if (countDownTask != null) {
+            countDownTask.cancel();
+            countDownTimer.purge();
         }
 
         timerTask = new TimerTask() {
             @Override
             public void run() {
                 logger.info("Timer has fired");
-                if (timerEnabled) {
-                    audioTimer.fired();
-                }
-                timerEnabled = false;
+                audioTimer.fired();
+            }
+        };
+
+        countDownTask = new TimerTask() {
+            final long seconds = delay / 1000;
+            int i = 0;
+
+            @Override
+            public void run() {
+                i++;
+                long timeLeft = (seconds - (i % seconds));
+
+                // Calculate hours, minutes and seconds
+                long hours = timeLeft / 3600;
+                long minutes = (timeLeft % 3600) / 60;
+                long seconds = timeLeft % 60;
+
+                // Format the values to HH:MM:SS with leading zeros if necessary
+                final String timeLeftFormatted = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+                Platform.runLater(() -> mniCountDown.setText(timeLeftFormatted));
             }
         };
 
         timer.schedule(timerTask, delay);
+        countDownTimer.schedule(countDownTask, 0, 1000);
+
+        mniCountDown.setVisible(true);
     }
 
     /**
