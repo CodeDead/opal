@@ -35,12 +35,20 @@ public final class RunnableSiteOpener implements Runnable {
      */
     @Override
     public void run() {
+
         try {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 Desktop.getDesktop().browse(new URI(url));
             } else {
-                final String[] str = new String[]{"xdg-open", url};
-                Runtime.getRuntime().exec(str);
+                final String os = System.getProperty("os.name").toLowerCase();
+
+                if (os.contains("win")) {
+                    Runtime.getRuntime().exec(new String[]{"rundll32", "url.dll,FileProtocolHandler", url});
+                } else if (os.contains("mac")) {
+                    Runtime.getRuntime().exec(new String[]{"open", url});
+                } else if (os.contains("nix") || os.contains("nux")) {
+                    Runtime.getRuntime().exec(new String[]{"xdg-open", url});
+                }
             }
             if (iRunnableHelper != null) {
                 iRunnableHelper.executed();
