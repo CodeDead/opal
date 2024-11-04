@@ -5,7 +5,7 @@ plugins {
     id 'idea'
     id 'eclipse'
     id 'application'
-    id 'org.beryx.jlink' version '3.0.1'
+    id 'com.dua3.gradle.jlink' version '3.0.1-patch-1'
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
