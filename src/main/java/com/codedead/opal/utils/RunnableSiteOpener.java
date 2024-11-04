@@ -38,6 +38,9 @@ public final class RunnableSiteOpener implements Runnable {
         try {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 Desktop.getDesktop().browse(new URI(url));
+            } else {
+                final String[] str = new String[]{"xdg-open", url};
+                Runtime.getRuntime().exec(str);
             }
             if (iRunnableHelper != null) {
                 iRunnableHelper.executed();
