@@ -5,7 +5,7 @@ plugins {
     id 'idea'
     id 'eclipse'
     id 'application'
-    id 'com.dua3.gradle.jlink' version '3.0.1-patch-1'
+    id 'org.beryx.jlink' version '3.1.1'
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
@@ -32,16 +32,9 @@ javafx {
 
 jlink {
     options = ['--strip-debug', '--compress', 'zip-9', '--no-header-files', '--no-man-pages']
-    forceMerge('log4j-api', 'jackson')
+    forceMerge('jackson')
     launcher {
         name = 'Opal'
-    }
-
-    mergedModule {
-        additive = true
-        uses 'org.apache.logging.log4j.util.PropertySource'
-        uses 'org.apache.logging.log4j.spi.Provider'
-        uses 'org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory'
     }
 
     if (currentOS.isWindows()) {
@@ -140,9 +133,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.apache.logging.log4j:log4j-core:2.24.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.24.2'
     implementation 'io.github.mkpaz:atlantafx-base:2.0.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
 }
