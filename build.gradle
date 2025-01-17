@@ -48,7 +48,7 @@ jlink {
                     '--win-upgrade-uuid', '876c5464-9a66-4913-89a4-c63a4b8b4bb9',
                     '--win-help-url', 'https://codedead.com/contact',
                     '--win-dir-chooser',
-                    '--copyright', 'Copyright (c) 2024 CodeDead',
+                    '--copyright', 'Copyright (c) 2025 CodeDead',
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
                     '--license-file', 'LICENSE',
@@ -64,7 +64,7 @@ jlink {
                     '--linux-shortcut',
                     '--linux-package-name', 'opal-codedead',
                     '--linux-rpm-license-type', 'GPLv3',
-                    '--copyright', 'Copyright (c) 2024 CodeDead',
+                    '--copyright', 'Copyright (c) 2025 CodeDead',
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
                     '--license-file', 'LICENSE',
@@ -80,7 +80,7 @@ jlink {
                     '--mac-package-name', 'Opal',
                     '--mac-package-identifier', 'com.codedead.opal',
                     '--mac-app-category', 'public.app-category.music',
-                    '--copyright', 'Copyright (c) 2024 CodeDead',
+                    '--copyright', 'Copyright (c) 2025 CodeDead',
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
                     '--license-file', 'LICENSE',
@@ -133,11 +133,11 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.apache.logging.log4j:log4j-core:2.24.2'
+    implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
     implementation 'io.github.mkpaz:atlantafx-base:2.0.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.4'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.4'
 }
 
 tasks.named('test') {
