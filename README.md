@@ -111,7 +111,7 @@ All images have been provided by [Remix Icon](https://remixicon.com/).
 ## About
 
 This library is maintained by CodeDead. You can find more about us using the following links:
-* [Website](https://codedead.com
+* [Website](https://codedead.com)
 * [Bluesky](https://bsky.app/profile/codedead.com)
 * [Facebook](https://facebook.com/deadlinecodedead)
 * [Reddit](https://reddit.com/r/CodeDead)
