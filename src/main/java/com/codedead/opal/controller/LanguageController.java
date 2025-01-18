@@ -27,7 +27,8 @@ public final class LanguageController {
             case "nl-nl" -> 6;
             case "ru-ru" -> 7;
             case "tr-tr" -> 8;
-            case "zh-cn" -> 9;
+            case "uk-ua" -> 9;
+            case "zh-cn" -> 10;
             default -> 0;
         };
     }
@@ -48,7 +49,8 @@ public final class LanguageController {
             case 6 -> "nl-NL";
             case 7 -> "ru-RU";
             case 8 -> "tr-TR";
-            case 9 -> "zh-CN";
+            case 9 -> "uk-UA";
+            case 10 -> "zh-CN";
             default -> DEFAULT_LOCALE;
         };
     }
