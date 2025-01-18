@@ -11,15 +11,15 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Label?>
 <?import com.codedead.opal.domain.SoundPane?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.text.Font?>
 
 <?import javafx.scene.control.CheckMenuItem?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.VBox?>
 
 <GridPane
         prefHeight="350"
@@ -93,7 +93,7 @@
                         <Image url="@../images/timer.png"/>
                     </ImageView>
                 </graphic>
-                <MenuItem fx:id="mniCountDown" visible="false" disable="true" />
+                <MenuItem fx:id="mniCountDown" visible="false" disable="true"/>
                 <CheckMenuItem fx:id="mniTimerEnabled" text="%Enabled" accelerator="Shortcut+T"/>
             </Menu>
         </Menu>
@@ -150,20 +150,6 @@
         <GridPane fx:id="grpControls">
             <rowConstraints>
                 <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
             </rowConstraints>
 
             <columnConstraints>
@@ -172,292 +158,228 @@
                 <ColumnConstraints percentWidth="15"/>
             </columnConstraints>
 
-            <Label GridPane.rowIndex="0" GridPane.columnIndex="1" text="%Nature">
-                <font>
-                    <Font name="System Bold" size="15"/>
-                </font>
+            <VBox GridPane.rowIndex="0" GridPane.columnIndex="1" spacing="5">
                 <GridPane.margin>
-                    <Insets left="5" right="5" top="10"/>
+                    <Insets left="5" right="5" top="10" bottom="10"/>
                 </GridPane.margin>
-            </Label>
+                <TitledPane text="%Nature">
+                    <GridPane>
+                        <rowConstraints>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                        </rowConstraints>
 
-            <Separator GridPane.rowIndex="1" GridPane.columnIndex="1">
-                <GridPane.margin>
-                    <Insets bottom="3.0" left="5" right="5"/>
-                </GridPane.margin>
-            </Separator>
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
 
-            <GridPane GridPane.rowIndex="2" GridPane.columnIndex="1">
-                <rowConstraints>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                </rowConstraints>
+                        <SoundPane GridPane.rowIndex="0" name="%Rain"
+                                   mediaKey="rain" mediaPath="/audio/rain.mp3"
+                                   image="/images/rain.png"/>
+                        <SoundPane GridPane.rowIndex="1" name="%Wind"
+                                   mediaKey="wind" mediaPath="/audio/wind.mp3"
+                                   image="/images/wind.png"/>
+                        <SoundPane GridPane.rowIndex="2" name="%Thunder"
+                                   mediaKey="thunder" mediaPath="/audio/thunder.mp3"
+                                   image="/images/thunder.png"/>
+                        <SoundPane GridPane.rowIndex="3" name="%Birds"
+                                   mediaKey="birds" mediaPath="/audio/birds.mp3"
+                                   image="/images/bird.png"/>
+                        <SoundPane GridPane.rowIndex="4" name="%Seagulls"
+                                   mediaKey="seagulls" mediaPath="/audio/seagulls.mp3"
+                                   image="/images/bird.png"/>
+                        <SoundPane GridPane.rowIndex="5" name="%Ocean"
+                                   mediaKey="ocean" mediaPath="/audio/ocean.mp3"
+                                   image="/images/ocean.png"/>
+                        <SoundPane GridPane.rowIndex="6" name="%River"
+                                   mediaKey="river" mediaPath="/audio/river.mp3"
+                                   image="/images/river.png"/>
+                        <SoundPane GridPane.rowIndex="7" name="%Fireplace"
+                                   mediaKey="fireplace" mediaPath="/audio/fireplace.mp3"
+                                   image="/images/fire.png"/>
+                        <SoundPane GridPane.rowIndex="8" name="%Cave"
+                                   mediaKey="cave" mediaPath="/audio/cave.mp3"
+                                   image="/images/cave.png"/>
+                        <SoundPane GridPane.rowIndex="9" name="%Frogs"
+                                   mediaKey="frogs" mediaPath="/audio/frogs.mp3"
+                                   image="/images/frogs.png"/>
+                        <SoundPane GridPane.rowIndex="10" name="%Zoo"
+                                   mediaKey="zoo" mediaPath="/audio/zoo.mp3"
+                                   image="/images/zoo.png"/>
+                        <SoundPane GridPane.rowIndex="11" name="%Dolphins"
+                                   mediaKey="dolphin" mediaPath="/audio/dolphin.mp3"
+                                   image="/images/ocean.png"/>
+                    </GridPane>
+                </TitledPane>
+                <TitledPane text="%Office" expanded="false">
+                    <GridPane>
+                        <rowConstraints>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                        </rowConstraints>
 
-                <columnConstraints>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
 
-                <SoundPane GridPane.rowIndex="0" name="%Rain"
-                           mediaKey="rain" mediaPath="/audio/rain.mp3"
-                           image="/images/rain.png"/>
-                <SoundPane GridPane.rowIndex="1" name="%Wind"
-                           mediaKey="wind" mediaPath="/audio/wind.mp3"
-                           image="/images/wind.png"/>
-                <SoundPane GridPane.rowIndex="2" name="%Thunder"
-                           mediaKey="thunder" mediaPath="/audio/thunder.mp3"
-                           image="/images/thunder.png"/>
-                <SoundPane GridPane.rowIndex="3" name="%Birds"
-                           mediaKey="birds" mediaPath="/audio/birds.mp3"
-                           image="/images/bird.png"/>
-                <SoundPane GridPane.rowIndex="4" name="%Seagulls"
-                           mediaKey="seagulls" mediaPath="/audio/seagulls.mp3"
-                           image="/images/bird.png"/>
-                <SoundPane GridPane.rowIndex="5" name="%Ocean"
-                           mediaKey="ocean" mediaPath="/audio/ocean.mp3"
-                           image="/images/ocean.png"/>
-                <SoundPane GridPane.rowIndex="6" name="%River"
-                           mediaKey="river" mediaPath="/audio/river.mp3"
-                           image="/images/river.png"/>
-                <SoundPane GridPane.rowIndex="7" name="%Fireplace"
-                           mediaKey="fireplace" mediaPath="/audio/fireplace.mp3"
-                           image="/images/fire.png"/>
-                <SoundPane GridPane.rowIndex="8" name="%Cave"
-                           mediaKey="cave" mediaPath="/audio/cave.mp3"
-                           image="/images/cave.png"/>
-                <SoundPane GridPane.rowIndex="9" name="%Frogs"
-                           mediaKey="frogs" mediaPath="/audio/frogs.mp3"
-                           image="/images/frogs.png"/>
-                <SoundPane GridPane.rowIndex="10" name="%Zoo"
-                           mediaKey="zoo" mediaPath="/audio/zoo.mp3"
-                           image="/images/zoo.png"/>
-                <SoundPane GridPane.rowIndex="11" name="%Dolphins"
-                           mediaKey="dolphin" mediaPath="/audio/dolphin.mp3"
-                           image="/images/ocean.png"/>
-            </GridPane>
+                        <SoundPane GridPane.rowIndex="0" name="%Typing"
+                                   mediaKey="keyboard" mediaPath="/audio/typing.mp3"
+                                   image="/images/keyboard.png"/>
+                        <SoundPane GridPane.rowIndex="1" name="%Phone"
+                                   mediaKey="telephone" mediaPath="/audio/telephone.mp3"
+                                   image="/images/phone.png"/>
+                        <SoundPane GridPane.rowIndex="2" name="%Chatter"
+                                   mediaKey="officeChatter" mediaPath="/audio/office.mp3"
+                                   image="/images/group.png"/>
+                        <SoundPane GridPane.rowIndex="3" name="%Traffic"
+                                   mediaKey="traffic" mediaPath="/audio/traffic.mp3"
+                                   image="/images/car.png"/>
+                        <SoundPane GridPane.rowIndex="4" name="%Clock"
+                                   mediaKey="clock" mediaPath="/audio/clock.mp3"
+                                   image="/images/clock.png"/>
+                        <SoundPane GridPane.rowIndex="5" name="%Fan"
+                                   mediaKey="fan" mediaPath="/audio/fan.mp3"
+                                   image="/images/fan.png"/>
+                        <SoundPane GridPane.rowIndex="6" name="%Coffee"
+                                   mediaKey="coffee" mediaPath="/audio/coffee.mp3"
+                                   image="/images/coffee.png"/>
+                    </GridPane>
+                </TitledPane>
+                <TitledPane text="%Audiences" expanded="false">
+                    <GridPane>
+                        <rowConstraints>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                        </rowConstraints>
 
-            <Label GridPane.rowIndex="3" GridPane.columnIndex="1" text="%Office">
-                <font>
-                    <Font name="System Bold" size="15"/>
-                </font>
-                <GridPane.margin>
-                    <Insets left="5" right="5" top="10"/>
-                </GridPane.margin>
-            </Label>
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
 
-            <Separator GridPane.rowIndex="4" GridPane.columnIndex="1">
-                <GridPane.margin>
-                    <Insets bottom="3.0" left="5" right="5"/>
-                </GridPane.margin>
-            </Separator>
+                        <SoundPane GridPane.rowIndex="0" name="%NetworkingEvent"
+                                   mediaKey="networking" mediaPath="/audio/networking.mp3"
+                                   image="/images/networking.png"/>
+                        <SoundPane GridPane.rowIndex="1" name="%LargeCrowd"
+                                   mediaKey="largeCrowd" mediaPath="/audio/largeCrowd.mp3"
+                                   image="/images/group.png"/>
+                        <SoundPane GridPane.rowIndex="2" name="%Restaurant"
+                                   mediaKey="restaurant" mediaPath="/audio/restaurant.mp3"
+                                   image="/images/restaurant.png"/>
+                        <SoundPane GridPane.rowIndex="3" name="%TribalFestival"
+                                   mediaKey="tribal" mediaPath="/audio/tribal.mp3"
+                                   image="/images/tribal.png"/>
+                        <SoundPane GridPane.rowIndex="4" name="%DrumTribalFestival"
+                                   mediaKey="drumtribal" mediaPath="/audio/tribal2.mp3"
+                                   image="/images/tribal2.png"/>
+                        <SoundPane GridPane.rowIndex="5" name="%RugbyFootball"
+                                   mediaKey="rugbyfootball" mediaPath="/audio/football.mp3"
+                                   image="/images/rugbyfootball.png"/>
+                    </GridPane>
+                </TitledPane>
+                <TitledPane text="%RadioFrequencyStatic" expanded="false">
+                    <GridPane>
+                        <GridPane.margin>
+                            <Insets bottom="10"/>
+                        </GridPane.margin>
+                        <rowConstraints>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                        </rowConstraints>
 
-            <GridPane GridPane.rowIndex="5" GridPane.columnIndex="1">
-                <rowConstraints>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                </rowConstraints>
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
 
-                <columnConstraints>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
+                        <SoundPane GridPane.rowIndex="0" name="%Static"
+                                   mediaKey="static" mediaPath="/audio/static.mp3"
+                                   image="/images/radio.png"/>
+                        <SoundPane GridPane.rowIndex="1" name="%WhiteNoise"
+                                   mediaKey="whitenoise" mediaPath="/audio/whitenoise.mp3"
+                                   image="/images/radio.png"/>
+                        <SoundPane GridPane.rowIndex="2" name="%PinkNoise"
+                                   mediaKey="pinknoise" mediaPath="/audio/pinknoise.mp3"
+                                   image="/images/radio.png"/>
+                        <SoundPane GridPane.rowIndex="3" name="%BrownNoise"
+                                   mediaKey="brownnoise" mediaPath="/audio/brownnoise.mp3"
+                                   image="/images/radio.png"/>
+                    </GridPane>
+                </TitledPane>
+                <TitledPane text="%Other" expanded="false">
+                    <GridPane>
+                        <GridPane.margin>
+                            <Insets bottom="10"/>
+                        </GridPane.margin>
+                        <rowConstraints>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
+                        </rowConstraints>
 
-                <SoundPane GridPane.rowIndex="0" name="%Typing"
-                           mediaKey="keyboard" mediaPath="/audio/typing.mp3"
-                           image="/images/keyboard.png"/>
-                <SoundPane GridPane.rowIndex="1" name="%Phone"
-                           mediaKey="telephone" mediaPath="/audio/telephone.mp3"
-                           image="/images/phone.png"/>
-                <SoundPane GridPane.rowIndex="2" name="%Chatter"
-                           mediaKey="officeChatter" mediaPath="/audio/office.mp3"
-                           image="/images/group.png"/>
-                <SoundPane GridPane.rowIndex="3" name="%Traffic"
-                           mediaKey="traffic" mediaPath="/audio/traffic.mp3"
-                           image="/images/car.png"/>
-                <SoundPane GridPane.rowIndex="4" name="%Clock"
-                           mediaKey="clock" mediaPath="/audio/clock.mp3"
-                           image="/images/clock.png"/>
-                <SoundPane GridPane.rowIndex="5" name="%Fan"
-                           mediaKey="fan" mediaPath="/audio/fan.mp3"
-                           image="/images/fan.png"/>
-                <SoundPane GridPane.rowIndex="6" name="%Coffee"
-                           mediaKey="coffee" mediaPath="/audio/coffee.mp3"
-                           image="/images/coffee.png"/>
-            </GridPane>
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
 
-            <Label GridPane.rowIndex="6" GridPane.columnIndex="1" text="%Audiences">
-                <font>
-                    <Font name="System Bold" size="15"/>
-                </font>
-                <GridPane.margin>
-                    <Insets left="5" right="5" top="10"/>
-                </GridPane.margin>
-            </Label>
-
-            <Separator GridPane.rowIndex="7" GridPane.columnIndex="1">
-                <GridPane.margin>
-                    <Insets bottom="3.0" left="5" right="5"/>
-                </GridPane.margin>
-            </Separator>
-
-            <GridPane GridPane.rowIndex="8" GridPane.columnIndex="1">
-                <rowConstraints>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                </rowConstraints>
-
-                <columnConstraints>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-
-                <SoundPane GridPane.rowIndex="0" name="%NetworkingEvent"
-                           mediaKey="networking" mediaPath="/audio/networking.mp3"
-                           image="/images/networking.png"/>
-                <SoundPane GridPane.rowIndex="1" name="%LargeCrowd"
-                           mediaKey="largeCrowd" mediaPath="/audio/largeCrowd.mp3"
-                           image="/images/group.png"/>
-                <SoundPane GridPane.rowIndex="2" name="%Restaurant"
-                           mediaKey="restaurant" mediaPath="/audio/restaurant.mp3"
-                           image="/images/restaurant.png"/>
-                <SoundPane GridPane.rowIndex="3" name="%TribalFestival"
-                           mediaKey="tribal" mediaPath="/audio/tribal.mp3"
-                           image="/images/tribal.png"/>
-                <SoundPane GridPane.rowIndex="4" name="%DrumTribalFestival"
-                           mediaKey="drumtribal" mediaPath="/audio/tribal2.mp3"
-                           image="/images/tribal2.png"/>
-                <SoundPane GridPane.rowIndex="5" name="%RugbyFootball"
-                           mediaKey="rugbyfootball" mediaPath="/audio/football.mp3"
-                           image="/images/rugbyfootball.png"/>
-            </GridPane>
-
-            <Label GridPane.rowIndex="9" GridPane.columnIndex="1" text="%RadioFrequencyStatic">
-                <font>
-                    <Font name="System Bold" size="15"/>
-                </font>
-                <GridPane.margin>
-                    <Insets left="5" right="5" top="10"/>
-                </GridPane.margin>
-            </Label>
-
-            <Separator GridPane.rowIndex="10" GridPane.columnIndex="1">
-                <GridPane.margin>
-                    <Insets bottom="3.0" left="5" right="5"/>
-                </GridPane.margin>
-            </Separator>
-
-            <GridPane GridPane.rowIndex="11" GridPane.columnIndex="1">
-                <GridPane.margin>
-                    <Insets bottom="10"/>
-                </GridPane.margin>
-                <rowConstraints>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                </rowConstraints>
-
-                <columnConstraints>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-
-                <SoundPane GridPane.rowIndex="0" name="%Static"
-                           mediaKey="static" mediaPath="/audio/static.mp3"
-                           image="/images/radio.png"/>
-                <SoundPane GridPane.rowIndex="1" name="%WhiteNoise"
-                           mediaKey="whitenoise" mediaPath="/audio/whitenoise.mp3"
-                           image="/images/radio.png"/>
-                <SoundPane GridPane.rowIndex="2" name="%PinkNoise"
-                           mediaKey="pinknoise" mediaPath="/audio/pinknoise.mp3"
-                           image="/images/radio.png"/>
-                <SoundPane GridPane.rowIndex="3" name="%BrownNoise"
-                           mediaKey="brownnoise" mediaPath="/audio/brownnoise.mp3"
-                           image="/images/radio.png"/>
-            </GridPane>
-
-            <Label GridPane.rowIndex="12" GridPane.columnIndex="1" text="%Other">
-                <font>
-                    <Font name="System Bold" size="15"/>
-                </font>
-                <GridPane.margin>
-                    <Insets left="5" right="5" top="10"/>
-                </GridPane.margin>
-            </Label>
-
-            <Separator GridPane.rowIndex="13" GridPane.columnIndex="1">
-                <GridPane.margin>
-                    <Insets bottom="3.0" left="5" right="5"/>
-                </GridPane.margin>
-            </Separator>
-
-            <GridPane GridPane.rowIndex="14" GridPane.columnIndex="1">
-                <GridPane.margin>
-                    <Insets bottom="10"/>
-                </GridPane.margin>
-                <rowConstraints>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                    <RowConstraints vgrow="ALWAYS"/>
-                </rowConstraints>
-
-                <columnConstraints>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-
-                <SoundPane GridPane.rowIndex="0" name="%Fantasy"
-                           mediaKey="fantasy" mediaPath="/audio/fantasy.mp3"
-                           image="/images/star.png"/>
-                <SoundPane GridPane.rowIndex="1" name="%Zen"
-                           mediaKey="zen" mediaPath="/audio/zen.mp3"
-                           image="/images/zen.png"/>
-                <SoundPane GridPane.rowIndex="2" name="%Sleepy"
-                           mediaKey="sleepy" mediaPath="/audio/sleepy.mp3"
-                           image="/images/sleepy.png"/>
-                <SoundPane GridPane.rowIndex="3" name="%RollerCoaster"
-                           mediaKey="rollerCoaster" mediaPath="/audio/rollercoaster.mp3"
-                           image="/images/train.png"/>
-                <SoundPane GridPane.rowIndex="4" name="%Gong"
-                           mediaKey="gong" mediaPath="/audio/gong.mp3"
-                           image="/images/gong.png"/>
-                <SoundPane GridPane.rowIndex="5" name="%BellTower"
-                           mediaKey="belltower" mediaPath="/audio/belltower.mp3"
-                           image="/images/belltower.png"/>
-                <SoundPane GridPane.rowIndex="6" name="%Space"
-                           mediaKey="space" mediaPath="/audio/space.mp3"
-                           image="/images/space.png"/>
-                <SoundPane GridPane.rowIndex="7" name="%Train"
-                           mediaKey="train" mediaPath="/audio/train.mp3"
-                           image="/images/train.png"/>
-                <SoundPane GridPane.rowIndex="8" name="%SlowMetronome"
-                           mediaKey="slowmetronome" mediaPath="/audio/metronome.mp3"
-                           image="/images/metronome.png"/>
-                <SoundPane GridPane.rowIndex="9" name="%FastMetronome"
-                           mediaKey="fastmetronome" mediaPath="/audio/metronomefast.mp3"
-                           image="/images/metronome.png"/>
-            </GridPane>
+                        <SoundPane GridPane.rowIndex="0" name="%Fantasy"
+                                   mediaKey="fantasy" mediaPath="/audio/fantasy.mp3"
+                                   image="/images/star.png"/>
+                        <SoundPane GridPane.rowIndex="1" name="%Zen"
+                                   mediaKey="zen" mediaPath="/audio/zen.mp3"
+                                   image="/images/zen.png"/>
+                        <SoundPane GridPane.rowIndex="2" name="%Sleepy"
+                                   mediaKey="sleepy" mediaPath="/audio/sleepy.mp3"
+                                   image="/images/sleepy.png"/>
+                        <SoundPane GridPane.rowIndex="3" name="%RollerCoaster"
+                                   mediaKey="rollerCoaster" mediaPath="/audio/rollercoaster.mp3"
+                                   image="/images/train.png"/>
+                        <SoundPane GridPane.rowIndex="4" name="%Gong"
+                                   mediaKey="gong" mediaPath="/audio/gong.mp3"
+                                   image="/images/gong.png"/>
+                        <SoundPane GridPane.rowIndex="5" name="%BellTower"
+                                   mediaKey="belltower" mediaPath="/audio/belltower.mp3"
+                                   image="/images/belltower.png"/>
+                        <SoundPane GridPane.rowIndex="6" name="%Space"
+                                   mediaKey="space" mediaPath="/audio/space.mp3"
+                                   image="/images/space.png"/>
+                        <SoundPane GridPane.rowIndex="7" name="%Train"
+                                   mediaKey="train" mediaPath="/audio/train.mp3"
+                                   image="/images/train.png"/>
+                        <SoundPane GridPane.rowIndex="8" name="%SlowMetronome"
+                                   mediaKey="slowmetronome" mediaPath="/audio/metronome.mp3"
+                                   image="/images/metronome.png"/>
+                        <SoundPane GridPane.rowIndex="9" name="%FastMetronome"
+                                   mediaKey="fastmetronome" mediaPath="/audio/metronomefast.mp3"
+                                   image="/images/metronome.png"/>
+                    </GridPane>
+                </TitledPane>
+            </VBox>
         </GridPane>
     </ScrollPane>
 </GridPane>
