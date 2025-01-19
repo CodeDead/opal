@@ -80,9 +80,10 @@ The following dependencies are universal:
 * [JavaFX](https://openjfx.io)
 * [Gradle](https://gradle.org)
 * [FasterXML/jackson](https://github.com/FasterXML/jackson)
-* [badass-jlink-plugin (patched)](https://github.com/xzel23/badass-jlink-plugin)
+* [badass-jlink-plugin](https://github.com/beryx/badass-jlink-plugin)
 * [Log4j2](https://logging.apache.org/log4j/2.x/)
 * [AtlantaFX](https://github.com/mkpaz/atlantafx)
+
 ### Windows
 
 #### MSI
