@@ -192,7 +192,7 @@
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10" bottom="10"/>
                 </GridPane.margin>
-                <TitledPane text="%Nature">
+                <TitledPane fx:id="pneNature" text="%Nature">
                     <GridPane fx:id="grpNature">
                         <rowConstraints>
                             <RowConstraints vgrow="ALWAYS"/>
@@ -251,7 +251,7 @@
                                    image="/images/ocean.png"/>
                     </GridPane>
                 </TitledPane>
-                <TitledPane text="%Office" expanded="false">
+                <TitledPane fx:id="pneOffice" text="%Office" expanded="false">
                     <GridPane fx:id="grpOffice">
                         <rowConstraints>
                             <RowConstraints vgrow="ALWAYS"/>
@@ -290,7 +290,7 @@
                                    image="/images/coffee.png"/>
                     </GridPane>
                 </TitledPane>
-                <TitledPane text="%Audiences" expanded="false">
+                <TitledPane fx:id="pneAudiences" text="%Audiences" expanded="false">
                     <GridPane fx:id="grpAudiences">
                         <rowConstraints>
                             <RowConstraints vgrow="ALWAYS"/>
@@ -325,7 +325,7 @@
                                    image="/images/rugbyfootball.png"/>
                     </GridPane>
                 </TitledPane>
-                <TitledPane text="%RadioFrequencyStatic" expanded="false">
+                <TitledPane fx:id="pneRadioFrequencyStatic" text="%RadioFrequencyStatic" expanded="false">
                     <GridPane fx:id="grpRadioFrequencyStatic">
                         <GridPane.margin>
                             <Insets bottom="10"/>
@@ -355,7 +355,7 @@
                                    image="/images/radio.png"/>
                     </GridPane>
                 </TitledPane>
-                <TitledPane text="%Other" expanded="false">
+                <TitledPane fx:id="pneOther" text="%Other" expanded="false">
                     <GridPane fx:id="grpOther">
                         <GridPane.margin>
                             <Insets bottom="10"/>

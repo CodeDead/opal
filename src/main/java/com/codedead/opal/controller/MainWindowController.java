@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -37,6 +38,16 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
 public final class MainWindowController implements IAudioTimer, TrayIconListener {
 
+    @FXML
+    private TitledPane pneOther;
+    @FXML
+    private TitledPane pneRadioFrequencyStatic;
+    @FXML
+    private TitledPane pneAudiences;
+    @FXML
+    private TitledPane pneOffice;
+    @FXML
+    private TitledPane pneNature;
     @FXML
     private Button btnClearSearch;
     @FXML
@@ -289,7 +300,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      * Method that is invoked to initialize the FXML object
      */
     @FXML
-    public void initialize() {
+    private void initialize() {
         mniTimerEnabled.setOnAction(_ -> {
             if (mniTimerEnabled.isSelected()) {
                 final Properties properties = settingsController.getProperties();
@@ -310,6 +321,26 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                     });
                     btnClearSearch.setVisible(false);
                     btnClearSearch.setManaged(false);
+
+                    pneNature.setExpanded(true);
+                    pneNature.setVisible(true);
+                    pneNature.setManaged(true);
+
+                    pneOffice.setExpanded(false);
+                    pneOffice.setVisible(true);
+                    pneOffice.setManaged(true);
+
+                    pneAudiences.setExpanded(false);
+                    pneAudiences.setVisible(true);
+                    pneAudiences.setManaged(true);
+
+                    pneRadioFrequencyStatic.setExpanded(false);
+                    pneRadioFrequencyStatic.setVisible(true);
+                    pneRadioFrequencyStatic.setManaged(true);
+
+                    pneOther.setExpanded(false);
+                    pneOther.setVisible(true);
+                    pneOther.setManaged(true);
                 });
                 return;
             }
@@ -319,6 +350,62 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                             e.setVisible(e.getName().toLowerCase().contains(newValue.trim().toLowerCase()));
                             e.setManaged(e.isVisible());
                         });
+
+                // Check if there are still active sound panes on pneNature
+                getSoundPanes(grpNature).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                    pneNature.setExpanded(true);
+                    pneNature.setVisible(true);
+                    pneNature.setManaged(true);
+                }, () -> {
+                    pneNature.setExpanded(false);
+                    pneNature.setVisible(false);
+                    pneNature.setManaged(false);
+                });
+
+                // Check if there are still active sound panes on pneOffice
+                getSoundPanes(grpOffice).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                    pneOffice.setExpanded(true);
+                    pneOffice.setVisible(true);
+                    pneOffice.setManaged(true);
+                }, () -> {
+                    pneOffice.setExpanded(false);
+                    pneOffice.setVisible(false);
+                    pneOffice.setManaged(false);
+                });
+
+                // Check if there are still active sound panes on pneAudiences
+                getSoundPanes(grpAudiences).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                    pneAudiences.setExpanded(true);
+                    pneAudiences.setVisible(true);
+                    pneAudiences.setManaged(true);
+                }, () -> {
+                    pneAudiences.setExpanded(false);
+                    pneAudiences.setVisible(false);
+                    pneAudiences.setManaged(false);
+                });
+
+                // Check if there are still active sound panes on pneRadioFrequencyStatic
+                getSoundPanes(grpRadioFrequencyStatic).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                    pneRadioFrequencyStatic.setExpanded(true);
+                    pneRadioFrequencyStatic.setVisible(true);
+                    pneRadioFrequencyStatic.setManaged(true);
+                }, () -> {
+                    pneRadioFrequencyStatic.setExpanded(false);
+                    pneRadioFrequencyStatic.setVisible(false);
+                    pneRadioFrequencyStatic.setManaged(false);
+                });
+
+                // Check if there are still active sound panes on pneOther
+                getSoundPanes(grpOther).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                    pneOther.setExpanded(true);
+                    pneOther.setVisible(true);
+                    pneOther.setManaged(true);
+                }, () -> {
+                    pneOther.setExpanded(false);
+                    pneOther.setVisible(false);
+                    pneOther.setManaged(false);
+                });
+
                 btnClearSearch.setVisible(true);
                 btnClearSearch.setManaged(true);
             });
@@ -586,7 +673,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      * Method that is called when the search field should be cleared
      */
     @FXML
-    public void clearSearchAction() {
+    private void clearSearchAction() {
         txtSearch.clear();
     }
 
