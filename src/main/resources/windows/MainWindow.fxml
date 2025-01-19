@@ -21,6 +21,8 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
 <GridPane
         prefHeight="350"
         prefWidth="550"
@@ -147,8 +149,9 @@
     </MenuBar>
 
     <ScrollPane GridPane.rowIndex="1" fitToHeight="true" fitToWidth="true">
-        <GridPane fx:id="grpControls">
+        <GridPane>
             <rowConstraints>
+                <RowConstraints/>
                 <RowConstraints/>
             </rowConstraints>
 
@@ -158,12 +161,40 @@
                 <ColumnConstraints percentWidth="15"/>
             </columnConstraints>
 
-            <VBox GridPane.rowIndex="0" GridPane.columnIndex="1" spacing="5">
+            <GridPane GridPane.rowIndex="0" GridPane.columnIndex="1">
+                <rowConstraints>
+                    <RowConstraints/>
+                </rowConstraints>
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                    <ColumnConstraints/>
+                </columnConstraints>
+
+                <TextField fx:id="txtSearch" GridPane.rowIndex="0" GridPane.columnIndex="0" promptText="%Search"
+                           focusTraversable="false">
+                    <GridPane.margin>
+                        <Insets left="5" top="10" bottom="10"/>
+                    </GridPane.margin>
+                </TextField>
+                <Button fx:id="btnClearSearch" GridPane.rowIndex="0" GridPane.columnIndex="1" visible="false"
+                        managed="false" onAction="#clearSearchAction">
+                    <GridPane.margin>
+                        <Insets right="5" top="10" bottom="10"/>
+                    </GridPane.margin>
+                    <graphic>
+                        <ImageView>
+                            <Image url="@../images/remove.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </GridPane>
+
+            <VBox GridPane.rowIndex="1" GridPane.columnIndex="1" spacing="5">
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10" bottom="10"/>
                 </GridPane.margin>
                 <TitledPane text="%Nature">
-                    <GridPane>
+                    <GridPane fx:id="grpNature">
                         <rowConstraints>
                             <RowConstraints vgrow="ALWAYS"/>
                             <RowConstraints vgrow="ALWAYS"/>
@@ -222,7 +253,7 @@
                     </GridPane>
                 </TitledPane>
                 <TitledPane text="%Office" expanded="false">
-                    <GridPane>
+                    <GridPane fx:id="grpOffice">
                         <rowConstraints>
                             <RowConstraints vgrow="ALWAYS"/>
                             <RowConstraints vgrow="ALWAYS"/>
@@ -261,7 +292,7 @@
                     </GridPane>
                 </TitledPane>
                 <TitledPane text="%Audiences" expanded="false">
-                    <GridPane>
+                    <GridPane fx:id="grpAudiences">
                         <rowConstraints>
                             <RowConstraints vgrow="ALWAYS"/>
                             <RowConstraints vgrow="ALWAYS"/>
@@ -296,7 +327,7 @@
                     </GridPane>
                 </TitledPane>
                 <TitledPane text="%RadioFrequencyStatic" expanded="false">
-                    <GridPane>
+                    <GridPane fx:id="grpRadioFrequencyStatic">
                         <GridPane.margin>
                             <Insets bottom="10"/>
                         </GridPane.margin>
@@ -326,7 +357,7 @@
                     </GridPane>
                 </TitledPane>
                 <TitledPane text="%Other" expanded="false">
-                    <GridPane>
+                    <GridPane fx:id="grpOther">
                         <GridPane.margin>
                             <Insets bottom="10"/>
                         </GridPane.margin>

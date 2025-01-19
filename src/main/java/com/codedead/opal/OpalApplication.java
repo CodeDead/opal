@@ -109,7 +109,7 @@ public class OpalApplication extends Application {
         primaryStage.setTitle(translationBundle.getString("MainWindowTitle"));
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(SharedVariables.ICON_URL))));
         primaryStage.setScene(scene);
-        primaryStage.setOnCloseRequest(e -> System.exit(0));
+        primaryStage.setOnCloseRequest(_ -> System.exit(0));
 
         logger.info("Showing the MainWindow");
         primaryStage.show();

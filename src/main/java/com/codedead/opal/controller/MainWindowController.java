@@ -38,7 +38,19 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 public final class MainWindowController implements IAudioTimer, TrayIconListener {
 
     @FXML
-    private GridPane grpControls;
+    private Button btnClearSearch;
+    @FXML
+    private TextField txtSearch;
+    @FXML
+    private GridPane grpOther;
+    @FXML
+    private GridPane grpRadioFrequencyStatic;
+    @FXML
+    private GridPane grpAudiences;
+    @FXML
+    private GridPane grpOffice;
+    @FXML
+    private GridPane grpNature;
     @FXML
     private CheckMenuItem mniTimerEnabled;
     @FXML
@@ -139,7 +151,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      * @param visible True if the media buttons should be visible, otherwise false
      */
     public void loadMediaButtonVisibility(final boolean visible) {
-        getAllSoundPanes(grpControls).forEach(s -> s.setMediaButton(visible));
+        getAllSoundPanes().forEach(s -> s.setMediaButton(visible));
     }
 
     /**
@@ -202,19 +214,36 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     }
 
     /**
+     * Get all {@link SoundPane} objects
+     *
+     * @return The {@link List} of {@link SoundPane} objects
+     */
+    private List<SoundPane> getAllSoundPanes() {
+        final List<SoundPane> elements = new ArrayList<>();
+
+        elements.addAll(getSoundPanes(grpOther));
+        elements.addAll(getSoundPanes(grpRadioFrequencyStatic));
+        elements.addAll(getSoundPanes(grpAudiences));
+        elements.addAll(getSoundPanes(grpOffice));
+        elements.addAll(getSoundPanes(grpNature));
+
+        return elements;
+    }
+
+    /**
      * Get all {@link SoundPane} objects from a {@link GridPane} object
      *
      * @param parent The {@link GridPane} object
      * @return The {@link List} of {@link SoundPane} objects inside the given {@link GridPane} object
      */
-    private List<SoundPane> getAllSoundPanes(final GridPane parent) {
+    private List<SoundPane> getSoundPanes(final GridPane parent) {
         if (parent == null)
             throw new NullPointerException("GridPane cannot be null!");
 
         final List<SoundPane> elements = new ArrayList<>();
         parent.getChildren().forEach(e -> {
             if (e instanceof GridPane p)
-                elements.addAll(getAllSoundPanes(p));
+                elements.addAll(getSoundPanes(p));
             if (e instanceof SoundPane s)
                 elements.add(s);
         });
@@ -260,7 +289,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      * Method that is invoked to initialize the FXML object
      */
     @FXML
-    private void initialize() {
+    public void initialize() {
         mniTimerEnabled.setOnAction(_ -> {
             if (mniTimerEnabled.isSelected()) {
                 final Properties properties = settingsController.getProperties();
@@ -271,13 +300,36 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 cancelTimer();
             }
         });
+
+        txtSearch.textProperty().addListener((_, _, newValue) -> {
+            if (newValue == null || newValue.isBlank()) {
+                Platform.runLater(() -> {
+                    getAllSoundPanes().forEach(e -> {
+                        e.setVisible(true);
+                        e.setManaged(true);
+                    });
+                    btnClearSearch.setVisible(false);
+                    btnClearSearch.setManaged(false);
+                });
+                return;
+            }
+            Platform.runLater(() -> {
+                getAllSoundPanes()
+                        .forEach(e -> {
+                            e.setVisible(e.getName().toLowerCase().contains(newValue.trim().toLowerCase()));
+                            e.setManaged(e.isVisible());
+                        });
+                btnClearSearch.setVisible(true);
+                btnClearSearch.setManaged(true);
+            });
+        });
     }
 
     /**
      * Hide the current stage
      */
     private void hideShowStage() {
-        final Stage stage = (Stage) grpControls.getScene().getWindow();
+        final Stage stage = (Stage) grpNature.getScene().getWindow();
         if (stage.isShowing()) {
             stage.hide();
         } else {
@@ -320,14 +372,14 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             final Path filePath = Path.of(path);
             final String actual = Files.readString(filePath);
 
-            if (actual == null || actual.isEmpty())
-                throw new IllegalArgumentException("Sound preset cannot be null or empty!");
+            if (actual.isEmpty())
+                throw new IllegalArgumentException("Sound preset cannot be empty!");
 
             final TypeReference<HashMap<String, Double>> typeRef = new TypeReference<>() {
             };
 
             final Map<String, Double> mediaVolumes = objectMapper.readValue(actual, typeRef);
-            final List<SoundPane> soundPanes = getAllSoundPanes(grpControls);
+            final List<SoundPane> soundPanes = getAllSoundPanes();
 
             mediaVolumes.forEach((key, value) -> soundPanes.stream().filter(e -> e.getMediaKey().equals(key)).forEach(e -> e.getSlider().setValue(value)));
         } catch (final IOException ex) {
@@ -356,7 +408,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             }
 
             final Map<String, Double> mediaVolumes = new HashMap<>();
-            getAllSoundPanes(grpControls).forEach(e -> mediaVolumes.put(e.getMediaKey(), e.getSlider().getValue()));
+            getAllSoundPanes().forEach(e -> mediaVolumes.put(e.getMediaKey(), e.getSlider().getValue()));
 
             try {
                 objectMapper.writeValue(new File(filePath), mediaVolumes);
@@ -376,7 +428,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     private void playPauseAction() {
         logger.info("Play / pause all media");
         try {
-            for (final SoundPane soundPane : getAllSoundPanes(grpControls)) {
+            for (final SoundPane soundPane : getAllSoundPanes()) {
                 soundPane.playPause();
             }
         } catch (final MediaPlayerException ex) {
@@ -391,7 +443,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     @FXML
     private void resetAction() {
         logger.info("Resetting all audio sliders");
-        getAllSoundPanes(grpControls).forEach(e -> e.getSlider().setValue(0));
+        getAllSoundPanes().forEach(e -> e.getSlider().setValue(0));
     }
 
     /**
@@ -531,12 +583,20 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     }
 
     /**
+     * Method that is called when the search field should be cleared
+     */
+    @FXML
+    public void clearSearchAction() {
+        txtSearch.clear();
+    }
+
+    /**
      * Method that is called when the {@link Timer} object has fired
      */
     @Override
     public void fired() {
         cancelTimer();
-        getAllSoundPanes(grpControls).forEach(SoundPane::pause);
+        getAllSoundPanes().forEach(SoundPane::pause);
 
         if (Boolean.parseBoolean(settingsController.getProperties().getProperty("timerComputerShutdown", "false"))) {
             final String command = switch (platformName.toLowerCase()) {
@@ -707,7 +767,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             throw new IllegalArgumentException("Balance must be between -1.0 and 1.0!");
 
         logger.info("Setting the audio balance to {}", audioBalance);
-        getAllSoundPanes(grpControls).forEach(s -> s.setBalance(audioBalance));
+        getAllSoundPanes().forEach(s -> s.setBalance(audioBalance));
     }
 
     /**
