@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -38,7 +39,29 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 public final class MainWindowController implements IAudioTimer, TrayIconListener {
 
     @FXML
-    private GridPane grpControls;
+    private TitledPane pneOther;
+    @FXML
+    private TitledPane pneRadioFrequencyStatic;
+    @FXML
+    private TitledPane pneAudiences;
+    @FXML
+    private TitledPane pneOffice;
+    @FXML
+    private TitledPane pneNature;
+    @FXML
+    private Button btnClearSearch;
+    @FXML
+    private TextField txtSearch;
+    @FXML
+    private GridPane grpOther;
+    @FXML
+    private GridPane grpRadioFrequencyStatic;
+    @FXML
+    private GridPane grpAudiences;
+    @FXML
+    private GridPane grpOffice;
+    @FXML
+    private GridPane grpNature;
     @FXML
     private CheckMenuItem mniTimerEnabled;
     @FXML
@@ -139,7 +162,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      * @param visible True if the media buttons should be visible, otherwise false
      */
     public void loadMediaButtonVisibility(final boolean visible) {
-        getAllSoundPanes(grpControls).forEach(s -> s.setMediaButton(visible));
+        getAllSoundPanes().forEach(s -> s.setMediaButton(visible));
     }
 
     /**
@@ -202,19 +225,36 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     }
 
     /**
+     * Get all {@link SoundPane} objects
+     *
+     * @return The {@link List} of {@link SoundPane} objects
+     */
+    private List<SoundPane> getAllSoundPanes() {
+        final List<SoundPane> elements = new ArrayList<>();
+
+        elements.addAll(getSoundPanes(grpOther));
+        elements.addAll(getSoundPanes(grpRadioFrequencyStatic));
+        elements.addAll(getSoundPanes(grpAudiences));
+        elements.addAll(getSoundPanes(grpOffice));
+        elements.addAll(getSoundPanes(grpNature));
+
+        return elements;
+    }
+
+    /**
      * Get all {@link SoundPane} objects from a {@link GridPane} object
      *
      * @param parent The {@link GridPane} object
      * @return The {@link List} of {@link SoundPane} objects inside the given {@link GridPane} object
      */
-    private List<SoundPane> getAllSoundPanes(final GridPane parent) {
+    private List<SoundPane> getSoundPanes(final GridPane parent) {
         if (parent == null)
             throw new NullPointerException("GridPane cannot be null!");
 
         final List<SoundPane> elements = new ArrayList<>();
         parent.getChildren().forEach(e -> {
             if (e instanceof GridPane p)
-                elements.addAll(getAllSoundPanes(p));
+                elements.addAll(getSoundPanes(p));
             if (e instanceof SoundPane s)
                 elements.add(s);
         });
@@ -271,13 +311,112 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 cancelTimer();
             }
         });
+
+        txtSearch.textProperty().addListener((_, _, newValue) -> {
+            if (newValue == null || newValue.isBlank()) {
+                Platform.runLater(() -> {
+                    getAllSoundPanes().forEach(e -> {
+                        e.setVisible(true);
+                        e.setManaged(true);
+                    });
+                    btnClearSearch.setVisible(false);
+                    btnClearSearch.setManaged(false);
+
+                    pneNature.setExpanded(true);
+                    pneNature.setVisible(true);
+                    pneNature.setManaged(true);
+
+                    pneOffice.setExpanded(false);
+                    pneOffice.setVisible(true);
+                    pneOffice.setManaged(true);
+
+                    pneAudiences.setExpanded(false);
+                    pneAudiences.setVisible(true);
+                    pneAudiences.setManaged(true);
+
+                    pneRadioFrequencyStatic.setExpanded(false);
+                    pneRadioFrequencyStatic.setVisible(true);
+                    pneRadioFrequencyStatic.setManaged(true);
+
+                    pneOther.setExpanded(false);
+                    pneOther.setVisible(true);
+                    pneOther.setManaged(true);
+                });
+                return;
+            }
+            Platform.runLater(() -> {
+                getAllSoundPanes()
+                        .forEach(e -> {
+                            e.setVisible(e.getName().toLowerCase().contains(newValue.trim().toLowerCase()));
+                            e.setManaged(e.isVisible());
+                        });
+
+                // Check if there are still active sound panes on pneNature
+                getSoundPanes(grpNature).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                    pneNature.setExpanded(true);
+                    pneNature.setVisible(true);
+                    pneNature.setManaged(true);
+                }, () -> {
+                    pneNature.setExpanded(false);
+                    pneNature.setVisible(false);
+                    pneNature.setManaged(false);
+                });
+
+                // Check if there are still active sound panes on pneOffice
+                getSoundPanes(grpOffice).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                    pneOffice.setExpanded(true);
+                    pneOffice.setVisible(true);
+                    pneOffice.setManaged(true);
+                }, () -> {
+                    pneOffice.setExpanded(false);
+                    pneOffice.setVisible(false);
+                    pneOffice.setManaged(false);
+                });
+
+                // Check if there are still active sound panes on pneAudiences
+                getSoundPanes(grpAudiences).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                    pneAudiences.setExpanded(true);
+                    pneAudiences.setVisible(true);
+                    pneAudiences.setManaged(true);
+                }, () -> {
+                    pneAudiences.setExpanded(false);
+                    pneAudiences.setVisible(false);
+                    pneAudiences.setManaged(false);
+                });
+
+                // Check if there are still active sound panes on pneRadioFrequencyStatic
+                getSoundPanes(grpRadioFrequencyStatic).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                    pneRadioFrequencyStatic.setExpanded(true);
+                    pneRadioFrequencyStatic.setVisible(true);
+                    pneRadioFrequencyStatic.setManaged(true);
+                }, () -> {
+                    pneRadioFrequencyStatic.setExpanded(false);
+                    pneRadioFrequencyStatic.setVisible(false);
+                    pneRadioFrequencyStatic.setManaged(false);
+                });
+
+                // Check if there are still active sound panes on pneOther
+                getSoundPanes(grpOther).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                    pneOther.setExpanded(true);
+                    pneOther.setVisible(true);
+                    pneOther.setManaged(true);
+                }, () -> {
+                    pneOther.setExpanded(false);
+                    pneOther.setVisible(false);
+                    pneOther.setManaged(false);
+                });
+
+                btnClearSearch.setVisible(true);
+                btnClearSearch.setManaged(true);
+            });
+        });
     }
 
     /**
      * Hide the current stage
      */
     private void hideShowStage() {
-        final Stage stage = (Stage) grpControls.getScene().getWindow();
+        final Stage stage = (Stage) grpNature.getScene().getWindow();
         if (stage.isShowing()) {
             stage.hide();
         } else {
@@ -320,14 +459,14 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             final Path filePath = Path.of(path);
             final String actual = Files.readString(filePath);
 
-            if (actual == null || actual.isEmpty())
-                throw new IllegalArgumentException("Sound preset cannot be null or empty!");
+            if (actual.isEmpty())
+                throw new IllegalArgumentException("Sound preset cannot be empty!");
 
             final TypeReference<HashMap<String, Double>> typeRef = new TypeReference<>() {
             };
 
             final Map<String, Double> mediaVolumes = objectMapper.readValue(actual, typeRef);
-            final List<SoundPane> soundPanes = getAllSoundPanes(grpControls);
+            final List<SoundPane> soundPanes = getAllSoundPanes();
 
             mediaVolumes.forEach((key, value) -> soundPanes.stream().filter(e -> e.getMediaKey().equals(key)).forEach(e -> e.getSlider().setValue(value)));
         } catch (final IOException ex) {
@@ -356,7 +495,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             }
 
             final Map<String, Double> mediaVolumes = new HashMap<>();
-            getAllSoundPanes(grpControls).forEach(e -> mediaVolumes.put(e.getMediaKey(), e.getSlider().getValue()));
+            getAllSoundPanes().forEach(e -> mediaVolumes.put(e.getMediaKey(), e.getSlider().getValue()));
 
             try {
                 objectMapper.writeValue(new File(filePath), mediaVolumes);
@@ -376,7 +515,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     private void playPauseAction() {
         logger.info("Play / pause all media");
         try {
-            for (final SoundPane soundPane : getAllSoundPanes(grpControls)) {
+            for (final SoundPane soundPane : getAllSoundPanes()) {
                 soundPane.playPause();
             }
         } catch (final MediaPlayerException ex) {
@@ -391,7 +530,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     @FXML
     private void resetAction() {
         logger.info("Resetting all audio sliders");
-        getAllSoundPanes(grpControls).forEach(e -> e.getSlider().setValue(0));
+        getAllSoundPanes().forEach(e -> e.getSlider().setValue(0));
     }
 
     /**
@@ -531,12 +670,20 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     }
 
     /**
+     * Method that is called when the search field should be cleared
+     */
+    @FXML
+    private void clearSearchAction() {
+        txtSearch.clear();
+    }
+
+    /**
      * Method that is called when the {@link Timer} object has fired
      */
     @Override
     public void fired() {
         cancelTimer();
-        getAllSoundPanes(grpControls).forEach(SoundPane::pause);
+        getAllSoundPanes().forEach(SoundPane::pause);
 
         if (Boolean.parseBoolean(settingsController.getProperties().getProperty("timerComputerShutdown", "false"))) {
             final String command = switch (platformName.toLowerCase()) {
@@ -707,7 +854,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             throw new IllegalArgumentException("Balance must be between -1.0 and 1.0!");
 
         logger.info("Setting the audio balance to {}", audioBalance);
-        getAllSoundPanes(grpControls).forEach(s -> s.setBalance(audioBalance));
+        getAllSoundPanes().forEach(s -> s.setBalance(audioBalance));
     }
 
     /**
