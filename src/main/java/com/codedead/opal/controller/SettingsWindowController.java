@@ -272,6 +272,9 @@ public final class SettingsWindowController {
         Configurator.setAllLevels(LogManager.getRootLogger().getName(), level);
         try {
             settingsController.saveProperties();
+
+            Stage stage = (Stage) sldAudioBalance.getScene().getWindow();
+            stage.close();
         } catch (final IOException ex) {
             logger.error("Unable to save all settings", ex);
             FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
