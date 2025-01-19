@@ -19,6 +19,8 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -38,6 +40,10 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
 public final class MainWindowController implements IAudioTimer, TrayIconListener {
 
+    @FXML
+    private GridPane grpCustom;
+    @FXML
+    private TitledPane pneCustom;
     @FXML
     private TitledPane pneOther;
     @FXML
@@ -269,8 +275,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     private void openFile(final String path) {
         if (path == null)
             throw new NullPointerException("Path cannot be null!");
-        if (path.isEmpty())
-            throw new IllegalArgumentException("Path cannot be empty!");
+        if (path.isBlank())
+            throw new IllegalArgumentException("Path cannot be blank!");
 
         try {
             helpUtils.openFile(new RunnableFileOpener(path, new IRunnableHelper() {
@@ -319,6 +325,19 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                         e.setVisible(true);
                         e.setManaged(true);
                     });
+
+                    final List<SoundPane> customSoundPanes = getSoundPanes(grpCustom);
+                    if (!customSoundPanes.isEmpty()) {
+                        pneCustom.setExpanded(true);
+                        pneCustom.setVisible(true);
+                        pneCustom.setManaged(true);
+
+                        customSoundPanes.forEach(e -> {
+                            e.setVisible(true);
+                            e.setManaged(true);
+                        });
+                    }
+
                     btnClearSearch.setVisible(false);
                     btnClearSearch.setManaged(false);
 
@@ -344,6 +363,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 });
                 return;
             }
+
             Platform.runLater(() -> {
                 getAllSoundPanes()
                         .forEach(e -> {
@@ -351,8 +371,28 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                             e.setManaged(e.isVisible());
                         });
 
+                getSoundPanes(grpCustom)
+                        .forEach(e -> {
+                            e.setVisible(e.getName().toLowerCase().contains(newValue.trim().toLowerCase()));
+                            e.setManaged(e.isVisible());
+                        });
+
+                // Check if there are still active sound panes on pneCustom
+                final List<SoundPane> customSoundPanes = getSoundPanes(grpCustom);
+                if (!customSoundPanes.isEmpty()) {
+                    customSoundPanes.stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
+                        pneCustom.setExpanded(true);
+                        pneCustom.setVisible(true);
+                        pneCustom.setManaged(true);
+                    }, () -> {
+                        pneCustom.setExpanded(false);
+                        pneCustom.setVisible(false);
+                        pneCustom.setManaged(false);
+                    });
+                }
+
                 // Check if there are still active sound panes on pneNature
-                getSoundPanes(grpNature).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                getSoundPanes(grpNature).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
                     pneNature.setExpanded(true);
                     pneNature.setVisible(true);
                     pneNature.setManaged(true);
@@ -363,7 +403,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 });
 
                 // Check if there are still active sound panes on pneOffice
-                getSoundPanes(grpOffice).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                getSoundPanes(grpOffice).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
                     pneOffice.setExpanded(true);
                     pneOffice.setVisible(true);
                     pneOffice.setManaged(true);
@@ -374,7 +414,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 });
 
                 // Check if there are still active sound panes on pneAudiences
-                getSoundPanes(grpAudiences).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                getSoundPanes(grpAudiences).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
                     pneAudiences.setExpanded(true);
                     pneAudiences.setVisible(true);
                     pneAudiences.setManaged(true);
@@ -385,7 +425,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 });
 
                 // Check if there are still active sound panes on pneRadioFrequencyStatic
-                getSoundPanes(grpRadioFrequencyStatic).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                getSoundPanes(grpRadioFrequencyStatic).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
                     pneRadioFrequencyStatic.setExpanded(true);
                     pneRadioFrequencyStatic.setVisible(true);
                     pneRadioFrequencyStatic.setManaged(true);
@@ -396,7 +436,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 });
 
                 // Check if there are still active sound panes on pneOther
-                getSoundPanes(grpOther).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(e -> {
+                getSoundPanes(grpOther).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
                     pneOther.setExpanded(true);
                     pneOther.setVisible(true);
                     pneOther.setManaged(true);
@@ -443,6 +483,52 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     }
 
     /**
+     * Open a custom sound
+     */
+    @FXML
+    private void addCustomSound() {
+        logger.info("Opening a custom sound");
+        final FileChooser chooser = new FileChooser();
+
+        final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("MP3 (*.mp3)", "*.mp3");
+        chooser.getExtensionFilters().add(extFilter);
+
+        final File file = chooser.showOpenDialog(new Stage());
+
+        if (file != null && file.exists()) {
+            if (file.getAbsolutePath().isBlank())
+                throw new IllegalArgumentException("Path cannot be blank!");
+
+            logger.info("Loading custom sound from {}", file.getAbsolutePath());
+
+            try {
+                final RowConstraints row = new RowConstraints();
+                row.setVgrow(Priority.ALWAYS);
+
+                grpCustom.getRowConstraints().add(row);
+
+                final SoundPane customSoundPane = new SoundPane();
+                final int count = getSoundPanes(grpCustom).size() + 1;
+
+                customSoundPane.setName(translationBundle.getString("CustomSound") + " #" + count);
+                customSoundPane.setMediaKey("custom" + count);
+                customSoundPane.setMediaPath(file.toURI().toURL().toString());
+                customSoundPane.setImage("/images/customsound.png");
+                customSoundPane.setResourceFile(false);
+
+                grpCustom.add(customSoundPane, 0, count - 1);
+
+                pneCustom.setExpanded(true);
+                pneCustom.setVisible(true);
+                pneCustom.setManaged(true);
+            } catch (final IOException ex) {
+                logger.error("Unable to open the custom sound from {}", file.getAbsolutePath(), ex);
+                FxUtils.showErrorAlert(translationBundle.getString("OpenCustomSoundError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            }
+        }
+    }
+
+    /**
      * Open a sound preset
      *
      * @param path The absolute path of the sound preset file
@@ -450,8 +536,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     private void openSoundPreset(final String path) {
         if (path == null)
             throw new NullPointerException("Path cannot be null!");
-        if (path.isEmpty())
-            throw new IllegalArgumentException("Path cannot be empty!");
+        if (path.isBlank())
+            throw new IllegalArgumentException("Path cannot be blank!");
 
         logger.info("Loading sound preset from {}", path);
 
@@ -459,8 +545,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             final Path filePath = Path.of(path);
             final String actual = Files.readString(filePath);
 
-            if (actual.isEmpty())
-                throw new IllegalArgumentException("Sound preset cannot be empty!");
+            if (actual.isBlank())
+                throw new IllegalArgumentException("Sound preset cannot be blank!");
 
             final TypeReference<HashMap<String, Double>> typeRef = new TypeReference<>() {
             };
@@ -518,6 +604,10 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             for (final SoundPane soundPane : getAllSoundPanes()) {
                 soundPane.playPause();
             }
+
+            for (final SoundPane soundPane : getSoundPanes(grpCustom)) {
+                soundPane.playPause();
+            }
         } catch (final MediaPlayerException ex) {
             logger.error("Unable to play / pause MediaPlayer", ex);
             FxUtils.showErrorAlert(translationBundle.getString("PlayPauseError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
@@ -531,6 +621,13 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     private void resetAction() {
         logger.info("Resetting all audio sliders");
         getAllSoundPanes().forEach(e -> e.getSlider().setValue(0));
+
+        getSoundPanes(grpCustom).forEach(SoundPane::disposeMediaPlayer);
+        grpCustom.getChildren().clear();
+
+        pneCustom.setExpanded(false);
+        pneCustom.setVisible(false);
+        pneCustom.setManaged(false);
     }
 
     /**
@@ -684,6 +781,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     public void fired() {
         cancelTimer();
         getAllSoundPanes().forEach(SoundPane::pause);
+        getSoundPanes(grpCustom).forEach(SoundPane::pause);
 
         if (Boolean.parseBoolean(settingsController.getProperties().getProperty("timerComputerShutdown", "false"))) {
             final String command = switch (platformName.toLowerCase()) {

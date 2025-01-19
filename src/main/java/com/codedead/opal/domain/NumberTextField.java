@@ -16,14 +16,14 @@ public final class NumberTextField extends TextField {
         this.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.UP) {
                 int currentValue = 0;
-                if (!this.getText().isEmpty()) {
+                if (!this.getText().isBlank()) {
                     currentValue = Integer.parseInt(this.getText());
                 }
                 currentValue++;
                 this.setText(Integer.toString(currentValue));
             } else if (e.getCode() == KeyCode.DOWN) {
                 int currentValue = 0;
-                if (!this.getText().isEmpty()) {
+                if (!this.getText().isBlank()) {
                     currentValue = Integer.parseInt(this.getText());
                 }
                 if (currentValue - 1 >= getMin()) {

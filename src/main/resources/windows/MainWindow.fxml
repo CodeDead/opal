@@ -57,6 +57,14 @@
                 </graphic>
             </MenuItem>
             <SeparatorMenuItem/>
+            <MenuItem onAction="#addCustomSound" text="%AddCustomSound" accelerator="Shortcut+T">
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/open.png"/>
+                    </ImageView>
+                </graphic>
+            </MenuItem>
+            <SeparatorMenuItem/>
             <MenuItem onAction="#playPauseAction" text="%PlayPause" accelerator="Shortcut+P">
                 <graphic>
                     <ImageView>
@@ -192,6 +200,16 @@
                 <GridPane.margin>
                     <Insets left="5" right="5" top="10" bottom="10"/>
                 </GridPane.margin>
+                <TitledPane fx:id="pneCustom" text="%CustomSounds" visible="false" managed="false">
+                    <GridPane fx:id="grpCustom">
+                        <GridPane.margin>
+                            <Insets bottom="10"/>
+                        </GridPane.margin>
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+                    </GridPane>
+                </TitledPane>
                 <TitledPane fx:id="pneNature" text="%Nature">
                     <GridPane fx:id="grpNature">
                         <rowConstraints>
@@ -215,40 +233,40 @@
 
                         <SoundPane GridPane.rowIndex="0" name="%Rain"
                                    mediaKey="rain" mediaPath="/audio/rain.mp3"
-                                   image="/images/rain.png"/>
+                                   image="/images/rain.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="1" name="%Wind"
                                    mediaKey="wind" mediaPath="/audio/wind.mp3"
-                                   image="/images/wind.png"/>
+                                   image="/images/wind.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="2" name="%Thunder"
                                    mediaKey="thunder" mediaPath="/audio/thunder.mp3"
-                                   image="/images/thunder.png"/>
+                                   image="/images/thunder.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="3" name="%Birds"
                                    mediaKey="birds" mediaPath="/audio/birds.mp3"
-                                   image="/images/bird.png"/>
+                                   image="/images/bird.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="4" name="%Seagulls"
                                    mediaKey="seagulls" mediaPath="/audio/seagulls.mp3"
-                                   image="/images/bird.png"/>
+                                   image="/images/bird.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="5" name="%Ocean"
                                    mediaKey="ocean" mediaPath="/audio/ocean.mp3"
-                                   image="/images/ocean.png"/>
+                                   image="/images/ocean.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="6" name="%River"
                                    mediaKey="river" mediaPath="/audio/river.mp3"
-                                   image="/images/river.png"/>
+                                   image="/images/river.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="7" name="%Fireplace"
                                    mediaKey="fireplace" mediaPath="/audio/fireplace.mp3"
-                                   image="/images/fire.png"/>
+                                   image="/images/fire.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="8" name="%Cave"
                                    mediaKey="cave" mediaPath="/audio/cave.mp3"
-                                   image="/images/cave.png"/>
+                                   image="/images/cave.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="9" name="%Frogs"
                                    mediaKey="frogs" mediaPath="/audio/frogs.mp3"
-                                   image="/images/frogs.png"/>
+                                   image="/images/frogs.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="10" name="%Zoo"
                                    mediaKey="zoo" mediaPath="/audio/zoo.mp3"
-                                   image="/images/zoo.png"/>
+                                   image="/images/zoo.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="11" name="%Dolphins"
                                    mediaKey="dolphin" mediaPath="/audio/dolphin.mp3"
-                                   image="/images/ocean.png"/>
+                                   image="/images/ocean.png" resourceFile="true"/>
                     </GridPane>
                 </TitledPane>
                 <TitledPane fx:id="pneOffice" text="%Office" expanded="false">
@@ -269,25 +287,25 @@
 
                         <SoundPane GridPane.rowIndex="0" name="%Typing"
                                    mediaKey="keyboard" mediaPath="/audio/typing.mp3"
-                                   image="/images/keyboard.png"/>
+                                   image="/images/keyboard.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="1" name="%Phone"
                                    mediaKey="telephone" mediaPath="/audio/telephone.mp3"
-                                   image="/images/phone.png"/>
+                                   image="/images/phone.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="2" name="%Chatter"
                                    mediaKey="officeChatter" mediaPath="/audio/office.mp3"
-                                   image="/images/group.png"/>
+                                   image="/images/group.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="3" name="%Traffic"
                                    mediaKey="traffic" mediaPath="/audio/traffic.mp3"
-                                   image="/images/car.png"/>
+                                   image="/images/car.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="4" name="%Clock"
                                    mediaKey="clock" mediaPath="/audio/clock.mp3"
-                                   image="/images/clock.png"/>
+                                   image="/images/clock.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="5" name="%Fan"
                                    mediaKey="fan" mediaPath="/audio/fan.mp3"
-                                   image="/images/fan.png"/>
+                                   image="/images/fan.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="6" name="%Coffee"
                                    mediaKey="coffee" mediaPath="/audio/coffee.mp3"
-                                   image="/images/coffee.png"/>
+                                   image="/images/coffee.png" resourceFile="true"/>
                     </GridPane>
                 </TitledPane>
                 <TitledPane fx:id="pneAudiences" text="%Audiences" expanded="false">
@@ -307,22 +325,22 @@
 
                         <SoundPane GridPane.rowIndex="0" name="%NetworkingEvent"
                                    mediaKey="networking" mediaPath="/audio/networking.mp3"
-                                   image="/images/networking.png"/>
+                                   image="/images/networking.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="1" name="%LargeCrowd"
                                    mediaKey="largeCrowd" mediaPath="/audio/largeCrowd.mp3"
-                                   image="/images/group.png"/>
+                                   image="/images/group.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="2" name="%Restaurant"
                                    mediaKey="restaurant" mediaPath="/audio/restaurant.mp3"
-                                   image="/images/restaurant.png"/>
+                                   image="/images/restaurant.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="3" name="%TribalFestival"
                                    mediaKey="tribal" mediaPath="/audio/tribal.mp3"
-                                   image="/images/tribal.png"/>
+                                   image="/images/tribal.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="4" name="%DrumTribalFestival"
                                    mediaKey="drumtribal" mediaPath="/audio/tribal2.mp3"
-                                   image="/images/tribal2.png"/>
+                                   image="/images/tribal2.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="5" name="%RugbyFootball"
                                    mediaKey="rugbyfootball" mediaPath="/audio/football.mp3"
-                                   image="/images/rugbyfootball.png"/>
+                                   image="/images/rugbyfootball.png" resourceFile="true"/>
                     </GridPane>
                 </TitledPane>
                 <TitledPane fx:id="pneRadioFrequencyStatic" text="%RadioFrequencyStatic" expanded="false">
@@ -343,16 +361,16 @@
 
                         <SoundPane GridPane.rowIndex="0" name="%Static"
                                    mediaKey="static" mediaPath="/audio/static.mp3"
-                                   image="/images/radio.png"/>
+                                   image="/images/radio.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="1" name="%WhiteNoise"
                                    mediaKey="whitenoise" mediaPath="/audio/whitenoise.mp3"
-                                   image="/images/radio.png"/>
+                                   image="/images/radio.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="2" name="%PinkNoise"
                                    mediaKey="pinknoise" mediaPath="/audio/pinknoise.mp3"
-                                   image="/images/radio.png"/>
+                                   image="/images/radio.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="3" name="%BrownNoise"
                                    mediaKey="brownnoise" mediaPath="/audio/brownnoise.mp3"
-                                   image="/images/radio.png"/>
+                                   image="/images/radio.png" resourceFile="true"/>
                     </GridPane>
                 </TitledPane>
                 <TitledPane fx:id="pneOther" text="%Other" expanded="false">
@@ -379,34 +397,34 @@
 
                         <SoundPane GridPane.rowIndex="0" name="%Fantasy"
                                    mediaKey="fantasy" mediaPath="/audio/fantasy.mp3"
-                                   image="/images/star.png"/>
+                                   image="/images/star.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="1" name="%Zen"
                                    mediaKey="zen" mediaPath="/audio/zen.mp3"
-                                   image="/images/zen.png"/>
+                                   image="/images/zen.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="2" name="%Sleepy"
                                    mediaKey="sleepy" mediaPath="/audio/sleepy.mp3"
-                                   image="/images/sleepy.png"/>
+                                   image="/images/sleepy.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="3" name="%RollerCoaster"
                                    mediaKey="rollerCoaster" mediaPath="/audio/rollercoaster.mp3"
-                                   image="/images/train.png"/>
+                                   image="/images/train.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="4" name="%Gong"
                                    mediaKey="gong" mediaPath="/audio/gong.mp3"
-                                   image="/images/gong.png"/>
+                                   image="/images/gong.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="5" name="%BellTower"
                                    mediaKey="belltower" mediaPath="/audio/belltower.mp3"
-                                   image="/images/belltower.png"/>
+                                   image="/images/belltower.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="6" name="%Space"
                                    mediaKey="space" mediaPath="/audio/space.mp3"
-                                   image="/images/space.png"/>
+                                   image="/images/space.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="7" name="%Train"
                                    mediaKey="train" mediaPath="/audio/train.mp3"
-                                   image="/images/train.png"/>
+                                   image="/images/train.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="8" name="%SlowMetronome"
                                    mediaKey="slowmetronome" mediaPath="/audio/metronome.mp3"
-                                   image="/images/metronome.png"/>
+                                   image="/images/metronome.png" resourceFile="true"/>
                         <SoundPane GridPane.rowIndex="9" name="%FastMetronome"
                                    mediaKey="fastmetronome" mediaPath="/audio/metronomefast.mp3"
-                                   image="/images/metronome.png"/>
+                                   image="/images/metronome.png" resourceFile="true"/>
                     </GridPane>
                 </TitledPane>
             </VBox>

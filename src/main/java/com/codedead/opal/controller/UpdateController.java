@@ -60,8 +60,8 @@ public final class UpdateController {
     public Optional<PlatformUpdate> checkForUpdates(final String currentPlatform, final boolean isPortable) throws InterruptedException, InvalidHttpResponseCodeException, IOException {
         if (currentPlatform == null)
             throw new NullPointerException("Current platform cannot be null!");
-        if (currentPlatform.isEmpty())
-            throw new IllegalArgumentException("Current platform cannot be empty!");
+        if (currentPlatform.isBlank())
+            throw new IllegalArgumentException("Current platform cannot be blank!");
 
         logger.info("Attempting to retrieve the latest PlatformUpdate objects");
 
@@ -151,12 +151,12 @@ public final class UpdateController {
     public void downloadFile(final String url, final String path) throws IOException, URISyntaxException {
         if (url == null)
             throw new NullPointerException("URL cannot be null!");
-        if (url.isEmpty())
-            throw new IllegalArgumentException("URL cannot be empty!");
+        if (url.isBlank())
+            throw new IllegalArgumentException("URL cannot be blank!");
         if (path == null)
             throw new NullPointerException("Path cannot be null!");
-        if (path.isEmpty())
-            throw new IllegalArgumentException("Path cannot be empty!");
+        if (path.isBlank())
+            throw new IllegalArgumentException("Path cannot be blank!");
 
         logger.info("Attempting to download file from {} and store it at {}", url, path);
 
@@ -187,8 +187,8 @@ public final class UpdateController {
     public void setUpdateUrl(final String updateUrl) {
         if (updateUrl == null)
             throw new NullPointerException("Update URL cannot be null!");
-        if (updateUrl.isEmpty())
-            throw new IllegalArgumentException("Update URL cannot be empty!");
+        if (updateUrl.isBlank())
+            throw new IllegalArgumentException("Update URL cannot be blank!");
 
         this.updateUrl = updateUrl;
     }
@@ -201,8 +201,8 @@ public final class UpdateController {
     public void setCurrentVersion(final String currentVersion) {
         if (currentVersion == null)
             throw new NullPointerException("currentVersion cannot be null!");
-        if (currentVersion.isEmpty())
-            throw new IllegalArgumentException("currentVersion cannot be empty!");
+        if (currentVersion.isBlank())
+            throw new IllegalArgumentException("currentVersion cannot be blank!");
 
         this.currentVersion = currentVersion;
     }
