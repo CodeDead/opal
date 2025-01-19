@@ -58,8 +58,8 @@ public final class HelpUtils {
             throw new NullPointerException("RunnableFileOpener cannot be null!");
         if (resource == null)
             throw new NullPointerException("Resource cannot be null!");
-        if (resource.isEmpty())
-            throw new IllegalArgumentException("Resource cannot be empty!");
+        if (resource.isBlank())
+            throw new IllegalArgumentException("Resource cannot be blank!");
 
         logger.info("Attempting to open file from resources {}", resource);
 
@@ -123,8 +123,8 @@ public final class HelpUtils {
     public void openWebsite(final String url, final ResourceBundle resourceBundle) {
         if (url == null)
             throw new NullPointerException("URL cannot be null!");
-        if (url.isEmpty())
-            throw new IllegalArgumentException("URL cannot be empty!");
+        if (url.isBlank())
+            throw new IllegalArgumentException("URL cannot be blank!");
 
         logger.info("Opening the website {}", url);
 

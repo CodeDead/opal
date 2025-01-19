@@ -86,8 +86,10 @@ public final class SettingsController {
      * @param propertiesResourceLocation The resource location of the default properties file
      */
     public void setPropertiesResourceLocation(final String propertiesResourceLocation) {
-        if (propertiesResourceLocation == null || propertiesResourceLocation.isEmpty())
-            throw new IllegalArgumentException("Properties resource location cannot be null!");
+        if (propertiesResourceLocation == null)
+            throw new NullPointerException("Properties resource location cannot be null!");
+        if (propertiesResourceLocation.isBlank())
+            throw new IllegalArgumentException("Properties resource location cannot be blank!");
 
         this.propertiesResourceLocation = propertiesResourceLocation;
     }
@@ -107,8 +109,10 @@ public final class SettingsController {
      * @param propertiesFileLocation The properties file location
      */
     public void setPropertiesFileLocation(final String propertiesFileLocation) {
-        if (propertiesFileLocation == null || propertiesFileLocation.isEmpty())
-            throw new IllegalArgumentException("Properties file location cannot be null or empty!");
+        if (propertiesFileLocation == null)
+            throw new NullPointerException("Properties file location cannot be null!");
+        if (propertiesFileLocation.isBlank())
+            throw new IllegalArgumentException("Properties file location cannot be blank!");
 
         this.propertiesFileLocation = propertiesFileLocation;
     }

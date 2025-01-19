@@ -38,6 +38,8 @@ public final class SoundPane extends GridPane {
     @FXML
     private String mediaPath;
     @FXML
+    private boolean resourceFile;
+    @FXML
     private String mediaKey;
     private double balance;
     private MediaPlayer mediaPlayer;
@@ -86,12 +88,12 @@ public final class SoundPane extends GridPane {
     private void initializeMediaPlayer(final String value) throws URISyntaxException {
         if (value == null)
             throw new NullPointerException("Value cannot be null!");
-        if (value.isEmpty())
-            throw new IllegalArgumentException("Value cannot be empty!");
+        if (value.isBlank())
+            throw new IllegalArgumentException("Value cannot be blank!");
 
         disposeMediaPlayer();
 
-        mediaPlayer = new MediaPlayer(new Media(Objects.requireNonNull(getClass().getResource(value)).toURI().toString()));
+        mediaPlayer = new MediaPlayer(new Media(isResourceFile() ? Objects.requireNonNull(getClass().getResource(value)).toURI().toString() : value));
         mediaPlayer.setOnEndOfMedia(() -> {
             if (mediaPlayer != null) {
                 mediaPlayer.seek(Duration.ZERO);
@@ -206,10 +208,30 @@ public final class SoundPane extends GridPane {
     public void setMediaPath(final String mediaPath) {
         if (mediaPath == null)
             throw new NullPointerException("Media path cannot be null!");
-        if (mediaPath.isEmpty())
-            throw new IllegalArgumentException("Media path cannot be empty!");
+        if (mediaPath.isBlank())
+            throw new IllegalArgumentException("Media path cannot be blank!");
 
         this.mediaPath = mediaPath;
+    }
+
+    /**
+     * Get whether the media file is a resource file
+     *
+     * @return True if the media file is a resource file, otherwise false
+     */
+    @FXML
+    public boolean isResourceFile() {
+        return resourceFile;
+    }
+
+    /**
+     * Set whether the media file is a resource file
+     *
+     * @param resourceFile True if the media file is a resource file, otherwise false
+     */
+    @FXML
+    public void setResourceFile(final boolean resourceFile) {
+        this.resourceFile = resourceFile;
     }
 
     /**
@@ -231,8 +253,8 @@ public final class SoundPane extends GridPane {
     public void setMediaKey(final String mediaKey) {
         if (mediaKey == null)
             throw new NullPointerException("Media key cannot be null!");
-        if (mediaKey.isEmpty())
-            throw new IllegalArgumentException("Media key cannot be empty!");
+        if (mediaKey.isBlank())
+            throw new IllegalArgumentException("Media key cannot be blank!");
 
         this.mediaKey = mediaKey;
     }
@@ -280,7 +302,7 @@ public final class SoundPane extends GridPane {
     /**
      * Dispose of the {@link MediaPlayer} object and all bindings
      */
-    private void disposeMediaPlayer() {
+    public void disposeMediaPlayer() {
         if (mediaPlayer != null) {
             mediaPlayer.volumeProperty().unbindBidirectional(sldVolume.valueProperty());
             mediaPlayer.stop();

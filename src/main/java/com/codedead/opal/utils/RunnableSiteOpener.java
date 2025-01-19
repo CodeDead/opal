@@ -23,8 +23,8 @@ public final class RunnableSiteOpener implements Runnable {
     public RunnableSiteOpener(final String url, final IRunnableHelper iRunnableHelper) {
         if (url == null)
             throw new NullPointerException("URL cannot be null!");
-        if (url.isEmpty())
-            throw new IllegalArgumentException("URL cannot be empty!");
+        if (url.isBlank())
+            throw new IllegalArgumentException("URL cannot be blank!");
 
         this.url = url;
         this.iRunnableHelper = iRunnableHelper;

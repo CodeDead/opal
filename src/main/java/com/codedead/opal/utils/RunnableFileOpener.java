@@ -20,8 +20,8 @@ public final class RunnableFileOpener implements Runnable {
     public RunnableFileOpener(final String fileLocation, final IRunnableHelper iRunnableHelper) {
         if (fileLocation == null)
             throw new NullPointerException("File location cannot be null!");
-        if (fileLocation.isEmpty())
-            throw new IllegalArgumentException("File location cannot be empty!");
+        if (fileLocation.isBlank())
+            throw new IllegalArgumentException("File location cannot be blank!");
 
         this.fileLocation = fileLocation;
         this.iRunnableHelper = iRunnableHelper;
