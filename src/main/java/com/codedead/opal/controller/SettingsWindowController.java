@@ -223,7 +223,8 @@ public final class SettingsWindowController {
         mainWindowController.loadMediaButtonVisibility(chbMediaButtons.isSelected());
         if (chbTrayIcon.isSelected()) {
             try {
-                trayIconController.showTrayIcon();
+                trayIconController.hideTrayIcon(); // Destroy the old tray icon
+                trayIconController.showTrayIcon(); // Create a new tray icon (needed for the new settings - language)
             } catch (final IOException ex) {
                 logger.error("Unable to create tray icon", ex);
                 FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
