@@ -184,19 +184,23 @@ public final class SettingsWindowController {
     private void resetSettingsAction() {
         logger.info("Attempting to reset all settings");
         if (FxUtils.showConfirmationAlert(translationBundle.getString("ConfirmReset"), getClass().getResourceAsStream(SharedVariables.ICON_URL))) {
-            showAlertIfLanguageMismatch(DEFAULT_LOCALE);
-
             Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
             try {
                 settingsController.createDefaultProperties();
                 settingsController.setProperties(settingsController.readPropertiesFile());
+
+                final Locale locale = Locale.forLanguageTag(DEFAULT_LOCALE);
+                final ResourceBundle translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
+
+                mainWindowController.updateResourceBundle(translationBundle);
 
                 mainWindowController.loadMediaButtonVisibility(Boolean.parseBoolean(settingsController.getProperties().getProperty("mediaButtons", "true")));
                 mainWindowController.setAudioBalance(Double.parseDouble(settingsController.getProperties().getProperty("audioBalance", "0.0")));
 
                 trayIconController.hideTrayIcon();
 
-                loadSettings();
+                Stage stage = (Stage) sldAudioBalance.getScene().getWindow();
+                stage.close();
             } catch (final IOException ex) {
                 logger.error("Unable to reset all settings", ex);
                 FxUtils.showErrorAlert(translationBundle.getString("ResetSettingsError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
@@ -219,7 +223,8 @@ public final class SettingsWindowController {
         mainWindowController.loadMediaButtonVisibility(chbMediaButtons.isSelected());
         if (chbTrayIcon.isSelected()) {
             try {
-                trayIconController.showTrayIcon();
+                trayIconController.hideTrayIcon(); // Destroy the old tray icon
+                trayIconController.showTrayIcon(); // Create a new tray icon (needed for the new settings - language)
             } catch (final IOException ex) {
                 logger.error("Unable to create tray icon", ex);
                 FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
@@ -228,9 +233,13 @@ public final class SettingsWindowController {
             trayIconController.hideTrayIcon();
         }
 
-        showAlertIfLanguageMismatch(settingsController.getProperties().getProperty("locale", DEFAULT_LOCALE));
+        final String languageTag = LanguageController.getLocaleFromLanguageIndex(cboLanguage.getSelectionModel().getSelectedIndex());
+        final Locale locale = Locale.forLanguageTag(languageTag);
+        final ResourceBundle translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
 
-        settingsController.getProperties().setProperty("locale", LanguageController.getLocaleFromLanguageIndex(cboLanguage.getSelectionModel().getSelectedIndex()));
+        mainWindowController.updateResourceBundle(translationBundle);
+
+        settingsController.getProperties().setProperty("locale", languageTag);
 
         settingsController.getProperties().setProperty("theme", cboTheme.getSelectionModel().getSelectedItem());
         settingsController.getProperties().setProperty("loglevel", cboLogLevel.getValue());
@@ -278,19 +287,6 @@ public final class SettingsWindowController {
         } catch (final IOException ex) {
             logger.error("Unable to save all settings", ex);
             FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-        }
-    }
-
-    /**
-     * Show an information alert if a restart is required
-     *
-     * @param languageToMatch The language that needs to be matched to the combobox
-     */
-    private void showAlertIfLanguageMismatch(final String languageToMatch) {
-        final String newLanguage = LanguageController.getLocaleFromLanguageIndex(cboLanguage.getSelectionModel().getSelectedIndex());
-
-        if (!languageToMatch.equals(newLanguage)) {
-            FxUtils.showInformationAlert(translationBundle.getString("RestartRequired"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
