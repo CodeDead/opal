@@ -41,6 +41,118 @@ import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 public final class MainWindowController implements IAudioTimer, TrayIconListener {
 
     @FXML
+    private SoundPane snpFastMetronome;
+    @FXML
+    private SoundPane snpSlowMetronome;
+    @FXML
+    private SoundPane snpTrain;
+    @FXML
+    private SoundPane snpSpace;
+    @FXML
+    private SoundPane snpBellTower;
+    @FXML
+    private SoundPane snpGong;
+    @FXML
+    private SoundPane snpRollerCoaster;
+    @FXML
+    private SoundPane snpSleepy;
+    @FXML
+    private SoundPane snpZen;
+    @FXML
+    private SoundPane snpFantasy;
+    @FXML
+    private SoundPane snpBrownNoise;
+    @FXML
+    private SoundPane snpPinkNoise;
+    @FXML
+    private SoundPane snpWhiteNoise;
+    @FXML
+    private SoundPane snpStatic;
+    @FXML
+    private SoundPane snpRugbyFootball;
+    @FXML
+    private SoundPane snpDrumTribalFestival;
+    @FXML
+    private SoundPane snpTribalFestival;
+    @FXML
+    private SoundPane snpRestaurant;
+    @FXML
+    private SoundPane snpLargeCrowd;
+    @FXML
+    private SoundPane snpNetworkingEvent;
+    @FXML
+    private SoundPane snpCoffee;
+    @FXML
+    private SoundPane snpFan;
+    @FXML
+    private SoundPane snpClock;
+    @FXML
+    private SoundPane snpTraffic;
+    @FXML
+    private SoundPane snpChatter;
+    @FXML
+    private SoundPane snpPhone;
+    @FXML
+    private SoundPane snpTyping;
+    @FXML
+    private SoundPane snpDolphins;
+    @FXML
+    private SoundPane snpZoo;
+    @FXML
+    private SoundPane snpFrogs;
+    @FXML
+    private SoundPane snpCave;
+    @FXML
+    private SoundPane snpFireplace;
+    @FXML
+    private SoundPane snpRiver;
+    @FXML
+    private SoundPane snpOcean;
+    @FXML
+    private SoundPane snpSeagulls;
+    @FXML
+    private SoundPane snpBirds;
+    @FXML
+    private SoundPane snpThunder;
+    @FXML
+    private SoundPane snpWind;
+    @FXML
+    private SoundPane snpRain;
+    @FXML
+    private MenuItem mniAbout;
+    @FXML
+    private MenuItem mniDonate;
+    @FXML
+    private MenuItem mniLicense;
+    @FXML
+    private MenuItem mniHomePage;
+    @FXML
+    private MenuItem mniCheckForUpdates;
+    @FXML
+    private MenuItem mniHelp;
+    @FXML
+    private Menu mnuHelp;
+    @FXML
+    private Menu mnuTimer;
+    @FXML
+    private MenuItem mniSettings;
+    @FXML
+    private Menu mnuTools;
+    @FXML
+    private MenuItem mniExit;
+    @FXML
+    private MenuItem mniReset;
+    @FXML
+    private MenuItem mniPlayPause;
+    @FXML
+    private MenuItem mniAddCustomSound;
+    @FXML
+    private MenuItem mniSaveSoundPreset;
+    @FXML
+    private MenuItem mniOpenSoundPreset;
+    @FXML
+    private Menu mnuFile;
+    @FXML
     private GridPane grpCustom;
     @FXML
     private TitledPane pneCustom;
@@ -76,7 +188,6 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     private TrayIconController trayIconController;
     private SettingsController settingsController;
     private UpdateController updateController;
-    private ResourceBundle translationBundle;
     private TimerTask timerTask;
     private TimerTask countDownTask;
     private final String platformName;
@@ -86,6 +197,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     private final Timer countDownTimer;
     private final IAudioTimer audioTimer;
     private final Logger logger;
+    private final ObservableResourceFactory resourceFactory;
 
     /**
      * Initialize a new MainWindowController
@@ -101,6 +213,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         this.countDownTimer = new Timer();
         this.audioTimer = this;
         this.objectMapper = new ObjectMapper();
+
+        resourceFactory = new ObservableResourceFactory();
     }
 
     /**
@@ -135,11 +249,11 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
 
         final Locale locale = Locale.forLanguageTag(languageTag);
-        translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
+        resourceFactory.setResources(ResourceBundle.getBundle("translations.OpalApplication", locale));
 
         final boolean mediaButtons = Boolean.parseBoolean(properties.getProperty("mediaButtons", "true"));
 
-        trayIconController = new TrayIconController(translationBundle, this);
+        trayIconController = new TrayIconController(resourceFactory, this);
 
         // Load tray icons after displaying the main stage to display the proper icon in the task bar / activities bar (linux)
         if (Boolean.parseBoolean(properties.getProperty("trayIcon", "false"))) {
@@ -147,7 +261,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 trayIconController.showTrayIcon();
             } catch (final IOException ex) {
                 logger.error("Unable to create tray icon", ex);
-                FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                FxUtils.showErrorAlert(resourceFactory.getResources().getString("TrayIconError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         }
 
@@ -160,6 +274,77 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         }
 
         setAudioBalance(Double.parseDouble(properties.getProperty("audioBalance", "0.0")));
+
+        // Locale
+        mnuFile.textProperty().bind(resourceFactory.getStringBinding("File"));
+        mniOpenSoundPreset.textProperty().bind(resourceFactory.getStringBinding("OpenSoundPreset"));
+        mniSaveSoundPreset.textProperty().bind(resourceFactory.getStringBinding("SaveSoundPreset"));
+        mniAddCustomSound.textProperty().bind(resourceFactory.getStringBinding("AddCustomSound"));
+        mniPlayPause.textProperty().bind(resourceFactory.getStringBinding("PlayPause"));
+        mniReset.textProperty().bind(resourceFactory.getStringBinding("Reset"));
+        mniExit.textProperty().bind(resourceFactory.getStringBinding("Exit"));
+        mnuTools.textProperty().bind(resourceFactory.getStringBinding("Tools"));
+        mniSettings.textProperty().bind(resourceFactory.getStringBinding("Settings"));
+        mnuTimer.textProperty().bind(resourceFactory.getStringBinding("Timer"));
+        mniTimerEnabled.textProperty().bind(resourceFactory.getStringBinding("Enabled"));
+        mnuHelp.textProperty().bind(resourceFactory.getStringBinding("HelpMenu"));
+        mniHelp.textProperty().bind(resourceFactory.getStringBinding("Help"));
+        mniCheckForUpdates.textProperty().bind(resourceFactory.getStringBinding("CheckForUpdates"));
+        mniHomePage.textProperty().bind(resourceFactory.getStringBinding("Homepage"));
+        mniLicense.textProperty().bind(resourceFactory.getStringBinding("License"));
+        mniDonate.textProperty().bind(resourceFactory.getStringBinding("Donate"));
+        mniAbout.textProperty().bind(resourceFactory.getStringBinding("About"));
+        txtSearch.promptTextProperty().bind(resourceFactory.getStringBinding("Search"));
+        pneCustom.textProperty().bind(resourceFactory.getStringBinding("CustomSounds"));
+        pneNature.textProperty().bind(resourceFactory.getStringBinding("Nature"));
+
+        snpRain.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Rain"));
+        snpWind.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Wind"));
+        snpThunder.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Thunder"));
+        snpBirds.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Birds"));
+        snpSeagulls.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Seagulls"));
+        snpOcean.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Ocean"));
+        snpRiver.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("River"));
+        snpFireplace.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Fireplace"));
+        snpCave.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Cave"));
+        snpFrogs.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Frogs"));
+        snpZoo.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Zoo"));
+        snpDolphins.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Dolphins"));
+
+        pneOffice.textProperty().bind(resourceFactory.getStringBinding("Office"));
+        snpTyping.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Typing"));
+        snpPhone.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Phone"));
+        snpChatter.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Chatter"));
+        snpTraffic.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Traffic"));
+        snpClock.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Clock"));
+        snpFan.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Fan"));
+        snpCoffee.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Coffee"));
+
+        pneAudiences.textProperty().bind(resourceFactory.getStringBinding("Audiences"));
+        snpNetworkingEvent.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("NetworkingEvent"));
+        snpLargeCrowd.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("LargeCrowd"));
+        snpRestaurant.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Restaurant"));
+        snpTribalFestival.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("TribalFestival"));
+        snpDrumTribalFestival.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("DrumTribalFestival"));
+        snpRugbyFootball.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("RugbyFootball"));
+
+        pneRadioFrequencyStatic.textProperty().bind(resourceFactory.getStringBinding("RadioFrequencyStatic"));
+        snpStatic.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Static"));
+        snpWhiteNoise.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("WhiteNoise"));
+        snpPinkNoise.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("PinkNoise"));
+        snpBrownNoise.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("BrownNoise"));
+
+        pneOther.textProperty().bind(resourceFactory.getStringBinding("Other"));
+        snpFantasy.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Fantasy"));
+        snpZen.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Zen"));
+        snpSleepy.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Sleepy"));
+        snpRollerCoaster.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("RollerCoaster"));
+        snpGong.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Gong"));
+        snpBellTower.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("BellTower"));
+        snpSpace.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Space"));
+        snpTrain.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Train"));
+        snpSlowMetronome.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("SlowMetronome"));
+        snpFastMetronome.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("FastMetronome"));
     }
 
     /**
@@ -187,7 +372,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
                 logger.info("Version {}.{}.{}.{} is available", update.getMajorVersion(), update.getMinorVersion(), update.getBuildVersion(), update.getRevisionVersion());
 
-                if (FxUtils.showConfirmationAlert(translationBundle
+                if (FxUtils.showConfirmationAlert(resourceFactory
+                                .getResources()
                                 .getString("NewUpdateAvailable")
                                 .replace("{v}", String.format("%1$s.%2$s.%3$s.%4$s", update.getMajorVersion(), update.getMinorVersion(), update.getBuildVersion(), update.getRevisionVersion())),
                         getClass().getResourceAsStream(SharedVariables.ICON_URL))) {
@@ -216,7 +402,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             } else {
                 logger.info("No updates available");
                 if (showNoUpdates) {
-                    FxUtils.showInformationAlert(translationBundle.getString("NoUpdateAvailable"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                    FxUtils.showInformationAlert(resourceFactory.getResources().getString("NoUpdateAvailable"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                 }
             }
         } catch (final InterruptedException | IOException | InvalidHttpResponseCodeException | URISyntaxException ex) {
@@ -225,7 +411,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
             logger.error("Unable to check for updates", ex);
             if (showErrors) {
-                FxUtils.showErrorAlert(translationBundle.getString("UpdateError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                FxUtils.showErrorAlert(resourceFactory.getResources().getString("UpdateError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         }
     }
@@ -291,14 +477,14 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                         @Override
                         public void run() {
                             logger.error("Error opening the file", ex);
-                            FxUtils.showErrorAlert(translationBundle.getString("FileExecutionError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                            FxUtils.showErrorAlert(resourceFactory.getResources().getString("FileExecutionError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                         }
                     });
                 }
             }));
         } catch (final IOException ex) {
             logger.error("Error opening the file", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("FileExecutionError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(resourceFactory.getResources().getString("FileExecutionError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -510,7 +696,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 final SoundPane customSoundPane = new SoundPane();
                 final int count = getSoundPanes(grpCustom).size() + 1;
 
-                customSoundPane.setName(translationBundle.getString("CustomSound") + " #" + count);
+                customSoundPane.setName(resourceFactory.getResources().getString("CustomSound") + " #" + count);
                 customSoundPane.setMediaKey("custom" + count);
                 customSoundPane.setMediaPath(file.toURI().toURL().toString());
                 customSoundPane.setImage("/images/customsound.png");
@@ -523,7 +709,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 pneCustom.setManaged(true);
             } catch (final IOException ex) {
                 logger.error("Unable to open the custom sound from {}", file.getAbsolutePath(), ex);
-                FxUtils.showErrorAlert(translationBundle.getString("OpenCustomSoundError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                FxUtils.showErrorAlert(resourceFactory.getResources().getString("OpenCustomSoundError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         }
     }
@@ -557,7 +743,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             mediaVolumes.forEach((key, value) -> soundPanes.stream().filter(e -> e.getMediaKey().equals(key)).forEach(e -> e.getSlider().setValue(value)));
         } catch (final IOException ex) {
             logger.error("Unable to open the sound preset from {}", path, ex);
-            FxUtils.showErrorAlert(translationBundle.getString("OpenSoundPresetError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(resourceFactory.getResources().getString("OpenSoundPresetError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -587,7 +773,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 objectMapper.writeValue(new File(filePath), mediaVolumes);
             } catch (final IOException ex) {
                 logger.error("Unable to save the sound settings to {}", filePath, ex);
-                FxUtils.showErrorAlert(translationBundle.getString("SaveSoundPresetError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                FxUtils.showErrorAlert(resourceFactory.getResources().getString("SaveSoundPresetError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         } else {
             logger.info("Cancelled saving a sound settings");
@@ -610,7 +796,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             }
         } catch (final MediaPlayerException ex) {
             logger.error("Unable to play / pause MediaPlayer", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("PlayPauseError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(resourceFactory.getResources().getString("PlayPauseError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -647,7 +833,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         logger.info("Attempting to open the SettingsWindow");
 
         try {
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/windows/SettingsWindow.fxml"), translationBundle);
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/windows/SettingsWindow.fxml"), resourceFactory.getResources());
             final Parent root = loader.load();
 
             final SettingsWindowController settingsWindowController = loader.getController();
@@ -657,7 +843,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
             final Stage primaryStage = new Stage();
 
-            primaryStage.setTitle(translationBundle.getString("SettingsWindowTitle"));
+            primaryStage.setTitle(resourceFactory.getResources().getString("SettingsWindowTitle"));
             primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(SharedVariables.ICON_URL))));
             primaryStage.setScene(new Scene(root));
 
@@ -669,7 +855,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             primaryStage.setHeight(350);
         } catch (final IOException ex) {
             logger.error("Unable to open the SettingsWindow", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("SettingsWindowError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(resourceFactory.getResources().getString("SettingsWindowError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -693,14 +879,14 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                         @Override
                         public void run() {
                             logger.error("Error opening the help file", ex);
-                            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                            FxUtils.showErrorAlert(resourceFactory.getResources().getString("HelpFileError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                         }
                     });
                 }
             }), SharedVariables.HELP_DOCUMENTATION_RESOURCE_LOCATION);
         } catch (final IOException ex) {
             logger.error("Error opening the help file", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("HelpFileError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(resourceFactory.getResources().getString("HelpFileError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -709,7 +895,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      */
     @FXML
     private void homepageAction() {
-        helpUtils.openWebsite("https://codedead.com", translationBundle);
+        helpUtils.openWebsite("https://codedead.com", resourceFactory.getResources());
     }
 
     /**
@@ -717,7 +903,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      */
     @FXML
     private void licenseAction() {
-        helpUtils.openLicenseFile(translationBundle);
+        helpUtils.openLicenseFile(resourceFactory.getResources());
     }
 
     /**
@@ -725,7 +911,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      */
     @FXML
     private void donateAction() {
-        helpUtils.openWebsite("https://codedead.com/donate", translationBundle);
+        helpUtils.openWebsite("https://codedead.com/donate", resourceFactory.getResources());
     }
 
     /**
@@ -736,15 +922,15 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         logger.info("Attempting to open the AboutWindow");
 
         try {
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/windows/AboutWindow.fxml"), translationBundle);
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/windows/AboutWindow.fxml"), resourceFactory.getResources());
             final Parent root = loader.load();
 
             final AboutWindowController aboutWindowController = loader.getController();
-            aboutWindowController.setResourceBundle(translationBundle);
+            aboutWindowController.setResourceBundle(resourceFactory.getResources());
 
             final Stage primaryStage = new Stage();
 
-            primaryStage.setTitle(translationBundle.getString("AboutWindowTitle"));
+            primaryStage.setTitle(resourceFactory.getResources().getString("AboutWindowTitle"));
             primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/opal.png"))));
             primaryStage.setScene(new Scene(root));
 
@@ -754,7 +940,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             primaryStage.setHeight(280);
         } catch (final IOException ex) {
             logger.error("Unable to open the AboutWindow", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("AboutWindowError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            FxUtils.showErrorAlert(resourceFactory.getResources().getString("AboutWindowError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
     }
 
@@ -953,6 +1139,15 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
         logger.info("Setting the audio balance to {}", audioBalance);
         getAllSoundPanes().forEach(s -> s.setBalance(audioBalance));
+    }
+
+    /**
+     * Update the {@link ResourceBundle} object
+     *
+     * @param resourceBundle The {@link ResourceBundle} object
+     */
+    public void updateResourceBundle(final ResourceBundle resourceBundle) {
+        resourceFactory.setResources(resourceBundle);
     }
 
     /**

@@ -149,6 +149,15 @@ public final class SoundPane extends GridPane {
     }
 
     /**
+     * Get the name {@link Label} object
+     *
+     * @return The name {@link Label} object
+     */
+    public Label getNameLabel() {
+        return lblName;
+    }
+
+    /**
      * Set the name
      *
      * @param name The name

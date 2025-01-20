@@ -1,5 +1,6 @@
 package com.codedead.opal.controller;
 
+import com.codedead.opal.domain.ObservableResourceFactory;
 import com.codedead.opal.interfaces.TrayIconListener;
 import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
@@ -11,28 +12,27 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 public final class TrayIconController {
 
     private TrayIcon trayIcon;
-    private final ResourceBundle resourceBundle;
+    private final ObservableResourceFactory resourceFactory;
     private final TrayIconListener trayIconListener;
     private final Logger logger;
 
     /**
      * Initialize a new TrayIconController
      *
-     * @param resourceBundle   The {@link ResourceBundle} object
+     * @param resourceFactory  The {@link ObservableResourceFactory} object
      * @param trayIconListener The {@link TrayIconListener} interface
      */
-    public TrayIconController(final ResourceBundle resourceBundle, final TrayIconListener trayIconListener) {
-        if (resourceBundle == null)
-            throw new NullPointerException("ResourceBundle cannot be null!");
+    public TrayIconController(final ObservableResourceFactory resourceFactory, final TrayIconListener trayIconListener) {
+        if (resourceFactory == null)
+            throw new NullPointerException("ResourceFactory cannot be null!");
         if (trayIconListener == null)
             throw new NullPointerException("TrayIconListener cannot be null!");
 
-        this.resourceBundle = resourceBundle;
+        this.resourceFactory = resourceFactory;
         this.trayIconListener = trayIconListener;
         this.logger = LogManager.getLogger(TrayIconController.class);
     }
@@ -54,10 +54,10 @@ public final class TrayIconController {
         final PopupMenu popup = new PopupMenu();
         final BufferedImage trayIconImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/opal.png")));
         final TrayIcon localTrayIcon = new TrayIcon(trayIconImage.getScaledInstance(trayIconSize.width, trayIconSize.height, java.awt.Image.SCALE_SMOOTH));
-        final java.awt.MenuItem displayItem = new java.awt.MenuItem(resourceBundle.getString("Display"));
-        final java.awt.MenuItem settingsItem = new java.awt.MenuItem(resourceBundle.getString("Settings"));
-        final java.awt.MenuItem aboutItem = new java.awt.MenuItem(resourceBundle.getString("About"));
-        final java.awt.MenuItem exitItem = new java.awt.MenuItem(resourceBundle.getString("Exit"));
+        final java.awt.MenuItem displayItem = new java.awt.MenuItem(resourceFactory.getResources().getString("Display"));
+        final java.awt.MenuItem settingsItem = new java.awt.MenuItem(resourceFactory.getResources().getString("Settings"));
+        final java.awt.MenuItem aboutItem = new java.awt.MenuItem(resourceFactory.getResources().getString("About"));
+        final java.awt.MenuItem exitItem = new java.awt.MenuItem(resourceFactory.getResources().getString("Exit"));
 
         if (trayIconListener != null) {
             // Platform.runLater to run on the JavaFX thread
