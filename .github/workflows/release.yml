@@ -23,10 +23,10 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: sudo apt-get install -y fuse libfuse2
 
-      - name: Setup JDK 23
+      - name: Setup JDK 24
         uses: actions/setup-java@v4
         with:
-          java-version: '23'
+          java-version: '24'
           distribution: 'temurin'
 
       - name: Setup Gradle
@@ -63,10 +63,10 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: sudo apt-get install -y fuse libfuse2
 
-      - name: Setup JDK 23
+      - name: Setup JDK 24
         uses: actions/setup-java@v4
         with:
-          java-version: '23'
+          java-version: '24'
           distribution: 'temurin'
 
       - name: Setup Gradle
