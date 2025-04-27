@@ -15,8 +15,17 @@ version '1.5.0'
 def currentOS = DefaultNativePlatform.currentOperatingSystem
 
 java {
-    targetCompatibility = JavaVersion.VERSION_24
-    sourceCompatibility = JavaVersion.VERSION_24
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(24)
+        sourceCompatibility = JavaLanguageVersion.of(24)
+        vendor = JvmVendorSpec.AMAZON
+    }
+}
+
+tasks.named("updateDaemonJvm") {
+    javaToolchains {
+        vendor = JvmVendorSpec.AMAZON
+    }
 }
 
 application {
