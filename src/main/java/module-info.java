@@ -1,5 +1,4 @@
 module Opal {
-    requires java.base;
     requires java.net.http;
     requires javafx.controls;
     requires javafx.fxml;

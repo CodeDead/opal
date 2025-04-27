@@ -15,17 +15,20 @@ version '1.5.0'
 def currentOS = DefaultNativePlatform.currentOperatingSystem
 
 java {
-    targetCompatibility = JavaVersion.VERSION_23
-    sourceCompatibility = JavaVersion.VERSION_23
+    targetCompatibility = JavaVersion.VERSION_24
+    sourceCompatibility = JavaVersion.VERSION_24
 }
 
 application {
     mainModule = 'Opal'
     mainClass = 'com.codedead.opal.OpalApplication'
+    applicationDefaultJvmArgs = [
+            '--enable-native-access', 'javafx.graphics,javafx.media'
+    ]
 }
 
 javafx {
-    version = '23.0.1'
+    version = '24.0.1'
     configuration = 'implementation'
     modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.media']
 }
@@ -106,9 +109,10 @@ tasks.register('AppImage') {
             from '.AppImage/.AppDir/Opal.png'
             into layout.buildDirectory.dir("AppImage/Opal.AppDir/usr/lib")
         }
-        exec {
+        def appCreate = providers.exec {
             commandLine 'sh', "${project.rootDir}/.AppImage/createAppImage.sh", "${project.version.toString()}"
         }
+        println(appCreate.standardOutput.asText.get().toString())
         delete layout.buildDirectory.dir("AppImage/Opal.AppDir")
     }
 }
@@ -135,9 +139,9 @@ repositories {
 dependencies {
     implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
     implementation 'io.github.mkpaz:atlantafx-base:2.0.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.4'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.4'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.12.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.12.2'
 }
 
 tasks.named('test') {

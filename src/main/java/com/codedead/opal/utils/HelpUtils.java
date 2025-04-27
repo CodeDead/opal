@@ -36,7 +36,7 @@ public final class HelpUtils {
         if (runnableFileOpener == null)
             throw new NullPointerException("RunnableFileOpener cannot be null!");
 
-        logger.info("Attempting to open file {}", runnableFileOpener.getFileLocation());
+        logger.info("Attempting to open file from filesystem {}", runnableFileOpener.getFileLocation());
 
         final Path filePath = Paths.get(runnableFileOpener.getFileLocation());
 
