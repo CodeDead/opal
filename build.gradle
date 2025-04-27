@@ -109,7 +109,7 @@ tasks.register('AppImage') {
             from '.AppImage/.AppDir/Opal.png'
             into layout.buildDirectory.dir("AppImage/Opal.AppDir/usr/lib")
         }
-        exec {
+        providers.exec {
             commandLine 'sh', "${project.rootDir}/.AppImage/createAppImage.sh", "${project.version.toString()}"
         }
         delete layout.buildDirectory.dir("AppImage/Opal.AppDir")
