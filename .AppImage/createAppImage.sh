@@ -1,5 +1,5 @@
 #!/bin/sh
-wget "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
+wget "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
 chmod a+x appimagetool-x86_64.AppImage
 BASEDIR=$(dirname "$0")
 PARENT_DIR="$(dirname "$BASEDIR")"
