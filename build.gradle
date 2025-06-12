@@ -15,8 +15,17 @@ version '1.5.0'
 def currentOS = DefaultNativePlatform.currentOperatingSystem
 
 java {
-    targetCompatibility = JavaVersion.VERSION_24
-    sourceCompatibility = JavaVersion.VERSION_24
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(24)
+        sourceCompatibility = JavaLanguageVersion.of(24)
+        vendor = JvmVendorSpec.AMAZON
+    }
+}
+
+tasks.named("updateDaemonJvm") {
+    javaToolchains {
+        vendor = JvmVendorSpec.AMAZON
+    }
 }
 
 application {
@@ -140,8 +149,8 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
     implementation 'io.github.mkpaz:atlantafx-base:2.0.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.12.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.12.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.1'
 }
 
 tasks.named('test') {
