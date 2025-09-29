@@ -5,7 +5,7 @@ plugins {
     id 'idea'
     id 'eclipse'
     id 'application'
-    id 'org.beryx.jlink' version '3.1.1'
+    id 'org.beryx.jlink' version '3.1.3'
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
@@ -16,8 +16,8 @@ def currentOS = DefaultNativePlatform.currentOperatingSystem
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(24)
-        sourceCompatibility = JavaLanguageVersion.of(24)
+        languageVersion = JavaLanguageVersion.of(25)
+        sourceCompatibility = JavaLanguageVersion.of(25)
         vendor = JvmVendorSpec.AMAZON
     }
 }
@@ -37,7 +37,7 @@ application {
 }
 
 javafx {
-    version = '24.0.1'
+    version = '25'
     configuration = 'implementation'
     modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.media']
 }
@@ -146,11 +146,11 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
-    implementation 'io.github.mkpaz:atlantafx-base:2.0.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.25.2'
+    implementation 'io.github.mkpaz:atlantafx-base:2.1.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.20.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.4'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
 }
 
 tasks.named('test') {
