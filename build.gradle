@@ -87,15 +87,18 @@ jlink {
     } else if (currentOS.isMacOsX()) {
         jpackage {
             installerType = 'dmg'
-            icon = "${project.rootDir}/src/main/resources/images/opal.png"
+            icon = "${project.rootDir}/src/main/resources/images/opal.icns"
+            imageOptions = [
+                    '--mac-package-identifier', 'com.codedead.opal',
+            ]
             installerOptions = [
                     '--mac-package-name', 'Opal',
-                    '--mac-package-identifier', 'com.codedead.opal',
                     '--mac-app-category', 'public.app-category.music',
                     '--copyright', 'Copyright (c) 2025 CodeDead',
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
                     '--license-file', 'LICENSE',
+                    '--mac-sign',
                     '--app-version', "${project.version.toString()}",
                     '--about-url', 'https://codedead.com'
             ]
