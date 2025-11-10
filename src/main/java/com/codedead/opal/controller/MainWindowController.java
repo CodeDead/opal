@@ -4,9 +4,10 @@ import com.codedead.opal.domain.*;
 import com.codedead.opal.interfaces.IAudioTimer;
 import com.codedead.opal.interfaces.IRunnableHelper;
 import com.codedead.opal.interfaces.TrayIconListener;
-import com.codedead.opal.utils.*;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.codedead.opal.utils.FxUtils;
+import com.codedead.opal.utils.HelpUtils;
+import com.codedead.opal.utils.RunnableFileOpener;
+import com.codedead.opal.utils.SharedVariables;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,6 +27,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -192,7 +195,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     private TimerTask countDownTask;
     private final String platformName;
     private final HelpUtils helpUtils;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final Timer timer;
     private final Timer countDownTimer;
     private final IAudioTimer audioTimer;
@@ -212,7 +215,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         this.timer = new Timer();
         this.countDownTimer = new Timer();
         this.audioTimer = this;
-        this.objectMapper = new ObjectMapper();
+        this.jsonMapper = JsonMapper.builder().build();
 
         resourceFactory = new ObservableResourceFactory();
     }
@@ -737,7 +740,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             final TypeReference<HashMap<String, Double>> typeRef = new TypeReference<>() {
             };
 
-            final Map<String, Double> mediaVolumes = objectMapper.readValue(actual, typeRef);
+            final Map<String, Double> mediaVolumes = jsonMapper.readValue(actual, typeRef);
             final List<SoundPane> soundPanes = getAllSoundPanes();
 
             mediaVolumes.forEach((key, value) -> soundPanes.stream().filter(e -> e.getMediaKey().equals(key)).forEach(e -> e.getSlider().setValue(value)));
@@ -769,12 +772,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             final Map<String, Double> mediaVolumes = new HashMap<>();
             getAllSoundPanes().forEach(e -> mediaVolumes.put(e.getMediaKey(), e.getSlider().getValue()));
 
-            try {
-                objectMapper.writeValue(new File(filePath), mediaVolumes);
-            } catch (final IOException ex) {
-                logger.error("Unable to save the sound settings to {}", filePath, ex);
-                FxUtils.showErrorAlert(resourceFactory.getResources().getString("SaveSoundPresetError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-            }
+            jsonMapper.writeValue(new File(filePath), mediaVolumes);
         } else {
             logger.info("Cancelled saving a sound settings");
         }

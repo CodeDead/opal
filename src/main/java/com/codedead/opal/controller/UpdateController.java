@@ -2,10 +2,10 @@ package com.codedead.opal.controller;
 
 import com.codedead.opal.domain.InvalidHttpResponseCodeException;
 import com.codedead.opal.domain.PlatformUpdate;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,7 +28,7 @@ public final class UpdateController {
     private String currentVersion;
 
     private final Logger logger;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     /**
      * Initialize a new UpdateController
@@ -40,8 +40,9 @@ public final class UpdateController {
         logger = LogManager.getLogger(UpdateController.class);
         logger.info("Initializing new UpdateController object");
 
-        objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        jsonMapper = JsonMapper.builder()
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .build();
 
         setUpdateUrl(updateUrl);
         setCurrentVersion(currentVersion);
@@ -134,7 +135,7 @@ public final class UpdateController {
             final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200)
-                return Arrays.asList(objectMapper.readValue(response.body(), PlatformUpdate[].class));
+                return Arrays.asList(jsonMapper.readValue(response.body(), PlatformUpdate[].class));
 
             throw new InvalidHttpResponseCodeException(String.format("Invalid HTTP response code (%s)", response.statusCode()));
         }
