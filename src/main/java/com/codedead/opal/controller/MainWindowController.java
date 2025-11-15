@@ -100,6 +100,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     @FXML
     private SoundPane snpDolphins;
     @FXML
+    private SoundPane snpForest;
+    @FXML
     private SoundPane snpZoo;
     @FXML
     private SoundPane snpFrogs;
@@ -313,6 +315,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         snpFrogs.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Frogs"));
         snpZoo.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Zoo"));
         snpDolphins.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Dolphins"));
+        snpForest.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Forest"));
 
         pneOffice.textProperty().bind(resourceFactory.getStringBinding("Office"));
         snpTyping.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Typing"));
