@@ -227,6 +227,7 @@
                             <RowConstraints vgrow="ALWAYS"/>
                             <RowConstraints vgrow="ALWAYS"/>
                             <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
                         </rowConstraints>
 
                         <columnConstraints>
@@ -269,6 +270,9 @@
                         <SoundPane fx:id="snpDolphins" GridPane.rowIndex="11" name="%Dolphins"
                                    mediaKey="dolphin" mediaPath="/audio/dolphin.mp3"
                                    image="/images/ocean.png" resourceFile="true"/>
+                        <SoundPane fx:id="snpForest" GridPane.rowIndex="12" name="%Forest"
+                                   mediaKey="forest" mediaPath="/audio/forest.mp3"
+                                   image="/images/forest.png" resourceFile="true"/>
                     </GridPane>
                 </TitledPane>
                 <TitledPane fx:id="pneOffice" text="%Office" expanded="false">
