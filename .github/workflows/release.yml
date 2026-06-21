@@ -17,14 +17,14 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Install dependencies
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: sudo apt-get install -y fuse libfuse2
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Build
         run: ./gradlew build
@@ -36,7 +36,7 @@ jobs:
         run: ./gradlew jpackage
 
       - name: Publish artifacts
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           prerelease: false
           files: |
@@ -51,14 +51,14 @@ jobs:
         os: [ ubuntu-latest, windows-latest ]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Install dependencies
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: sudo apt-get install -y fuse libfuse2
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Switch portable flag (Linux)
         if: ${{ matrix.os == 'ubuntu-latest' }}
@@ -86,7 +86,7 @@ jobs:
         run: Compress-Archive -Path build/jpackage/Opal/* -Destination build/jpackage/Opal-win-portable.zip
 
       - name: Publish artifacts
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           prerelease: false
           files: |
