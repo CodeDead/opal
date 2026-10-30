@@ -42,7 +42,8 @@
 
     <MenuBar GridPane.rowIndex="0">
         <Menu fx:id="mnuFile" text="%File">
-            <MenuItem fx:id="mniOpenSoundPreset" onAction="#openSoundPresetAction" text="%OpenSoundPreset">
+            <MenuItem fx:id="mniOpenSoundPreset" onAction="#openSoundPresetAction" text="%OpenSoundPreset"
+                      accelerator="Shortcut+O">
                 <graphic>
                     <ImageView>
                         <Image url="@../images/open.png"/>

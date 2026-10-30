@@ -39,6 +39,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
@@ -478,6 +479,18 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     }
 
     /**
+     * Get all {@link SoundPane} objects, including custom sounds
+     *
+     * @return The {@link List} of all {@link SoundPane} objects
+     */
+    private List<SoundPane> getAllSoundPanesIncludingCustom() {
+        final List<SoundPane> elements = new ArrayList<>(getAllSoundPanes());
+        elements.addAll(getSoundPanes(grpCustom));
+
+        return elements;
+    }
+
+    /**
      * Get all {@link SoundPane} objects from a {@link GridPane} object
      *
      * @param parent The {@link GridPane} object
@@ -828,13 +841,17 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     @FXML
     private void playPauseAction() {
         logger.info("Play / pause all media");
-        try {
-            for (final SoundPane soundPane : getAllSoundPanes()) {
-                soundPane.playPause();
-            }
 
-            for (final SoundPane soundPane : getSoundPanes(grpCustom)) {
-                soundPane.playPause();
+        final List<SoundPane> soundPanes = getAllSoundPanesIncludingCustom();
+        final boolean pauseAll = soundPanes.stream().anyMatch(SoundPane::isPlaying);
+
+        try {
+            for (final SoundPane soundPane : soundPanes) {
+                if (pauseAll) {
+                    soundPane.pause();
+                } else if (soundPane.getSlider().getValue() > 0) {
+                    soundPane.play();
+                }
             }
         } catch (final MediaPlayerException ex) {
             logger.error("Unable to play / pause MediaPlayer", ex);
@@ -1145,18 +1162,18 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         };
 
         countDownTask = new TimerTask() {
-            final long seconds = delay / 1000;
-            int i = 0;
+            private final long startNanos = System.nanoTime();
 
             @Override
             public void run() {
-                i++;
-                long timeLeft = (seconds - (i % seconds));
+                final long elapsedMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos);
+                final long remainingMillis = Math.max(0, delay - elapsedMillis);
+                final long timeLeft = remainingMillis / 1000;
 
                 // Calculate hours, minutes and seconds
-                long hours = timeLeft / 3600;
-                long minutes = (timeLeft % 3600) / 60;
-                long seconds = timeLeft % 60;
+                final long hours = timeLeft / 3600;
+                final long minutes = (timeLeft % 3600) / 60;
+                final long seconds = timeLeft % 60;
 
                 // Format the values to HH:MM:SS with leading zeros if necessary
                 final String timeLeftFormatted = String.format("%02d:%02d:%02d", hours, minutes, seconds);
