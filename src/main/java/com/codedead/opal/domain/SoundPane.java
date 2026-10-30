@@ -296,11 +296,27 @@ public final class SoundPane extends GridPane {
      */
     @FXML
     public void playPause() throws MediaPlayerException {
-        if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+        if (sldVolume.getValue() <= 0) {
+            // The volume listener starts playback when the slider moves above zero
+            sldVolume.setValue(1.0);
+        } else if (isPlaying()) {
             pause();
-        } else if (mediaPlayer != null && mediaPlayer.getVolume() != 0) {
+        } else {
             play();
         }
+    }
+
+    /**
+     * Check whether the {@link MediaPlayer} object is currently playing
+     *
+     * @return True if the media is playing or stalled, otherwise false
+     */
+    public boolean isPlaying() {
+        if (mediaPlayer == null)
+            return false;
+
+        final MediaPlayer.Status status = mediaPlayer.getStatus();
+        return status == MediaPlayer.Status.PLAYING || status == MediaPlayer.Status.STALLED;
     }
 
     /**
