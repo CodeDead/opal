@@ -498,6 +498,33 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     }
 
     /**
+     * Filter the {@link SoundPane} objects in a {@link GridPane} based on a search query
+     *
+     * @param gridPane The {@link GridPane} containing the {@link SoundPane} objects
+     * @param query    The trimmed, lower-case query to filter on
+     */
+    private void filterSoundPanes(final GridPane gridPane, final String query) {
+        getSoundPanes(gridPane).forEach(e -> {
+            e.setVisible(e.getName().toLowerCase().contains(query));
+            e.setManaged(e.isVisible());
+        });
+    }
+
+    /**
+     * Update the visibility of a {@link TitledPane} based on whether any of its {@link SoundPane} children are visible
+     *
+     * @param titledPane The {@link TitledPane} to update
+     * @param gridPane   The {@link GridPane} containing the {@link SoundPane} objects
+     */
+    private void updateTitledPaneVisibility(final TitledPane titledPane, final GridPane gridPane) {
+        final boolean hasVisibleSoundPane = getSoundPanes(gridPane).stream().anyMatch(Node::isVisible);
+
+        titledPane.setExpanded(hasVisibleSoundPane);
+        titledPane.setVisible(hasVisibleSoundPane);
+        titledPane.setManaged(hasVisibleSoundPane);
+    }
+
+    /**
      * Open a file on the local filesystem
      *
      * @param path The path of the file that should be opened
@@ -595,86 +622,25 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             }
 
             Platform.runLater(() -> {
-                getAllSoundPanes()
-                        .forEach(e -> {
-                            e.setVisible(e.getName().toLowerCase().contains(newValue.trim().toLowerCase()));
-                            e.setManaged(e.isVisible());
-                        });
+                final String query = newValue.trim().toLowerCase();
 
-                getSoundPanes(grpCustom)
-                        .forEach(e -> {
-                            e.setVisible(e.getName().toLowerCase().contains(newValue.trim().toLowerCase()));
-                            e.setManaged(e.isVisible());
-                        });
+                filterSoundPanes(grpNature, query);
+                filterSoundPanes(grpOffice, query);
+                filterSoundPanes(grpAudiences, query);
+                filterSoundPanes(grpRadioFrequencyStatic, query);
+                filterSoundPanes(grpOther, query);
+                filterSoundPanes(grpCustom, query);
 
-                // Check if there are still active sound panes on pneCustom
+                // Hide the TitledPanes that no longer contain any visible SoundPane
                 final List<SoundPane> customSoundPanes = getSoundPanes(grpCustom);
                 if (!customSoundPanes.isEmpty()) {
-                    customSoundPanes.stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
-                        pneCustom.setExpanded(true);
-                        pneCustom.setVisible(true);
-                        pneCustom.setManaged(true);
-                    }, () -> {
-                        pneCustom.setExpanded(false);
-                        pneCustom.setVisible(false);
-                        pneCustom.setManaged(false);
-                    });
+                    updateTitledPaneVisibility(pneCustom, grpCustom);
                 }
-
-                // Check if there are still active sound panes on pneNature
-                getSoundPanes(grpNature).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
-                    pneNature.setExpanded(true);
-                    pneNature.setVisible(true);
-                    pneNature.setManaged(true);
-                }, () -> {
-                    pneNature.setExpanded(false);
-                    pneNature.setVisible(false);
-                    pneNature.setManaged(false);
-                });
-
-                // Check if there are still active sound panes on pneOffice
-                getSoundPanes(grpOffice).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
-                    pneOffice.setExpanded(true);
-                    pneOffice.setVisible(true);
-                    pneOffice.setManaged(true);
-                }, () -> {
-                    pneOffice.setExpanded(false);
-                    pneOffice.setVisible(false);
-                    pneOffice.setManaged(false);
-                });
-
-                // Check if there are still active sound panes on pneAudiences
-                getSoundPanes(grpAudiences).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
-                    pneAudiences.setExpanded(true);
-                    pneAudiences.setVisible(true);
-                    pneAudiences.setManaged(true);
-                }, () -> {
-                    pneAudiences.setExpanded(false);
-                    pneAudiences.setVisible(false);
-                    pneAudiences.setManaged(false);
-                });
-
-                // Check if there are still active sound panes on pneRadioFrequencyStatic
-                getSoundPanes(grpRadioFrequencyStatic).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
-                    pneRadioFrequencyStatic.setExpanded(true);
-                    pneRadioFrequencyStatic.setVisible(true);
-                    pneRadioFrequencyStatic.setManaged(true);
-                }, () -> {
-                    pneRadioFrequencyStatic.setExpanded(false);
-                    pneRadioFrequencyStatic.setVisible(false);
-                    pneRadioFrequencyStatic.setManaged(false);
-                });
-
-                // Check if there are still active sound panes on pneOther
-                getSoundPanes(grpOther).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
-                    pneOther.setExpanded(true);
-                    pneOther.setVisible(true);
-                    pneOther.setManaged(true);
-                }, () -> {
-                    pneOther.setExpanded(false);
-                    pneOther.setVisible(false);
-                    pneOther.setManaged(false);
-                });
+                updateTitledPaneVisibility(pneNature, grpNature);
+                updateTitledPaneVisibility(pneOffice, grpOffice);
+                updateTitledPaneVisibility(pneAudiences, grpAudiences);
+                updateTitledPaneVisibility(pneRadioFrequencyStatic, grpRadioFrequencyStatic);
+                updateTitledPaneVisibility(pneOther, grpOther);
 
                 btnClearSearch.setVisible(true);
                 btnClearSearch.setManaged(true);

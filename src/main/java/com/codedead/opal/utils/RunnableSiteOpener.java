@@ -42,16 +42,7 @@ public final class RunnableSiteOpener implements Runnable {
             } else {
                 final String os = System.getProperty("os.name").toLowerCase();
 
-                final String[] command;
-                if (os.contains("win")) {
-                    command = new String[]{"rundll32", "url.dll,FileProtocolHandler", url};
-                } else if (os.contains("mac")) {
-                    command = new String[]{"open", url};
-                } else if (os.contains("nix") || os.contains("nux")) {
-                    command = new String[]{"xdg-open", url};
-                } else {
-                    throw new UnsupportedOperationException("Unsupported OS: " + os);
-                }
+                final String[] command = getCommand(os);
 
                 //noinspection EmptyTryBlock
                 try (final Process process = new ProcessBuilder(command)
@@ -68,5 +59,25 @@ public final class RunnableSiteOpener implements Runnable {
                 iRunnableHelper.exceptionOccurred(ex);
             }
         }
+    }
+
+    /**
+     * Get the command for opening a URL
+     *
+     * @param os The operating system
+     * @return The command for opening a URL
+     */
+    private String [] getCommand(final String os) {
+        final String[] command;
+        if (os.contains("win")) {
+            command = new String[]{"rundll32", "url.dll,FileProtocolHandler", url};
+        } else if (os.contains("mac")) {
+            command = new String[]{"open", url};
+        } else if (os.contains("nix") || os.contains("nux")) {
+            command = new String[]{"xdg-open", url};
+        } else {
+            throw new UnsupportedOperationException("Unsupported OS: " + os);
+        }
+        return command;
     }
 }
