@@ -76,7 +76,7 @@ especially if you're targeting a specific platform and installation method.
 
 The following dependencies are universal:
 
-* [JDK25](https://openjdk.java.net/projects/jdk/25/)
+* [JDK27](https://openjdk.java.net/projects/jdk/27/)
 * [JavaFX](https://openjfx.io)
 * [Gradle](https://gradle.org)
 * [FasterXML/jackson](https://github.com/FasterXML/jackson)
