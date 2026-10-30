@@ -108,24 +108,35 @@ jlink {
 
 tasks.register('AppImage') {
     dependsOn jpackageImage
-    doLast {
-        copy {
-            from '.AppImage/.AppDir'
-            into layout.buildDirectory.dir("AppImage/Opal.AppDir")
-        }
-        copy {
-            from layout.buildDirectory.dir("jpackage/Opal/")
-            into layout.buildDirectory.dir("AppImage/Opal.AppDir/usr/")
-        }
-        copy {
-            from '.AppImage/.AppDir/Opal.png'
-            into layout.buildDirectory.dir("AppImage/Opal.AppDir/usr/lib")
-        }
-        def appCreate = providers.exec {
-            commandLine 'sh', "${project.rootDir}/.AppImage/createAppImage.sh", "${project.version.toString()}"
-        }
-        println(appCreate.standardOutput.asText.get().toString())
+    doFirst {
         delete layout.buildDirectory.dir("AppImage/Opal.AppDir")
+    }
+    doLast {
+        try {
+            copy {
+                from '.AppImage/.AppDir'
+                into layout.buildDirectory.dir("AppImage/Opal.AppDir")
+            }
+            copy {
+                from layout.buildDirectory.dir("jpackage/Opal/")
+                into layout.buildDirectory.dir("AppImage/Opal.AppDir/usr/")
+            }
+            copy {
+                from '.AppImage/.AppDir/Opal.png'
+                into layout.buildDirectory.dir("AppImage/Opal.AppDir/usr/lib")
+            }
+            def appCreate = providers.exec {
+                commandLine 'sh', "${project.rootDir}/.AppImage/createAppImage.sh", "${project.version.toString()}"
+                ignoreExitValue = true
+            }
+            def appCreateResult = appCreate.result.get()
+            println(appCreate.standardOutput.asText.get().toString())
+            if (appCreateResult.exitValue != 0) {
+                throw new GradleException("AppImage creation failed with exit code ${appCreateResult.exitValue}")
+            }
+        } finally {
+            delete layout.buildDirectory.dir("AppImage/Opal.AppDir")
+        }
     }
 }
 
@@ -154,8 +165,10 @@ dependencies {
     implementation 'tools.jackson.core:jackson-databind:3.2.4'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:6.1.3'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:6.1.3'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.1.3'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+    systemProperty 'logBasePath', layout.buildDirectory.dir('test-logs').get().asFile.absolutePath
 }

@@ -1,6 +1,7 @@
 package com.codedead.opal.domain;
 
 import java.util.Map;
+import java.util.Objects;
 
 public final class PlatformUpdate implements Comparable<PlatformUpdate> {
 
@@ -166,39 +167,30 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
     }
 
     /**
-     * Check if a {@link PlatformUpdate} is more recent than another
+     * Compare this update with another update using natural version ordering
      *
-     * @param o The platform update that should be compared
-     * @return 1 if the {@link PlatformUpdate} object that is passed as a parameter is more recent than the given {@link PlatformUpdate}, otherwise 0
+     * @param other The platform update that should be compared
+     * @return A negative value if this update is older, zero if both versions are equal, or a positive value if this update is newer
      */
     @Override
-    public int compareTo(final PlatformUpdate o) {
-        if (o == null)
-            return -1;
+    public int compareTo(final PlatformUpdate other) {
+        Objects.requireNonNull(other, "other");
 
-        if (getMajorVersion() < o.getMajorVersion()) {
-            return 1;
-        } else if (getMajorVersion() > o.getMajorVersion()) {
-            return 0;
-        } else {
-            if (getMinorVersion() < o.getMinorVersion()) {
-                return 1;
-            } else if (getMajorVersion() < o.getMinorVersion()) {
-                return 0;
-            } else {
-                if (getBuildVersion() < o.getBuildVersion()) {
-                    return 1;
-                } else if (getBuildVersion() > o.getBuildVersion()) {
-                    return 0;
-                } else {
-                    if (getRevisionVersion() < o.getRevisionVersion()) {
-                        return 1;
-                    } else if (getRevisionVersion() > o.getRevisionVersion()) {
-                        return 0;
-                    }
-                }
-            }
+        int result = Integer.compare(majorVersion, other.majorVersion);
+        if (result != 0) {
+            return result;
         }
-        return 0;
+
+        result = Integer.compare(minorVersion, other.minorVersion);
+        if (result != 0) {
+            return result;
+        }
+
+        result = Integer.compare(buildVersion, other.buildVersion);
+        if (result != 0) {
+            return result;
+        }
+
+        return Integer.compare(revisionVersion, other.revisionVersion);
     }
 }

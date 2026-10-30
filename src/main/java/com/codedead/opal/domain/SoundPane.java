@@ -11,7 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -94,11 +93,7 @@ public final class SoundPane extends GridPane {
         disposeMediaPlayer();
 
         mediaPlayer = new MediaPlayer(new Media(isResourceFile() ? Objects.requireNonNull(getClass().getResource(value)).toURI().toString() : value));
-        mediaPlayer.setOnEndOfMedia(() -> {
-            if (mediaPlayer != null) {
-                mediaPlayer.seek(Duration.ZERO);
-            }
-        });
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.volumeProperty().bindBidirectional(sldVolume.valueProperty());
         mediaPlayer.statusProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == MediaPlayer.Status.PLAYING) {
