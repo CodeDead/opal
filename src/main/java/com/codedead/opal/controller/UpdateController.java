@@ -62,7 +62,7 @@ public final class UpdateController {
      * @return The {@link Optional} {@link PlatformUpdate} object
      * @throws InterruptedException             When the retrieval of the {@link List} of {@link PlatformUpdate} objects was interrupted
      * @throws InvalidHttpResponseCodeException When an invalid HTTP response code was returned when checking for updates
-     * @throws IOException                      When the response that was returned from the server could not be serialized as a {@link List} of {@link PlatformUpdate} object
+     * @throws IOException                      When the response from the server could not be serialized as a {@link List} of {@link PlatformUpdate} object
      */
     public Optional<PlatformUpdate> checkForUpdates(final String currentPlatform, final boolean isPortable) throws InterruptedException, InvalidHttpResponseCodeException, IOException {
         if (currentPlatform == null)
