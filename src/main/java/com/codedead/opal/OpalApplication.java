@@ -35,6 +35,11 @@ public class OpalApplication extends Application {
      * @param args The application arguments
      */
     public static void main(final String[] args) {
+        // The JDK disables Basic authentication for HTTPS proxy tunneling by default
+        if (System.getProperty("jdk.http.auth.tunneling.disabledSchemes") == null) {
+            System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+        }
+
         System.setProperty("logBasePath", SharedVariables.PROPERTIES_BASE_PATH);
         logger = LogManager.getLogger(OpalApplication.class);
 

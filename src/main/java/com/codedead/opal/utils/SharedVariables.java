@@ -13,6 +13,7 @@ public final class SharedVariables {
 
     public static final String PROPERTIES_RESOURCE_LOCATION = "default.properties";
     public static final String PROPERTIES_FILE_LOCATION = PROPERTIES_BASE_PATH + "/opal.properties";
+    public static final String PROXY_PASSWORD_KEY_FILE_LOCATION = PROPERTIES_BASE_PATH + "/proxy.key";
 
     public static final String HELP_DOCUMENTATION_RESOURCE_LOCATION = "/documents/help.pdf";
     public static final String HELP_DOCUMENTATION_FILE_LOCATION = PROPERTIES_BASE_PATH + "/help.pdf";

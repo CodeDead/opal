@@ -7,17 +7,19 @@ import org.apache.logging.log4j.Logger;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.json.JsonMapper;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Authenticator;
+import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
+import java.net.ProxySelector;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +28,10 @@ public final class UpdateController {
 
     private String updateUrl;
     private String currentVersion;
+    private ProxySelector proxySelector;
+    private boolean proxyAuthEnabled;
+    private String proxyUsername;
+    private char[] proxyPassword;
 
     private final Logger logger;
     private final JsonMapper jsonMapper;
@@ -127,7 +133,7 @@ public final class UpdateController {
     public List<PlatformUpdate> getUpdates() throws IOException, InterruptedException, InvalidHttpResponseCodeException {
         logger.info("Attempting to retrieve List of PlatformUpdate objects from {}", getUpdateUrl());
 
-        try (final HttpClient client = HttpClient.newHttpClient()) {
+        try (final HttpClient client = createHttpClient()) {
             final HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(getUpdateUrl()))
                     .build();
@@ -146,10 +152,11 @@ public final class UpdateController {
      *
      * @param url  The URL of the file that should be downloaded
      * @param path The path on the local filesystem where the file should be stored
-     * @throws IOException        If the transfer failed
-     * @throws URISyntaxException If the URL is invalid
+     * @throws IOException                      If the transfer failed
+     * @throws InterruptedException             If the transfer was interrupted
+     * @throws InvalidHttpResponseCodeException When the HTTP response status code is not OK
      */
-    public void downloadFile(final String url, final String path) throws IOException, URISyntaxException {
+    public void downloadFile(final String url, final String path) throws IOException, InterruptedException, InvalidHttpResponseCodeException {
         if (url == null)
             throw new NullPointerException("URL cannot be null!");
         if (url.isBlank())
@@ -161,13 +168,108 @@ public final class UpdateController {
 
         logger.info("Attempting to download file from {} and store it at {}", url, path);
 
-        final URL website = new URI(url).toURL();
-        try (final InputStream inputStream = website.openStream()) {
-            try (final ReadableByteChannel rbc = Channels.newChannel(inputStream)) {
-                try (final FileOutputStream fos = new FileOutputStream(path)) {
-                    fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-                }
+        final HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .build();
+
+        try (final HttpClient client = createHttpClient()) {
+            final HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+
+            if (response.statusCode() != 200)
+                throw new InvalidHttpResponseCodeException(String.format("Invalid HTTP response code (%s)", response.statusCode()));
+
+            try (final InputStream inputStream = response.body();
+                 final OutputStream outputStream = Files.newOutputStream(Path.of(path))) {
+                inputStream.transferTo(outputStream);
             }
+        }
+    }
+
+    /**
+     * Create a new {@link HttpClient} that uses the configured proxy, if any
+     *
+     * @return The {@link HttpClient} object
+     */
+    private HttpClient createHttpClient() {
+        final HttpClient.Builder builder = HttpClient.newBuilder()
+                .followRedirects(HttpClient.Redirect.NORMAL);
+
+        if (proxySelector != null) {
+            builder.proxy(proxySelector);
+        }
+
+        if (proxySelector != null && proxyAuthEnabled) {
+            builder.authenticator(new ProxyAuthenticator(proxyUsername, proxyPassword));
+        }
+
+        return builder.build();
+    }
+
+    /**
+     * Configure the proxy authentication that is used for update requests
+     *
+     * @param enabled  True if proxy authentication should be used, otherwise false
+     * @param username The proxy username
+     * @param password The proxy password
+     */
+    public void setProxyAuthentication(final boolean enabled, final String username, final String password) {
+        clearProxyPassword();
+        proxyAuthEnabled = false;
+        proxyUsername = null;
+
+        if (!enabled)
+            return;
+        if (username == null)
+            throw new NullPointerException("Proxy username cannot be null!");
+
+        final String proxyUser = username.trim();
+        if (proxyUser.isBlank())
+            throw new IllegalArgumentException("Proxy username cannot be blank!");
+        if (password == null)
+            throw new NullPointerException("Proxy password cannot be null!");
+        if (password.isEmpty())
+            throw new IllegalArgumentException("Proxy password cannot be empty!");
+
+        proxyAuthEnabled = true;
+        proxyUsername = proxyUser;
+        proxyPassword = password.toCharArray();
+    }
+
+    /**
+     * Clear the stored proxy password
+     */
+    private void clearProxyPassword() {
+        if (proxyPassword != null) {
+            Arrays.fill(proxyPassword, '\0');
+            proxyPassword = null;
+        }
+    }
+
+    /**
+     * {@link Authenticator} that provides the configured proxy credentials
+     */
+    private static final class ProxyAuthenticator extends Authenticator {
+
+        private final String username;
+        private final char[] password;
+
+        /**
+         * Initialize a new ProxyAuthenticator
+         *
+         * @param username The proxy username
+         * @param password The proxy password
+         */
+        private ProxyAuthenticator(final String username, final char[] password) {
+            this.username = username;
+            this.password = password;
+        }
+
+        @Override
+        protected PasswordAuthentication getPasswordAuthentication() {
+            if (getRequestorType() == RequestorType.PROXY) {
+                return new PasswordAuthentication(username, password);
+            }
+            return null;
         }
     }
 
@@ -192,6 +294,31 @@ public final class UpdateController {
             throw new IllegalArgumentException("Update URL cannot be blank!");
 
         this.updateUrl = updateUrl;
+    }
+
+    /**
+     * Configure the proxy that is used for update requests
+     *
+     * @param enabled True if a custom proxy should be used, otherwise false
+     * @param host    The proxy host
+     * @param port    The proxy port
+     */
+    public void setProxy(final boolean enabled, final String host, final int port) {
+        if (!enabled) {
+            proxySelector = null;
+            return;
+        }
+        if (host == null)
+            throw new NullPointerException("Proxy host cannot be null!");
+
+        final String proxyHost = host.trim();
+        if (proxyHost.isBlank())
+            throw new IllegalArgumentException("Proxy host cannot be blank!");
+        if (port < 1 || port > 65535)
+            throw new IllegalArgumentException("Proxy port must be between 1 and 65535!");
+
+        logger.info("Using custom proxy {}:{} for update requests", proxyHost, port);
+        proxySelector = ProxySelector.of(InetSocketAddress.createUnresolved(proxyHost, port));
     }
 
     /**

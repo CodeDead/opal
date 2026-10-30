@@ -6,6 +6,7 @@ import com.codedead.opal.interfaces.IRunnableHelper;
 import com.codedead.opal.interfaces.TrayIconListener;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.HelpUtils;
+import com.codedead.opal.utils.PasswordCipher;
 import com.codedead.opal.utils.RunnableFileOpener;
 import com.codedead.opal.utils.SharedVariables;
 import javafx.application.Platform;
@@ -34,9 +35,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.GeneralSecurityException;
 import java.util.*;
 
 import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
@@ -197,6 +198,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     private TimerTask countDownTask;
     private final String platformName;
     private final HelpUtils helpUtils;
+    private final PasswordCipher passwordCipher;
     private final JsonMapper jsonMapper;
     private final Timer timer;
     private final Timer countDownTimer;
@@ -215,6 +217,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
         platformName = OsCheck.getOperatingSystemType().name();
         helpUtils = new HelpUtils();
+        passwordCipher = new PasswordCipher();
 
         this.timer = new Timer();
         this.countDownTimer = new Timer();
@@ -365,6 +368,37 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     }
 
     /**
+     * Configure the proxy that should be used when checking for updates
+     */
+    private void configureUpdateProxy() {
+        final Properties properties = settingsController.getProperties();
+        final boolean proxyEnabled = Boolean.parseBoolean(properties.getProperty("updateProxyEnabled", "false"));
+        final boolean authenticationEnabled = proxyEnabled && Boolean.parseBoolean(properties.getProperty("updateProxyAuthEnabled", "false"));
+        final String proxyPort = properties.getProperty("updateProxyPort", "8080").trim();
+        final int port = proxyPort.isBlank() ? 8080 : Integer.parseInt(proxyPort);
+
+        updateController.setProxy(proxyEnabled, properties.getProperty("updateProxyHost", ""), port);
+        updateController.setProxyAuthentication(
+                authenticationEnabled,
+                properties.getProperty("updateProxyUsername", ""),
+                authenticationEnabled ? decryptProxyPassword(properties.getProperty("updateProxyPassword", "")) : "");
+    }
+
+    /**
+     * Decrypt the stored proxy password
+     *
+     * @param storedPassword The stored password
+     * @return The decrypted password
+     */
+    private String decryptProxyPassword(final String storedPassword) {
+        try {
+            return passwordCipher.decrypt(storedPassword);
+        } catch (final IOException | GeneralSecurityException ex) {
+            throw new IllegalArgumentException("Unable to decrypt the proxy password", ex);
+        }
+    }
+
+    /**
      * Check for application updates
      *
      * @param showNoUpdates Show an {@link Alert} object when no updates are available
@@ -374,6 +408,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         logger.info("Attempting to check for updates");
 
         try {
+            configureUpdateProxy();
+
             final Optional<PlatformUpdate> platformUpdate = updateController.checkForUpdates(platformName, SharedVariables.PORTABLE);
             if (platformUpdate.isPresent()) {
                 final PlatformUpdate update = platformUpdate.get();
@@ -413,7 +449,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                     FxUtils.showInformationAlert(resourceFactory.getResources().getString("NoUpdateAvailable"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                 }
             }
-        } catch (final InterruptedException | IOException | InvalidHttpResponseCodeException | URISyntaxException ex) {
+        } catch (final InterruptedException | IOException | InvalidHttpResponseCodeException | IllegalArgumentException ex) {
             if (ex instanceof InterruptedException)
                 Thread.currentThread().interrupt();
 

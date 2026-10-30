@@ -5,6 +5,7 @@ import com.codedead.opal.domain.NumberTextField;
 import com.codedead.opal.domain.OSType;
 import com.codedead.opal.domain.OsCheck;
 import com.codedead.opal.utils.FxUtils;
+import com.codedead.opal.utils.PasswordCipher;
 import com.codedead.opal.utils.SharedVariables;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -14,7 +15,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -22,6 +25,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -55,11 +59,24 @@ public final class SettingsWindowController {
     private ComboBox<String> cboLanguage;
     @FXML
     private ComboBox<String> cboLogLevel;
+    @FXML
+    private CheckBox chbUpdateProxy;
+    @FXML
+    private TextField txtProxyHost;
+    @FXML
+    private NumberTextField numProxyPort;
+    @FXML
+    private CheckBox chbProxyAuthentication;
+    @FXML
+    private TextField txtProxyUsername;
+    @FXML
+    private PasswordField pfProxyPassword;
 
     private MainWindowController mainWindowController;
     private SettingsController settingsController;
     private ResourceBundle translationBundle;
 
+    private final PasswordCipher passwordCipher;
     private final Logger logger;
 
     /**
@@ -68,6 +85,7 @@ public final class SettingsWindowController {
     public SettingsWindowController() {
         logger = LogManager.getLogger(SettingsWindowController.class);
         logger.info("Initializing new SettingsWindowController object");
+        passwordCipher = new PasswordCipher();
     }
 
     /**
@@ -82,6 +100,32 @@ public final class SettingsWindowController {
         if (Objects.requireNonNull(OsCheck.getOperatingSystemType()) == OSType.OTHER) {
             chbTimerComputerShutdown.setDisable(true);
         }
+
+        chbUpdateProxy.selectedProperty()
+                .addListener((options, oldValue, newValue) -> updateProxyControls());
+        chbProxyAuthentication.selectedProperty()
+                .addListener((options, oldValue, newValue) -> updateProxyAuthenticationControls());
+        updateProxyControls();
+    }
+
+    /**
+     * Enable or disable the proxy controls based on the checkbox state
+     */
+    private void updateProxyControls() {
+        final boolean disabled = !chbUpdateProxy.isSelected();
+        txtProxyHost.setDisable(disabled);
+        numProxyPort.setDisable(disabled);
+        chbProxyAuthentication.setDisable(disabled);
+        updateProxyAuthenticationControls();
+    }
+
+    /**
+     * Enable or disable the proxy authentication controls based on the checkbox states
+     */
+    private void updateProxyAuthenticationControls() {
+        final boolean disabled = !chbUpdateProxy.isSelected() || !chbProxyAuthentication.isSelected();
+        txtProxyUsername.setDisable(disabled);
+        pfProxyPassword.setDisable(disabled);
     }
 
     /**
@@ -152,6 +196,12 @@ public final class SettingsWindowController {
         };
 
         chbAutoUpdate.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("autoUpdate", "true")));
+        chbUpdateProxy.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("updateProxyEnabled", "false")));
+        txtProxyHost.setText(settingsController.getProperties().getProperty("updateProxyHost", ""));
+        numProxyPort.setText(settingsController.getProperties().getProperty("updateProxyPort", "8080"));
+        chbProxyAuthentication.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("updateProxyAuthEnabled", "false")));
+        txtProxyUsername.setText(settingsController.getProperties().getProperty("updateProxyUsername", ""));
+        pfProxyPassword.setText(decryptProxyPassword(settingsController.getProperties().getProperty("updateProxyPassword", "")));
         chbMediaButtons.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("mediaButtons", "true")));
         chbDragDrop.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("dragDrop", "true")));
         chbTrayIcon.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("trayIcon", "false")));
@@ -162,6 +212,21 @@ public final class SettingsWindowController {
         chbTimerComputerShutdown.setSelected(Boolean.parseBoolean(settingsController.getProperties().getProperty("timerComputerShutdown", "false")));
 
         sldAudioBalance.setValue(Double.parseDouble(settingsController.getProperties().getProperty("audioBalance", "0.0")));
+    }
+
+    /**
+     * Decrypt the stored proxy password
+     *
+     * @param storedPassword The stored password
+     * @return The decrypted password, or an empty {@link String} if it could not be decrypted
+     */
+    private String decryptProxyPassword(final String storedPassword) {
+        try {
+            return passwordCipher.decrypt(storedPassword);
+        } catch (final IOException | GeneralSecurityException ex) {
+            logger.error("Unable to decrypt the proxy password", ex);
+            return "";
+        }
     }
 
     /**
@@ -203,7 +268,54 @@ public final class SettingsWindowController {
     private void saveSettingsAction() {
         logger.info("Attempting to save all settings");
 
+        final boolean updateProxyEnabled = chbUpdateProxy.isSelected();
+        final String updateProxyHost = txtProxyHost.getText() == null ? "" : txtProxyHost.getText().trim();
+        final String updateProxyPortValue = numProxyPort.getText() == null ? "" : numProxyPort.getText().trim();
+        final boolean updateProxyAuthEnabled = chbProxyAuthentication.isSelected();
+        final String updateProxyUsername = txtProxyUsername.getText() == null ? "" : txtProxyUsername.getText().trim();
+        final String updateProxyPassword = pfProxyPassword.getText() == null ? "" : pfProxyPassword.getText();
+        int updateProxyPort = 8080;
+
+        if (!updateProxyPortValue.isBlank()) {
+            try {
+                updateProxyPort = Integer.parseInt(updateProxyPortValue);
+            } catch (final NumberFormatException ex) {
+                if (updateProxyEnabled) {
+                    logger.warn("Invalid proxy port: {}", updateProxyPortValue);
+                    FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), translationBundle.getString("InvalidProxySettings"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+                    return;
+                }
+            }
+        }
+
+        if (updateProxyEnabled && (updateProxyHost.isBlank() || updateProxyPort < 1 || updateProxyPort > 65535)) {
+            logger.warn("Invalid proxy settings: {}:{}", updateProxyHost, updateProxyPort);
+            FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), translationBundle.getString("InvalidProxySettings"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            return;
+        }
+
+        if (updateProxyEnabled && updateProxyAuthEnabled && (updateProxyUsername.isBlank() || updateProxyPassword.isEmpty())) {
+            logger.warn("Invalid proxy authentication settings");
+            FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), translationBundle.getString("InvalidProxyAuthentication"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            return;
+        }
+
+        final String storedProxyPassword;
+        try {
+            storedProxyPassword = passwordCipher.encrypt(updateProxyPassword);
+        } catch (final IOException | GeneralSecurityException ex) {
+            logger.error("Unable to encrypt the proxy password", ex);
+            FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+            return;
+        }
+
         settingsController.getProperties().setProperty("autoUpdate", Boolean.toString(chbAutoUpdate.isSelected()));
+        settingsController.getProperties().setProperty("updateProxyEnabled", Boolean.toString(updateProxyEnabled));
+        settingsController.getProperties().setProperty("updateProxyHost", updateProxyHost);
+        settingsController.getProperties().setProperty("updateProxyPort", String.valueOf(updateProxyPort));
+        settingsController.getProperties().setProperty("updateProxyAuthEnabled", Boolean.toString(updateProxyAuthEnabled));
+        settingsController.getProperties().setProperty("updateProxyUsername", updateProxyUsername);
+        settingsController.getProperties().setProperty("updateProxyPassword", storedProxyPassword);
         settingsController.getProperties().setProperty("mediaButtons", Boolean.toString(chbMediaButtons.isSelected()));
         settingsController.getProperties().setProperty("dragDrop", Boolean.toString(chbDragDrop.isSelected()));
         settingsController.getProperties().setProperty("trayIcon", Boolean.toString(chbTrayIcon.isSelected()));
