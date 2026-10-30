@@ -35,6 +35,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
@@ -200,6 +201,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     private TimerTask timerTask;
     private TimerTask countDownTask;
     private final String platformName;
+    private final String architecture;
     private final HelpUtils helpUtils;
     private final PasswordCipher passwordCipher;
     private final JsonMapper jsonMapper;
@@ -218,7 +220,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         logger = LogManager.getLogger(MainWindowController.class);
         logger.info("Initializing new MainWindowController object");
 
-        platformName = OsCheck.getOperatingSystemType().name();
+        platformName = OsCheck.getPlatformName();
+        architecture = OsCheck.getArchitecture();
         helpUtils = new HelpUtils();
         passwordCipher = new PasswordCipher();
 
@@ -414,22 +417,23 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         try {
             configureUpdateProxy();
 
-            final Optional<PlatformUpdate> platformUpdate = updateController.checkForUpdates(platformName, SharedVariables.PORTABLE);
+            final Optional<PlatformUpdate> platformUpdate = updateController.checkForUpdates(platformName, architecture, SharedVariables.PORTABLE);
             if (platformUpdate.isPresent()) {
                 final PlatformUpdate update = platformUpdate.get();
+                final String displayVersion = update.getSemver().replaceFirst("^[vV]", "");
 
-                logger.info("Version {}.{}.{}.{} is available", update.getMajorVersion(), update.getMinorVersion(), update.getBuildVersion(), update.getRevisionVersion());
+                logger.info("Version {} is available for {}/{}", displayVersion, update.getPlatformName(), update.getArch());
 
                 if (FxUtils.showConfirmationAlert(resourceFactory
                                 .getResources()
                                 .getString("NewUpdateAvailable")
-                                .replace("{v}", String.format("%1$s.%2$s.%3$s.%4$s", update.getMajorVersion(), update.getMinorVersion(), update.getBuildVersion(), update.getRevisionVersion())),
+                                .replace("{v}", displayVersion),
                         getClass().getResourceAsStream(SharedVariables.ICON_URL))) {
 
-                    final String extension = update.getDownloadUrl().substring(update.getDownloadUrl().lastIndexOf('.')).toLowerCase();
+                    final String extension = getDownloadExtension(update.getDownloadUrl());
                     final FileChooser fileChooser = new FileChooser();
                     final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
-                            String.format("%1$s (*%2$s)", extension.substring(1).toUpperCase(), extension),
+                            String.format("%1$s (*%2$s)", extension.substring(1).toUpperCase(Locale.ROOT), extension),
                             String.format("*%s", extension));
 
                     fileChooser.getExtensionFilters().add(extFilter);
@@ -438,11 +442,19 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
                     if (file != null) {
                         String filePath = file.getAbsolutePath();
-                        if (!filePath.toLowerCase().contains(extension)) {
+                        if (!filePath.toLowerCase(Locale.ROOT).endsWith(extension.toLowerCase(Locale.ROOT))) {
                             filePath += extension;
                         }
 
                         updateController.downloadFile(update.getDownloadUrl(), filePath);
+
+                        if (extension.equalsIgnoreCase(".AppImage")) {
+                            final File downloadedFile = new File(filePath);
+                            if (!downloadedFile.setExecutable(true)) {
+                                logger.warn("Unable to mark {} as executable", filePath);
+                            }
+                        }
+
                         openFile(filePath);
                         exitAction();
                     }
@@ -462,6 +474,22 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 FxUtils.showErrorAlert(resourceFactory.getResources().getString("UpdateError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
             }
         }
+    }
+
+    /**
+     * Get the file extension from a download URL
+     *
+     * @param downloadUrl The download URL
+     * @return The file extension, including the leading dot
+     */
+    private String getDownloadExtension(final String downloadUrl) {
+        final String path = URI.create(downloadUrl).getPath();
+        final int extensionIndex = path.lastIndexOf('.');
+
+        if (extensionIndex < 0 || extensionIndex == path.length() - 1)
+            throw new IllegalArgumentException("Unable to determine the file extension from the download URL!");
+
+        return path.substring(extensionIndex);
     }
 
     /**

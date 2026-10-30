@@ -1,25 +1,39 @@
 package com.codedead.opal.domain;
 
-import java.util.Map;
 import java.util.Objects;
 
 public final class PlatformUpdate implements Comparable<PlatformUpdate> {
 
+    private String semver;
     private String platformName;
+    private String arch;
     private boolean portable;
-    private int majorVersion;
-    private int minorVersion;
-    private int buildVersion;
-    private int revisionVersion;
-
     private String downloadUrl;
-    private Map<String, String> extraAttributes;
+    private String infoUrl;
 
     /**
      * Initialize a new PlatformUpdate
      */
     public PlatformUpdate() {
         // Default constructor
+    }
+
+    /**
+     * Get the semantic version
+     *
+     * @return The semantic version
+     */
+    public String getSemver() {
+        return semver;
+    }
+
+    /**
+     * Set the semantic version
+     *
+     * @param semver The semantic version
+     */
+    public void setSemver(final String semver) {
+        this.semver = semver;
     }
 
     /**
@@ -41,93 +55,39 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
     }
 
     /**
-     * Get whether the version is portable or not
+     * Get the platform architecture
      *
-     * @return True if the version is portable, otherwise false
+     * @return The platform architecture
+     */
+    public String getArch() {
+        return arch;
+    }
+
+    /**
+     * Set the platform architecture
+     *
+     * @param arch The platform architecture
+     */
+    public void setArch(final String arch) {
+        this.arch = arch;
+    }
+
+    /**
+     * Get whether the update is portable
+     *
+     * @return True if the update is portable, otherwise false
      */
     public boolean isPortable() {
         return portable;
     }
 
     /**
-     * Set whether the version is portable or not
+     * Set whether the update is portable
      *
-     * @param portable True if the version is portable, otherwise false
+     * @param portable True if the update is portable, otherwise false
      */
     public void setPortable(final boolean portable) {
         this.portable = portable;
-    }
-
-    /**
-     * Get the major version
-     *
-     * @return The major version
-     */
-    public int getMajorVersion() {
-        return majorVersion;
-    }
-
-    /**
-     * Set the major version
-     *
-     * @param majorVersion The major version
-     */
-    public void setMajorVersion(final int majorVersion) {
-        this.majorVersion = majorVersion;
-    }
-
-    /**
-     * Get the minor version
-     *
-     * @return The minor version
-     */
-    public int getMinorVersion() {
-        return minorVersion;
-    }
-
-    /**
-     * Set the minor version
-     *
-     * @param minorVersion The minor version
-     */
-    public void setMinorVersion(final int minorVersion) {
-        this.minorVersion = minorVersion;
-    }
-
-    /**
-     * Get the build version
-     *
-     * @return The build version
-     */
-    public int getBuildVersion() {
-        return buildVersion;
-    }
-
-    /**
-     * Set the build version
-     *
-     * @param buildVersion The build version
-     */
-    public void setBuildVersion(final int buildVersion) {
-        this.buildVersion = buildVersion;
-    }
-
-    /**
-     * Get the revision version
-     *
-     * @return The revision version
-     */
-    public int getRevisionVersion() {
-        return revisionVersion;
-    }
-
-    /**
-     * Set the revision version
-     *
-     * @param revisionVersion The revision version
-     */
-    public void setRevisionVersion(final int revisionVersion) {
-        this.revisionVersion = revisionVersion;
     }
 
     /**
@@ -149,48 +109,33 @@ public final class PlatformUpdate implements Comparable<PlatformUpdate> {
     }
 
     /**
-     * Get the extra attributes
+     * Get the information URL
      *
-     * @return The Map that contains the extra attributes
+     * @return The information URL
      */
-    public Map<String, String> getExtraAttributes() {
-        return extraAttributes;
+    public String getInfoUrl() {
+        return infoUrl;
     }
 
     /**
-     * Set the extra attributes
+     * Set the information URL
      *
-     * @param extraAttributes The Map that contains the extra attributes
+     * @param infoUrl The information URL
      */
-    public void setExtraAttributes(final Map<String, String> extraAttributes) {
-        this.extraAttributes = extraAttributes;
+    public void setInfoUrl(final String infoUrl) {
+        this.infoUrl = infoUrl;
     }
 
     /**
-     * Compare this update with another update using natural version ordering
+     * Compare this update with another update using semantic version ordering
      *
      * @param other The platform update that should be compared
-     * @return A negative value if this update is older, zero if both versions are equal, or a positive value if this update is newer
+     * @return A negative value if this update is older, zero if both versions are equal,
+     * or a positive value if this update is newer
      */
     @Override
     public int compareTo(final PlatformUpdate other) {
         Objects.requireNonNull(other, "other");
-
-        int result = Integer.compare(majorVersion, other.majorVersion);
-        if (result != 0) {
-            return result;
-        }
-
-        result = Integer.compare(minorVersion, other.minorVersion);
-        if (result != 0) {
-            return result;
-        }
-
-        result = Integer.compare(buildVersion, other.buildVersion);
-        if (result != 0) {
-            return result;
-        }
-
-        return Integer.compare(revisionVersion, other.revisionVersion);
+        return Semver.compare(semver, other.semver);
     }
 }

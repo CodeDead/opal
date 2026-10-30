@@ -1,9 +1,13 @@
 package com.codedead.opal.controller;
 
 import com.codedead.opal.domain.InvalidHttpResponseCodeException;
+import com.codedead.opal.domain.PlatformRelease;
 import com.codedead.opal.domain.PlatformUpdate;
+import com.codedead.opal.domain.Semver;
+import com.codedead.opal.domain.VersionInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -58,90 +62,135 @@ public final class UpdateController {
      * Check for updates
      *
      * @param currentPlatform The current platform
+     * @param currentArch     The current architecture
      * @param isPortable      Check for portable application updates or not
      * @return The {@link Optional} {@link PlatformUpdate} object
-     * @throws InterruptedException             When the retrieval of the {@link List} of {@link PlatformUpdate} objects was interrupted
+     * @throws InterruptedException             When the retrieval of the {@link VersionInfo} object was interrupted
      * @throws InvalidHttpResponseCodeException When an invalid HTTP response code was returned when checking for updates
-     * @throws IOException                      When the response from the server could not be serialized as a {@link List} of {@link PlatformUpdate} object
+     * @throws IOException                      When the response from the server could not be serialized as a {@link VersionInfo} object
      */
-    public Optional<PlatformUpdate> checkForUpdates(final String currentPlatform, final boolean isPortable) throws InterruptedException, InvalidHttpResponseCodeException, IOException {
+    public Optional<PlatformUpdate> checkForUpdates(final String currentPlatform, final String currentArch, final boolean isPortable) throws InterruptedException, InvalidHttpResponseCodeException, IOException {
         if (currentPlatform == null)
             throw new NullPointerException("Current platform cannot be null!");
         if (currentPlatform.isBlank())
             throw new IllegalArgumentException("Current platform cannot be blank!");
+        if (currentArch == null)
+            throw new NullPointerException("Current architecture cannot be null!");
+        if (currentArch.isBlank())
+            throw new IllegalArgumentException("Current architecture cannot be blank!");
 
-        logger.info("Attempting to retrieve the latest PlatformUpdate objects");
+        logger.info("Attempting to retrieve the latest VersionInfo object");
 
-        final List<PlatformUpdate> updates = getUpdates();
+        final VersionInfo version = getVersion();
+        return resolveUpdate(version, currentPlatform, currentArch, isPortable, currentVersion);
+    }
 
-        final Optional<PlatformUpdate> update = updates
-                .stream()
-                .filter(e -> e.getPlatformName().equalsIgnoreCase(currentPlatform) && e.isPortable() == isPortable)
+    /**
+     * Resolve an available update from a version response
+     *
+     * @param version         The version response
+     * @param currentPlatform The current platform
+     * @param currentArch     The current architecture
+     * @param isPortable      Whether a portable release is required
+     * @param currentVersion  The current application version
+     * @return The {@link Optional} {@link PlatformUpdate} object
+     */
+    static Optional<PlatformUpdate> resolveUpdate(final VersionInfo version, final String currentPlatform, final String currentArch, final boolean isPortable, final String currentVersion) {
+        if (version == null)
+            throw new NullPointerException("VersionInfo cannot be null!");
+        if (version.getSemver() == null || version.getSemver().isBlank())
+            throw new IllegalArgumentException("The version response does not contain a semantic version!");
+
+        final Optional<PlatformRelease> platformRelease = findPlatform(version.getPlatforms(), currentPlatform, currentArch, isPortable);
+        if (platformRelease.isEmpty())
+            return Optional.empty();
+
+        if (Semver.compare(currentVersion, version.getSemver()) >= 0)
+            return Optional.empty();
+
+        final PlatformRelease release = platformRelease.get();
+        if (release.getDownloadUrl() == null || release.getDownloadUrl().isBlank())
+            throw new IllegalArgumentException("The selected release does not contain a download URL!");
+
+        final PlatformUpdate update = new PlatformUpdate();
+        update.setSemver(version.getSemver());
+        update.setPlatformName(release.getName());
+        update.setArch(release.getArch());
+        update.setPortable(isPortable);
+        update.setDownloadUrl(release.getDownloadUrl());
+        update.setInfoUrl(release.getInfoUrl());
+        return Optional.of(update);
+    }
+
+    /**
+     * Find the release that matches the provided platform, architecture and portability
+     *
+     * @param platforms      The available releases
+     * @param platformName   The platform name
+     * @param arch           The platform architecture
+     * @param portable       Whether a portable release is required
+     * @return The {@link Optional} {@link PlatformRelease} object
+     */
+    static Optional<PlatformRelease> findPlatform(final List<PlatformRelease> platforms, final String platformName, final String arch, final boolean portable) {
+        if (platforms == null || platforms.isEmpty())
+            return Optional.empty();
+
+        final Optional<PlatformRelease> exactMatch = platforms.stream()
+                .filter(release -> matches(release.getName(), platformName))
+                .filter(release -> matches(release.getArch(), arch))
+                .filter(release -> Boolean.valueOf(portable).equals(release.getPortable()))
                 .findFirst();
 
-        if (update.isPresent()) {
-            final PlatformUpdate platformUpdate = update.get();
-            if (versionCompare(currentVersion, platformUpdate.getMajorVersion() + "." + platformUpdate.getMinorVersion() + "." + platformUpdate.getBuildVersion() + "." + platformUpdate.getRevisionVersion()) < 0) {
-                return update;
-            }
-            return Optional.empty();
-        }
-        return Optional.empty();
+        if (exactMatch.isPresent())
+            return exactMatch;
+
+        return platforms.stream()
+                .filter(release -> matches(release.getName(), platformName))
+                .filter(release -> matches(release.getArch(), arch))
+                .filter(release -> release.getPortable() == null)
+                .findFirst();
     }
 
     /**
-     * Compare to strings to check which version is larger
+     * Check whether two values match, ignoring case and surrounding whitespace
      *
-     * @param v1 The first {@link String} object that contains a version
-     * @param v2 The second {@link String} object that contains a version
-     * @return 1 if v1 is larger than v2, -1 if v2 is larger than v1 and 0 if both are equal
+     * @param actual   The actual value
+     * @param expected The expected value
+     * @return True if the values match, otherwise false
      */
-    private int versionCompare(final String v1, final String v2) {
-        int vNum1 = 0;
-        int vNum2 = 0;
-
-        for (int i = 0, j = 0; (i < v1.length() || j < v2.length()); ) {
-            while (i < v1.length() && v1.charAt(i) != '.') {
-                vNum1 = vNum1 * 10 + (v1.charAt(i) - '0');
-                i++;
-            }
-            while (j < v2.length() && v2.charAt(j) != '.') {
-                vNum2 = vNum2 * 10 + (v2.charAt(j) - '0');
-                j++;
-            }
-
-            if (vNum1 > vNum2)
-                return 1;
-            if (vNum2 > vNum1)
-                return -1;
-
-            vNum1 = vNum2 = 0;
-            i++;
-            j++;
-        }
-        return 0;
+    private static boolean matches(final String actual, final String expected) {
+        return actual != null && expected != null && actual.trim().equalsIgnoreCase(expected.trim());
     }
 
     /**
-     * Retrieve a ({@link List}) of {@link PlatformUpdate} objects
+     * Retrieve the latest version information
      *
-     * @return The {@link List} of {@link PlatformUpdate} objects
-     * @throws IOException                      When the HTTP request failed or when the response could not be parsed as a {@link List} of {@link PlatformUpdate} objects
+     * @return The {@link VersionInfo} object
+     * @throws IOException                      When the HTTP request failed or when the response could not be parsed
      * @throws InterruptedException             When the HTTP request is interrupted
      * @throws InvalidHttpResponseCodeException When the HTTP response status code is not OK
      */
-    public List<PlatformUpdate> getUpdates() throws IOException, InterruptedException, InvalidHttpResponseCodeException {
-        logger.info("Attempting to retrieve List of PlatformUpdate objects from {}", getUpdateUrl());
+    public VersionInfo getVersion() throws IOException, InterruptedException, InvalidHttpResponseCodeException {
+        logger.info("Attempting to retrieve VersionInfo from {}", getUpdateUrl());
 
         try (final HttpClient client = createHttpClient()) {
             final HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(getUpdateUrl()))
+                    .header("Accept", "application/json")
                     .build();
 
             final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 200)
-                return Arrays.asList(jsonMapper.readValue(response.body(), PlatformUpdate[].class));
+            if (response.statusCode() == 200) {
+                try {
+                    final VersionInfo version = jsonMapper.readValue(response.body(), VersionInfo.class);
+                    if (version == null)
+                        throw new IOException("The version response was empty");
+                    return version;
+                } catch (final JacksonException ex) {
+                    throw new IOException("Unable to parse the version response", ex);
+                }
+            }
 
             throw new InvalidHttpResponseCodeException(String.format("Invalid HTTP response code (%s)", response.statusCode()));
         }

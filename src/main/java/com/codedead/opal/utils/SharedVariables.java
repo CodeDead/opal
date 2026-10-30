@@ -12,6 +12,9 @@ public final class SharedVariables {
     public static final boolean PORTABLE = false;
     public static final String DEFAULT_LOCALE = "en-US";
 
+    public static final String UPDATE_API_URL = "https://api.codedead.com/api/v1/version/d71f84a7-2994-4d05-8836-f744f7a4df4c";
+    public static final String LEGACY_UPDATE_API_URL = "https://codedead.com/Software/Opal/version.json";
+
     public static final String PROPERTIES_BASE_PATH = PORTABLE
             ? System.getProperty("user.dir") + "/.com.codedead.opal"
             : System.getProperty("user.home") + "/.config/com.codedead.opal";

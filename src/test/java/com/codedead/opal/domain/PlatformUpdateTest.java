@@ -9,28 +9,28 @@ class PlatformUpdateTest {
 
     @Test
     void comparesEachVersionComponent() {
-        assertOlder(newUpdate(1, 9, 9, 9), newUpdate(2, 0, 0, 0));
-        assertOlder(newUpdate(1, 2, 9, 9), newUpdate(1, 3, 0, 0));
-        assertOlder(newUpdate(1, 2, 3, 9), newUpdate(1, 2, 4, 0));
-        assertOlder(newUpdate(1, 2, 3, 4), newUpdate(1, 2, 3, 5));
+        assertOlder(newUpdate("v1.9.9"), newUpdate("v2.0.0"));
+        assertOlder(newUpdate("v1.2.9"), newUpdate("v1.3.0"));
+        assertOlder(newUpdate("v1.2.3.9"), newUpdate("v1.2.4"));
+        assertOlder(newUpdate("v1.2.3.4"), newUpdate("v1.2.3.5"));
     }
 
     @Test
     void returnsZeroForEqualVersions() {
-        assertEquals(0, newUpdate(1, 2, 3, 4).compareTo(newUpdate(1, 2, 3, 4)));
+        assertEquals(0, newUpdate("v1.5.1").compareTo(newUpdate("1.5.1.0")));
     }
 
     @Test
     void comparisonIsSymmetric() {
-        final PlatformUpdate first = newUpdate(1, 2, 3, 4);
-        final PlatformUpdate second = newUpdate(1, 2, 3, 5);
+        final PlatformUpdate first = newUpdate("v1.2.3.4");
+        final PlatformUpdate second = newUpdate("v1.2.3.5");
 
         assertEquals(-first.compareTo(second), second.compareTo(first));
     }
 
     @Test
     void rejectsNull() {
-        assertThrows(NullPointerException.class, () -> newUpdate(1, 2, 3, 4).compareTo(null));
+        assertThrows(NullPointerException.class, () -> newUpdate("v1.2.3.4").compareTo(null));
     }
 
     private static void assertOlder(final PlatformUpdate older, final PlatformUpdate newer) {
@@ -38,12 +38,9 @@ class PlatformUpdateTest {
         assertEquals(1, newer.compareTo(older));
     }
 
-    private static PlatformUpdate newUpdate(final int major, final int minor, final int build, final int revision) {
+    private static PlatformUpdate newUpdate(final String semver) {
         final PlatformUpdate update = new PlatformUpdate();
-        update.setMajorVersion(major);
-        update.setMinorVersion(minor);
-        update.setBuildVersion(build);
-        update.setRevisionVersion(revision);
+        update.setSemver(semver);
         return update;
     }
 }

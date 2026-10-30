@@ -107,7 +107,13 @@ public class OpalApplication extends Application {
         logger.info("Creating the MainWindowController");
 
         final MainWindowController mainWindowController = loader.getController();
-        final UpdateController updateController = new UpdateController(properties.getProperty("updateApi", "https://codedead.com/Software/Opal/version.json"), SharedVariables.CURRENT_VERSION);
+        final String configuredUpdateApi = properties.getProperty("updateApi", SharedVariables.UPDATE_API_URL);
+        final String updateApi = resolveUpdateApi(configuredUpdateApi);
+        if (!updateApi.equals(configuredUpdateApi)) {
+            properties.setProperty("updateApi", updateApi);
+        }
+
+        final UpdateController updateController = new UpdateController(updateApi, SharedVariables.CURRENT_VERSION);
         mainWindowController.setControllers(settingsController, updateController);
 
         final Scene scene = new Scene(root);
@@ -119,5 +125,22 @@ public class OpalApplication extends Application {
 
         logger.info("Showing the MainWindow");
         primaryStage.show();
+    }
+
+    /**
+     * Resolve the configured update API URL, migrating the legacy URL to the current API
+     *
+     * @param configuredUpdateApi The configured update API URL
+     * @return The update API URL that should be used
+     */
+    static String resolveUpdateApi(final String configuredUpdateApi) {
+        if (configuredUpdateApi == null || configuredUpdateApi.isBlank())
+            return SharedVariables.UPDATE_API_URL;
+
+        final String updateApi = configuredUpdateApi.trim();
+        if (SharedVariables.LEGACY_UPDATE_API_URL.equalsIgnoreCase(updateApi))
+            return SharedVariables.UPDATE_API_URL;
+
+        return updateApi;
     }
 }
