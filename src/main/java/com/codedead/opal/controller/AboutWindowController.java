@@ -4,13 +4,18 @@ import com.codedead.opal.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.Year;
 import java.util.ResourceBundle;
 
 public final class AboutWindowController {
+
+    @FXML
+    private Label lblAbout;
 
     private ResourceBundle translationBundle;
     private final HelpUtils helpUtils;
@@ -36,6 +41,10 @@ public final class AboutWindowController {
             throw new NullPointerException("ResourceBundle cannot be null");
 
         this.translationBundle = resourceBundle;
+
+        lblAbout.setText(resourceBundle.getString("AboutText")
+                .replace("{version}", SharedVariables.APP_VERSION)
+                .replace("{year}", Integer.toString(Year.now().getValue())));
     }
 
     /**

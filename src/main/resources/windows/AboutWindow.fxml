@@ -40,7 +40,7 @@
             </GridPane.margin>
         </Separator>
 
-        <Label wrapText="true" GridPane.columnIndex="3" text="%AboutText">
+        <Label fx:id="lblAbout" wrapText="true" GridPane.columnIndex="3">
             <GridPane.margin>
                 <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
             </GridPane.margin>
