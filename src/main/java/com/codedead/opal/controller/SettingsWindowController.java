@@ -142,7 +142,7 @@ public final class SettingsWindowController {
 
         logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
 
-        final Locale locale = Locale.forLanguageTag(languageTag);
+        final Locale locale = LanguageController.getLocaleFromLanguageTag(languageTag);
         translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
 
         final ObservableList<String> options = FXCollections.observableArrayList(
@@ -241,7 +241,7 @@ public final class SettingsWindowController {
                 settingsController.createDefaultProperties();
                 settingsController.setProperties(settingsController.readPropertiesFile());
 
-                final Locale locale = Locale.forLanguageTag(DEFAULT_LOCALE);
+                final Locale locale = LanguageController.getLocaleFromLanguageTag(DEFAULT_LOCALE);
                 final ResourceBundle newTranslationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
 
                 this.translationBundle = newTranslationBundle;
@@ -321,7 +321,7 @@ public final class SettingsWindowController {
         settingsController.getProperties().setProperty("trayIcon", Boolean.toString(chbTrayIcon.isSelected()));
 
         final String languageTag = LanguageController.getLocaleFromLanguageIndex(cboLanguage.getSelectionModel().getSelectedIndex());
-        final Locale locale = Locale.forLanguageTag(languageTag);
+        final Locale locale = LanguageController.getLocaleFromLanguageTag(languageTag);
         final ResourceBundle newTranslationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
 
         this.translationBundle = newTranslationBundle;

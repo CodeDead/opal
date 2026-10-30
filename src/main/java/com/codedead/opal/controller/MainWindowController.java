@@ -258,7 +258,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
         logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
 
-        final Locale locale = Locale.forLanguageTag(languageTag);
+        final Locale locale = LanguageController.getLocaleFromLanguageTag(languageTag);
         resourceFactory.setResources(ResourceBundle.getBundle("translations.OpalApplication", locale));
 
         final boolean mediaButtons = Boolean.parseBoolean(properties.getProperty("mediaButtons", "true"));
@@ -1055,16 +1055,17 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 try {
                     final ProcessBuilder p = new ProcessBuilder(command.split(" "));
 
-                    try (final BufferedReader reader = new BufferedReader(new InputStreamReader(p.start().getInputStream()))) {
-                        final StringBuilder builder = new StringBuilder();
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            builder.append(line);
-                            builder.append(System.lineSeparator());
+                    try (final Process process = p.start()) {
+                        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                            final StringBuilder output = new StringBuilder();
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                output.append(line).append(System.lineSeparator());
+                            }
+                            logger.info("Shutdown command result: {}", output.toString());
                         }
-                        final String result = builder.toString();
-                        logger.info("Shutdown command result: {}", result);
                     }
+
                     exitAction();
                 } catch (final IOException ex) {
                     logger.error("Unable to execute shutdown command", ex);

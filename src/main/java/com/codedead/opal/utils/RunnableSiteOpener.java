@@ -42,12 +42,22 @@ public final class RunnableSiteOpener implements Runnable {
             } else {
                 final String os = System.getProperty("os.name").toLowerCase();
 
+                final String[] command;
                 if (os.contains("win")) {
-                    Runtime.getRuntime().exec(new String[]{"rundll32", "url.dll,FileProtocolHandler", url});
+                    command = new String[]{"rundll32", "url.dll,FileProtocolHandler", url};
                 } else if (os.contains("mac")) {
-                    Runtime.getRuntime().exec(new String[]{"open", url});
+                    command = new String[]{"open", url};
                 } else if (os.contains("nix") || os.contains("nux")) {
-                    Runtime.getRuntime().exec(new String[]{"xdg-open", url});
+                    command = new String[]{"xdg-open", url};
+                } else {
+                    throw new UnsupportedOperationException("Unsupported OS: " + os);
+                }
+
+                //noinspection EmptyTryBlock
+                try (final Process process = new ProcessBuilder(command)
+                        .redirectOutput(ProcessBuilder.Redirect.DISCARD)
+                        .redirectError(ProcessBuilder.Redirect.DISCARD)
+                        .start()) {
                 }
             }
             if (iRunnableHelper != null) {

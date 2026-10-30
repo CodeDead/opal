@@ -68,7 +68,7 @@ class PasswordCipherTest {
     }
 
     @Test
-    void rejectsMalformedCiphertext() throws IOException {
+    void rejectsMalformedCiphertext() {
         final PasswordCipher passwordCipher = new PasswordCipher(tempDirectory.resolve("proxy.key"));
 
         assertThrows(GeneralSecurityException.class, () -> passwordCipher.decrypt("enc:v1:not-base64!"));

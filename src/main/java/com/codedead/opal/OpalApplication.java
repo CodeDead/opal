@@ -1,5 +1,6 @@
 package com.codedead.opal;
 
+import com.codedead.opal.controller.LanguageController;
 import com.codedead.opal.controller.ThemeController;
 import com.codedead.opal.controller.UpdateController;
 import com.codedead.opal.utils.FxUtils;
@@ -90,7 +91,7 @@ public class OpalApplication extends Application {
 
         ThemeController.setTheme(properties.getProperty("theme", "light"));
 
-        final Locale locale = Locale.forLanguageTag(languageTag);
+        final Locale locale = LanguageController.getLocaleFromLanguageTag(languageTag);
         final ResourceBundle translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
 
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("/windows/MainWindow.fxml"), translationBundle);

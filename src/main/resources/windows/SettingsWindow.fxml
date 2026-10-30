@@ -95,12 +95,12 @@
                             <String fx:value="Español"/>
                             <String fx:value="Français"/>
                             <String fx:value="हिंदी"/>
-                            <String fx:value="日本"/>
+                            <String fx:value="日本語"/>
                             <String fx:value="Nederlands"/>
                             <String fx:value="Русский"/>
                             <String fx:value="Türkçe"/>
-                            <String fx:value="Український"/>
-                            <String fx:value="中国人"/>
+                            <String fx:value="Українська"/>
+                            <String fx:value="中文"/>
                         </FXCollections>
                     </items>
                 </ComboBox>
