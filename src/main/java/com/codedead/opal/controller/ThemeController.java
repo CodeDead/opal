@@ -5,6 +5,8 @@ import javafx.application.Application;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Locale;
+
 public final class ThemeController {
 
     private static final Logger logger = LogManager.getLogger(ThemeController.class);
@@ -24,14 +26,14 @@ public final class ThemeController {
     public static void setTheme(final String themeName) {
         logger.info("Setting theme to {}", themeName);
 
-        switch (themeName.toLowerCase()) {
+        switch (themeName.toLowerCase(Locale.ROOT)) {
             case "modena" -> Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
             case "caspian" -> Application.setUserAgentStylesheet(Application.STYLESHEET_CASPIAN);
             case "nordlight" -> Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
             case "norddark" -> Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
             case "dark" -> Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
             case "cupertinodark" -> Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
-            case "cuptertinolight" -> Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
+            case "cupertinolight" -> Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
             case "dracula" -> Application.setUserAgentStylesheet(new Dracula().getUserAgentStylesheet());
             default -> Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
         }
@@ -44,7 +46,7 @@ public final class ThemeController {
      * @return The theme index
      */
     public static int getThemeIndex(final String themeName) {
-        return switch (themeName.toLowerCase()) {
+        return switch (themeName.toLowerCase(Locale.ROOT)) {
             case "cupertinodark" -> 0;
             case "cupertinolight" -> 1;
             case "dracula" -> 2;

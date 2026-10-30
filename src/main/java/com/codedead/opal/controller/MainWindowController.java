@@ -203,6 +203,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     private final IAudioTimer audioTimer;
     private final Logger logger;
     private final ObservableResourceFactory resourceFactory;
+    private boolean mediaButtonsVisible = true;
+    private double audioBalance = 0.0;
 
     /**
      * Initialize a new MainWindowController
@@ -270,9 +272,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             }
         }
 
-        if (!mediaButtons) {
-            loadMediaButtonVisibility(false);
-        }
+        loadMediaButtonVisibility(mediaButtons);
 
         if (shouldUpdate) {
             checkForUpdates(false, false);
@@ -359,7 +359,9 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
      * @param visible True if the media buttons should be visible, otherwise false
      */
     public void loadMediaButtonVisibility(final boolean visible) {
+        mediaButtonsVisible = visible;
         getAllSoundPanes().forEach(s -> s.setMediaButton(visible));
+        getSoundPanes(grpCustom).forEach(s -> s.setMediaButton(visible));
     }
 
     /**
@@ -650,10 +652,45 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     private void hideShowStage() {
         final Stage stage = (Stage) grpNature.getScene().getWindow();
         if (stage.isShowing()) {
-            stage.hide();
+            if (trayIconController != null && trayIconController.isTrayIconVisible()) {
+                stage.hide();
+            }
         } else {
+            showMainWindow();
+        }
+    }
+
+    /**
+     * Show and focus the main application window
+     */
+    public void showMainWindow() {
+        final Stage stage = (Stage) grpNature.getScene().getWindow();
+        if (!stage.isShowing()) {
             stage.show();
         }
+        if (stage.isIconified()) {
+            stage.setIconified(false);
+        }
+        stage.toFront();
+    }
+
+    /**
+     * Enable or disable the tray icon without leaving the application inaccessible
+     *
+     * @param enabled True if the tray icon should be shown, otherwise false
+     * @throws IOException When the tray icon could not be created
+     */
+    public void setTrayIconEnabled(final boolean enabled) throws IOException {
+        if (enabled) {
+            if (trayIconController.isTrayIconVisible()) {
+                trayIconController.hideTrayIcon();
+            }
+            trayIconController.showTrayIcon();
+            return;
+        }
+
+        showMainWindow();
+        trayIconController.hideTrayIcon();
     }
 
     /**
@@ -707,6 +744,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 customSoundPane.setMediaPath(file.toURI().toURL().toString());
                 customSoundPane.setImage("/images/customsound.png");
                 customSoundPane.setResourceFile(false);
+                customSoundPane.setMediaButton(mediaButtonsVisible);
+                customSoundPane.setBalance(audioBalance);
 
                 grpCustom.add(customSoundPane, 0, count - 1);
 
@@ -840,7 +879,6 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             final SettingsWindowController settingsWindowController = loader.getController();
             settingsWindowController.setSettingsController(getSettingsController());
             settingsWindowController.setMainWindowController(this);
-            settingsWindowController.setTrayIconController(trayIconController);
 
             final Stage primaryStage = new Stage();
 
@@ -1139,7 +1177,9 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             throw new IllegalArgumentException("Balance must be between -1.0 and 1.0!");
 
         logger.info("Setting the audio balance to {}", audioBalance);
+        this.audioBalance = audioBalance;
         getAllSoundPanes().forEach(s -> s.setBalance(audioBalance));
+        getSoundPanes(grpCustom).forEach(s -> s.setBalance(audioBalance));
     }
 
     /**

@@ -58,7 +58,6 @@ public final class SettingsWindowController {
 
     private MainWindowController mainWindowController;
     private SettingsController settingsController;
-    private TrayIconController trayIconController;
     private ResourceBundle translationBundle;
 
     private final Logger logger;
@@ -121,18 +120,6 @@ public final class SettingsWindowController {
     }
 
     /**
-     * Set the {@link TrayIconController} object
-     *
-     * @param trayIconController The {@link TrayIconController} object
-     */
-    public void setTrayIconController(final TrayIconController trayIconController) {
-        if (trayIconController == null)
-            throw new NullPointerException("TrayIconController cannot be null!");
-
-        this.trayIconController = trayIconController;
-    }
-
-    /**
      * Load all the settings into the UI
      */
     private void loadSettings() {
@@ -190,14 +177,15 @@ public final class SettingsWindowController {
                 settingsController.setProperties(settingsController.readPropertiesFile());
 
                 final Locale locale = Locale.forLanguageTag(DEFAULT_LOCALE);
-                final ResourceBundle translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
+                final ResourceBundle newTranslationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
 
-                mainWindowController.updateResourceBundle(translationBundle);
+                this.translationBundle = newTranslationBundle;
+                mainWindowController.updateResourceBundle(newTranslationBundle);
 
                 mainWindowController.loadMediaButtonVisibility(Boolean.parseBoolean(settingsController.getProperties().getProperty("mediaButtons", "true")));
                 mainWindowController.setAudioBalance(Double.parseDouble(settingsController.getProperties().getProperty("audioBalance", "0.0")));
 
-                trayIconController.hideTrayIcon();
+                mainWindowController.setTrayIconEnabled(false);
 
                 Stage stage = (Stage) sldAudioBalance.getScene().getWindow();
                 stage.close();
@@ -220,26 +208,22 @@ public final class SettingsWindowController {
         settingsController.getProperties().setProperty("dragDrop", Boolean.toString(chbDragDrop.isSelected()));
         settingsController.getProperties().setProperty("trayIcon", Boolean.toString(chbTrayIcon.isSelected()));
 
-        mainWindowController.loadMediaButtonVisibility(chbMediaButtons.isSelected());
-        if (chbTrayIcon.isSelected()) {
-            try {
-                trayIconController.hideTrayIcon(); // Destroy the old tray icon
-                trayIconController.showTrayIcon(); // Create a new tray icon (needed for the new settings - language)
-            } catch (final IOException ex) {
-                logger.error("Unable to create tray icon", ex);
-                FxUtils.showErrorAlert(translationBundle.getString("TrayIconError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-            }
-        } else {
-            trayIconController.hideTrayIcon();
-        }
-
         final String languageTag = LanguageController.getLocaleFromLanguageIndex(cboLanguage.getSelectionModel().getSelectedIndex());
         final Locale locale = Locale.forLanguageTag(languageTag);
-        final ResourceBundle translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
+        final ResourceBundle newTranslationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
 
-        mainWindowController.updateResourceBundle(translationBundle);
+        this.translationBundle = newTranslationBundle;
+        mainWindowController.updateResourceBundle(newTranslationBundle);
 
         settingsController.getProperties().setProperty("locale", languageTag);
+
+        mainWindowController.loadMediaButtonVisibility(chbMediaButtons.isSelected());
+        try {
+            mainWindowController.setTrayIconEnabled(chbTrayIcon.isSelected());
+        } catch (final IOException ex) {
+            logger.error("Unable to create tray icon", ex);
+            FxUtils.showErrorAlert(newTranslationBundle.getString("TrayIconError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+        }
 
         settingsController.getProperties().setProperty("theme", cboTheme.getSelectionModel().getSelectedItem());
         settingsController.getProperties().setProperty("loglevel", cboLogLevel.getValue());

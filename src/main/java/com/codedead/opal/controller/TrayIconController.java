@@ -114,6 +114,15 @@ public final class TrayIconController {
     }
 
     /**
+     * Check whether a tray icon is currently available
+     *
+     * @return True if a tray icon was created, otherwise false
+     */
+    public boolean isTrayIconVisible() {
+        return trayIcon != null;
+    }
+
+    /**
      * Hide the tray icon
      */
     public void hideTrayIcon() {
