@@ -1,5 +1,7 @@
 package com.codedead.opal.controller;
 
+import java.util.Locale;
+
 import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
 
 public final class LanguageController {
@@ -23,7 +25,7 @@ public final class LanguageController {
             case "es-es" -> 2;
             case "fr-fr" -> 3;
             case "hi-in" -> 4;
-            case "jp-jp" -> 5;
+            case "ja-jp", "jp-jp" -> 5;
             case "nl-nl" -> 6;
             case "ru-ru" -> 7;
             case "tr-tr" -> 8;
@@ -31,6 +33,17 @@ public final class LanguageController {
             case "zh-cn" -> 10;
             default -> 0;
         };
+    }
+
+    /**
+     * Get the locale from the language tag, migrating the legacy Japanese tag
+     *
+     * @param languageTag The language tag
+     * @return The locale
+     */
+    public static Locale getLocaleFromLanguageTag(final String languageTag) {
+        final String normalizedLanguageTag = "jp-JP".equalsIgnoreCase(languageTag) ? "ja-JP" : languageTag;
+        return Locale.forLanguageTag(normalizedLanguageTag);
     }
 
     /**
@@ -45,7 +58,7 @@ public final class LanguageController {
             case 2 -> "es-ES";
             case 3 -> "fr-FR";
             case 4 -> "hi-in";
-            case 5 -> "jp-JP";
+            case 5 -> "ja-JP";
             case 6 -> "nl-NL";
             case 7 -> "ru-RU";
             case 8 -> "tr-TR";

@@ -9,6 +9,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
 <?import com.codedead.opal.domain.NumberTextField?>
@@ -16,6 +18,8 @@
 <?import javafx.scene.image.Image?>
 
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ScrollPane?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.codedead.opal.controller.SettingsWindowController"
@@ -91,12 +95,12 @@
                             <String fx:value="Español"/>
                             <String fx:value="Français"/>
                             <String fx:value="हिंदी"/>
-                            <String fx:value="日本"/>
+                            <String fx:value="日本語"/>
                             <String fx:value="Nederlands"/>
                             <String fx:value="Русский"/>
                             <String fx:value="Türkçe"/>
-                            <String fx:value="Український"/>
-                            <String fx:value="中国人"/>
+                            <String fx:value="Українська"/>
+                            <String fx:value="中文"/>
                         </FXCollections>
                     </items>
                 </ComboBox>
@@ -183,55 +187,155 @@
                     <Image url="@../images/advanced.png"/>
                 </ImageView>
             </graphic>
-            <GridPane alignment="CENTER">
-                <rowConstraints>
-                    <RowConstraints/>
-                    <RowConstraints/>
-                </rowConstraints>
-                <columnConstraints>
-                    <ColumnConstraints/>
-                    <ColumnConstraints/>
-                </columnConstraints>
+            <ScrollPane fitToWidth="true">
+                <GridPane alignment="CENTER">
+                    <rowConstraints>
+                        <RowConstraints/>
+                    </rowConstraints>
+                    <VBox spacing="5">
+                        <GridPane.margin>
+                            <Insets left="5" right="5" top="10" bottom="10"/>
+                        </GridPane.margin>
+                        <TitledPane text="%Audio" expanded="false">
+                            <GridPane>
+                                <rowConstraints>
+                                    <RowConstraints/>
+                                </rowConstraints>
+                                <columnConstraints>
+                                    <ColumnConstraints/>
+                                    <ColumnConstraints hgrow="ALWAYS"/>
+                                </columnConstraints>
+                                <Label GridPane.rowIndex="0" text="%AudioBalance">
+                                    <GridPane.margin>
+                                        <Insets bottom="3" left="3" right="3" top="3"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Slider GridPane.rowIndex="0" GridPane.columnIndex="1"
+                                        fx:id="sldAudioBalance" maxWidth="Infinity"
+                                        min="-1" max="1" majorTickUnit="1.0"
+                                        showTickLabels="true"
+                                        showTickMarks="true"
+                                        snapToTicks="true">
+                                    <GridPane.margin>
+                                        <Insets bottom="3" left="3" right="3" top="3"/>
+                                    </GridPane.margin>
+                                </Slider>
+                            </GridPane>
+                        </TitledPane>
+                        <TitledPane text="%Logging" expanded="false">
+                            <GridPane>
+                                <rowConstraints>
+                                    <RowConstraints/>
+                                </rowConstraints>
+                                <columnConstraints>
+                                    <ColumnConstraints/>
+                                    <ColumnConstraints hgrow="ALWAYS"/>
+                                </columnConstraints>
+                                <Label GridPane.rowIndex="0" GridPane.columnIndex="0" text="%LogLevel">
+                                    <GridPane.margin>
+                                        <Insets bottom="3" left="3" right="3" top="3"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <ComboBox fx:id="cboLogLevel" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                                          maxWidth="Infinity">
+                                    <GridPane.margin>
+                                        <Insets bottom="3" left="3" right="3" top="3"/>
+                                    </GridPane.margin>
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="OFF"/>
+                                            <String fx:value="FATAL"/>
+                                            <String fx:value="ERROR"/>
+                                            <String fx:value="WARN"/>
+                                            <String fx:value="INFO"/>
+                                            <String fx:value="DEBUG"/>
+                                            <String fx:value="TRACE"/>
+                                            <String fx:value="ALL"/>
+                                        </FXCollections>
+                                    </items>
+                                </ComboBox>
+                            </GridPane>
+                        </TitledPane>
+                        <TitledPane text="%HttpProxy" expanded="false">
+                            <GridPane>
+                                <rowConstraints>
+                                    <RowConstraints/>
+                                    <RowConstraints/>
+                                    <RowConstraints/>
+                                    <RowConstraints/>
+                                    <RowConstraints/>
+                                    <RowConstraints/>
+                                </rowConstraints>
+                                <columnConstraints>
+                                    <ColumnConstraints/>
+                                    <ColumnConstraints hgrow="ALWAYS"/>
+                                </columnConstraints>
+                                <CheckBox fx:id="chbUpdateProxy" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                                          GridPane.columnSpan="2" text="%UpdateProxy">
+                                    <GridPane.margin>
+                                        <Insets bottom="3" left="3" right="3" top="3"/>
+                                    </GridPane.margin>
+                                </CheckBox>
 
-                <Label GridPane.rowIndex="0" text="%AudioBalance">
-                    <GridPane.margin>
-                        <Insets bottom="3" left="3" right="3" top="3"/>
-                    </GridPane.margin>
-                </Label>
-                <Slider GridPane.rowIndex="0" GridPane.columnIndex="1"
-                        fx:id="sldAudioBalance" maxWidth="Infinity"
-                        min="-1" max="1" majorTickUnit="1.0"
-                        showTickLabels="true"
-                        showTickMarks="true"
-                        snapToTicks="true">
-                    <GridPane.margin>
-                        <Insets bottom="3" left="3" right="3" top="3"/>
-                    </GridPane.margin>
-                </Slider>
+                                <Label GridPane.rowIndex="1" GridPane.columnIndex="0" text="%ProxyHost">
+                                    <GridPane.margin>
+                                        <Insets bottom="3" left="3" right="3" top="3"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <TextField fx:id="txtProxyHost" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                                           maxWidth="Infinity">
+                                    <GridPane.margin>
+                                        <Insets bottom="3" left="3" right="3" top="3"/>
+                                    </GridPane.margin>
+                                </TextField>
 
-                <Label GridPane.rowIndex="1" GridPane.columnIndex="0" text="%LogLevel">
-                    <GridPane.margin>
-                        <Insets bottom="3" left="3" right="3" top="3"/>
-                    </GridPane.margin>
-                </Label>
-                <ComboBox fx:id="cboLogLevel" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity">
-                    <GridPane.margin>
-                        <Insets bottom="3" left="3" right="3" top="3"/>
-                    </GridPane.margin>
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="OFF"/>
-                            <String fx:value="FATAL"/>
-                            <String fx:value="ERROR"/>
-                            <String fx:value="WARN"/>
-                            <String fx:value="INFO"/>
-                            <String fx:value="DEBUG"/>
-                            <String fx:value="TRACE"/>
-                            <String fx:value="ALL"/>
-                        </FXCollections>
-                    </items>
-                </ComboBox>
-            </GridPane>
+                                <Label GridPane.rowIndex="2" GridPane.columnIndex="0" text="%ProxyPort">
+                                    <GridPane.margin>
+                                        <Insets bottom="3" left="3" right="3" top="3"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <NumberTextField fx:id="numProxyPort" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                                                 maxWidth="Infinity" min="1" promptText="8080">
+                                    <GridPane.margin>
+                                        <Insets bottom="3" left="3" right="3" top="3"/>
+                                    </GridPane.margin>
+                                </NumberTextField>
+
+                                <CheckBox fx:id="chbProxyAuthentication" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                                          GridPane.columnSpan="2" text="%ProxyAuthentication">
+                                    <GridPane.margin>
+                                        <Insets bottom="3" left="3" right="3" top="3"/>
+                                    </GridPane.margin>
+                                </CheckBox>
+
+                                <Label GridPane.rowIndex="4" GridPane.columnIndex="0" text="%ProxyUsername">
+                                    <GridPane.margin>
+                                        <Insets bottom="3" left="3" right="3" top="3"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <TextField fx:id="txtProxyUsername" GridPane.rowIndex="4" GridPane.columnIndex="1"
+                                           maxWidth="Infinity">
+                                    <GridPane.margin>
+                                        <Insets bottom="3" left="3" right="3" top="3"/>
+                                    </GridPane.margin>
+                                </TextField>
+
+                                <Label GridPane.rowIndex="5" GridPane.columnIndex="0" text="%ProxyPassword">
+                                    <GridPane.margin>
+                                        <Insets bottom="3" left="3" right="3" top="3"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <PasswordField fx:id="pfProxyPassword" GridPane.rowIndex="5" GridPane.columnIndex="1"
+                                               maxWidth="Infinity">
+                                    <GridPane.margin>
+                                        <Insets bottom="3" left="3" right="3" top="3"/>
+                                    </GridPane.margin>
+                                </PasswordField>
+                            </GridPane>
+                        </TitledPane>
+                    </VBox>
+                </GridPane>
+            </ScrollPane>
         </Tab>
     </TabPane>
 

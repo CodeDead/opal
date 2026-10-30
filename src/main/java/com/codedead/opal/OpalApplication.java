@@ -1,5 +1,6 @@
 package com.codedead.opal;
 
+import com.codedead.opal.controller.LanguageController;
 import com.codedead.opal.controller.ThemeController;
 import com.codedead.opal.controller.UpdateController;
 import com.codedead.opal.utils.FxUtils;
@@ -35,6 +36,11 @@ public class OpalApplication extends Application {
      * @param args The application arguments
      */
     public static void main(final String[] args) {
+        // The JDK disables Basic authentication for HTTPS proxy tunneling by default
+        if (System.getProperty("jdk.http.auth.tunneling.disabledSchemes") == null) {
+            System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+        }
+
         System.setProperty("logBasePath", SharedVariables.PROPERTIES_BASE_PATH);
         logger = LogManager.getLogger(OpalApplication.class);
 
@@ -85,7 +91,7 @@ public class OpalApplication extends Application {
 
         ThemeController.setTheme(properties.getProperty("theme", "light"));
 
-        final Locale locale = Locale.forLanguageTag(languageTag);
+        final Locale locale = LanguageController.getLocaleFromLanguageTag(languageTag);
         final ResourceBundle translationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
 
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("/windows/MainWindow.fxml"), translationBundle);

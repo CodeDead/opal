@@ -6,6 +6,7 @@ import com.codedead.opal.interfaces.IRunnableHelper;
 import com.codedead.opal.interfaces.TrayIconListener;
 import com.codedead.opal.utils.FxUtils;
 import com.codedead.opal.utils.HelpUtils;
+import com.codedead.opal.utils.PasswordCipher;
 import com.codedead.opal.utils.RunnableFileOpener;
 import com.codedead.opal.utils.SharedVariables;
 import javafx.application.Platform;
@@ -34,9 +35,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.GeneralSecurityException;
 import java.util.*;
 
 import static com.codedead.opal.utils.SharedVariables.DEFAULT_LOCALE;
@@ -197,6 +198,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     private TimerTask countDownTask;
     private final String platformName;
     private final HelpUtils helpUtils;
+    private final PasswordCipher passwordCipher;
     private final JsonMapper jsonMapper;
     private final Timer timer;
     private final Timer countDownTimer;
@@ -215,6 +217,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
         platformName = OsCheck.getOperatingSystemType().name();
         helpUtils = new HelpUtils();
+        passwordCipher = new PasswordCipher();
 
         this.timer = new Timer();
         this.countDownTimer = new Timer();
@@ -255,7 +258,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
 
         logger.info("Attempting to load the ResourceBundle for locale {}", languageTag);
 
-        final Locale locale = Locale.forLanguageTag(languageTag);
+        final Locale locale = LanguageController.getLocaleFromLanguageTag(languageTag);
         resourceFactory.setResources(ResourceBundle.getBundle("translations.OpalApplication", locale));
 
         final boolean mediaButtons = Boolean.parseBoolean(properties.getProperty("mediaButtons", "true"));
@@ -365,6 +368,37 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     }
 
     /**
+     * Configure the proxy that should be used when checking for updates
+     */
+    private void configureUpdateProxy() {
+        final Properties properties = settingsController.getProperties();
+        final boolean proxyEnabled = Boolean.parseBoolean(properties.getProperty("updateProxyEnabled", "false"));
+        final boolean authenticationEnabled = proxyEnabled && Boolean.parseBoolean(properties.getProperty("updateProxyAuthEnabled", "false"));
+        final String proxyPort = properties.getProperty("updateProxyPort", "8080").trim();
+        final int port = proxyPort.isBlank() ? 8080 : Integer.parseInt(proxyPort);
+
+        updateController.setProxy(proxyEnabled, properties.getProperty("updateProxyHost", ""), port);
+        updateController.setProxyAuthentication(
+                authenticationEnabled,
+                properties.getProperty("updateProxyUsername", ""),
+                authenticationEnabled ? decryptProxyPassword(properties.getProperty("updateProxyPassword", "")) : "");
+    }
+
+    /**
+     * Decrypt the stored proxy password
+     *
+     * @param storedPassword The stored password
+     * @return The decrypted password
+     */
+    private String decryptProxyPassword(final String storedPassword) {
+        try {
+            return passwordCipher.decrypt(storedPassword);
+        } catch (final IOException | GeneralSecurityException ex) {
+            throw new IllegalArgumentException("Unable to decrypt the proxy password", ex);
+        }
+    }
+
+    /**
      * Check for application updates
      *
      * @param showNoUpdates Show an {@link Alert} object when no updates are available
@@ -374,6 +408,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         logger.info("Attempting to check for updates");
 
         try {
+            configureUpdateProxy();
+
             final Optional<PlatformUpdate> platformUpdate = updateController.checkForUpdates(platformName, SharedVariables.PORTABLE);
             if (platformUpdate.isPresent()) {
                 final PlatformUpdate update = platformUpdate.get();
@@ -413,7 +449,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                     FxUtils.showInformationAlert(resourceFactory.getResources().getString("NoUpdateAvailable"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
                 }
             }
-        } catch (final InterruptedException | IOException | InvalidHttpResponseCodeException | URISyntaxException ex) {
+        } catch (final InterruptedException | IOException | InvalidHttpResponseCodeException | IllegalArgumentException ex) {
             if (ex instanceof InterruptedException)
                 Thread.currentThread().interrupt();
 
@@ -459,6 +495,33 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 elements.add(s);
         });
         return elements;
+    }
+
+    /**
+     * Filter the {@link SoundPane} objects in a {@link GridPane} based on a search query
+     *
+     * @param gridPane The {@link GridPane} containing the {@link SoundPane} objects
+     * @param query    The trimmed, lower-case query to filter on
+     */
+    private void filterSoundPanes(final GridPane gridPane, final String query) {
+        getSoundPanes(gridPane).forEach(e -> {
+            e.setVisible(e.getName().toLowerCase().contains(query));
+            e.setManaged(e.isVisible());
+        });
+    }
+
+    /**
+     * Update the visibility of a {@link TitledPane} based on whether any of its {@link SoundPane} children are visible
+     *
+     * @param titledPane The {@link TitledPane} to update
+     * @param gridPane   The {@link GridPane} containing the {@link SoundPane} objects
+     */
+    private void updateTitledPaneVisibility(final TitledPane titledPane, final GridPane gridPane) {
+        final boolean hasVisibleSoundPane = getSoundPanes(gridPane).stream().anyMatch(Node::isVisible);
+
+        titledPane.setExpanded(hasVisibleSoundPane);
+        titledPane.setVisible(hasVisibleSoundPane);
+        titledPane.setManaged(hasVisibleSoundPane);
     }
 
     /**
@@ -559,86 +622,25 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
             }
 
             Platform.runLater(() -> {
-                getAllSoundPanes()
-                        .forEach(e -> {
-                            e.setVisible(e.getName().toLowerCase().contains(newValue.trim().toLowerCase()));
-                            e.setManaged(e.isVisible());
-                        });
+                final String query = newValue.trim().toLowerCase();
 
-                getSoundPanes(grpCustom)
-                        .forEach(e -> {
-                            e.setVisible(e.getName().toLowerCase().contains(newValue.trim().toLowerCase()));
-                            e.setManaged(e.isVisible());
-                        });
+                filterSoundPanes(grpNature, query);
+                filterSoundPanes(grpOffice, query);
+                filterSoundPanes(grpAudiences, query);
+                filterSoundPanes(grpRadioFrequencyStatic, query);
+                filterSoundPanes(grpOther, query);
+                filterSoundPanes(grpCustom, query);
 
-                // Check if there are still active sound panes on pneCustom
+                // Hide the TitledPanes that no longer contain any visible SoundPane
                 final List<SoundPane> customSoundPanes = getSoundPanes(grpCustom);
                 if (!customSoundPanes.isEmpty()) {
-                    customSoundPanes.stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
-                        pneCustom.setExpanded(true);
-                        pneCustom.setVisible(true);
-                        pneCustom.setManaged(true);
-                    }, () -> {
-                        pneCustom.setExpanded(false);
-                        pneCustom.setVisible(false);
-                        pneCustom.setManaged(false);
-                    });
+                    updateTitledPaneVisibility(pneCustom, grpCustom);
                 }
-
-                // Check if there are still active sound panes on pneNature
-                getSoundPanes(grpNature).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
-                    pneNature.setExpanded(true);
-                    pneNature.setVisible(true);
-                    pneNature.setManaged(true);
-                }, () -> {
-                    pneNature.setExpanded(false);
-                    pneNature.setVisible(false);
-                    pneNature.setManaged(false);
-                });
-
-                // Check if there are still active sound panes on pneOffice
-                getSoundPanes(grpOffice).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
-                    pneOffice.setExpanded(true);
-                    pneOffice.setVisible(true);
-                    pneOffice.setManaged(true);
-                }, () -> {
-                    pneOffice.setExpanded(false);
-                    pneOffice.setVisible(false);
-                    pneOffice.setManaged(false);
-                });
-
-                // Check if there are still active sound panes on pneAudiences
-                getSoundPanes(grpAudiences).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
-                    pneAudiences.setExpanded(true);
-                    pneAudiences.setVisible(true);
-                    pneAudiences.setManaged(true);
-                }, () -> {
-                    pneAudiences.setExpanded(false);
-                    pneAudiences.setVisible(false);
-                    pneAudiences.setManaged(false);
-                });
-
-                // Check if there are still active sound panes on pneRadioFrequencyStatic
-                getSoundPanes(grpRadioFrequencyStatic).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
-                    pneRadioFrequencyStatic.setExpanded(true);
-                    pneRadioFrequencyStatic.setVisible(true);
-                    pneRadioFrequencyStatic.setManaged(true);
-                }, () -> {
-                    pneRadioFrequencyStatic.setExpanded(false);
-                    pneRadioFrequencyStatic.setVisible(false);
-                    pneRadioFrequencyStatic.setManaged(false);
-                });
-
-                // Check if there are still active sound panes on pneOther
-                getSoundPanes(grpOther).stream().filter(Node::isVisible).findFirst().ifPresentOrElse(_ -> {
-                    pneOther.setExpanded(true);
-                    pneOther.setVisible(true);
-                    pneOther.setManaged(true);
-                }, () -> {
-                    pneOther.setExpanded(false);
-                    pneOther.setVisible(false);
-                    pneOther.setManaged(false);
-                });
+                updateTitledPaneVisibility(pneNature, grpNature);
+                updateTitledPaneVisibility(pneOffice, grpOffice);
+                updateTitledPaneVisibility(pneAudiences, grpAudiences);
+                updateTitledPaneVisibility(pneRadioFrequencyStatic, grpRadioFrequencyStatic);
+                updateTitledPaneVisibility(pneOther, grpOther);
 
                 btnClearSearch.setVisible(true);
                 btnClearSearch.setManaged(true);
@@ -1019,16 +1021,17 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
                 try {
                     final ProcessBuilder p = new ProcessBuilder(command.split(" "));
 
-                    try (final BufferedReader reader = new BufferedReader(new InputStreamReader(p.start().getInputStream()))) {
-                        final StringBuilder builder = new StringBuilder();
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            builder.append(line);
-                            builder.append(System.lineSeparator());
+                    try (final Process process = p.start()) {
+                        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                            final StringBuilder output = new StringBuilder();
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                output.append(line).append(System.lineSeparator());
+                            }
+                            logger.info("Shutdown command result: {}", output.toString());
                         }
-                        final String result = builder.toString();
-                        logger.info("Shutdown command result: {}", result);
                     }
+
                     exitAction();
                 } catch (final IOException ex) {
                     logger.error("Unable to execute shutdown command", ex);
