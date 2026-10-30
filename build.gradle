@@ -1,4 +1,5 @@
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+import java.time.Year
 
 plugins {
     id 'java'
@@ -13,6 +14,7 @@ group 'com.codedead'
 version '1.5.1'
 
 def currentOS = DefaultNativePlatform.currentOperatingSystem
+def currentYear = Year.now().getValue()
 
 java {
     toolchain {
@@ -25,6 +27,12 @@ java {
 tasks.named("updateDaemonJvm") {
     javaToolchains {
         vendor = JvmVendorSpec.AMAZON
+    }
+}
+
+tasks.named('processResources') {
+    filesMatching('version.properties') {
+        expand(version: project.version)
     }
 }
 
@@ -60,7 +68,7 @@ jlink {
                     '--win-upgrade-uuid', '876c5464-9a66-4913-89a4-c63a4b8b4bb9',
                     '--win-help-url', 'https://codedead.com/contact',
                     '--win-dir-chooser',
-                    '--copyright', 'Copyright (c) 2026 CodeDead',
+                    '--copyright', "Copyright (c) ${currentYear} CodeDead",
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
                     '--license-file', 'LICENSE',
@@ -76,7 +84,7 @@ jlink {
                     '--linux-shortcut',
                     '--linux-package-name', 'opal-codedead',
                     '--linux-rpm-license-type', 'GPLv3',
-                    '--copyright', 'Copyright (c) 2026 CodeDead',
+                    '--copyright', "Copyright (c) ${currentYear} CodeDead",
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
                     '--license-file', 'LICENSE',
@@ -94,7 +102,7 @@ jlink {
             installerOptions = [
                     '--mac-package-name', 'Opal',
                     '--mac-app-category', 'public.app-category.music',
-                    '--copyright', 'Copyright (c) 2026 CodeDead',
+                    '--copyright', "Copyright (c) ${currentYear} CodeDead",
                     '--description', 'Opal is a free and open-source JavaFX application that can play relaxing music in the background',
                     '--vendor', 'CodeDead',
                     '--license-file', 'LICENSE',
