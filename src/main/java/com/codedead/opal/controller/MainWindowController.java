@@ -48,6 +48,8 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
     @FXML
     private SoundPane snpFastMetronome;
     @FXML
+    private SoundPane snpFastestMetronome;
+    @FXML
     private SoundPane snpSlowMetronome;
     @FXML
     private SoundPane snpTrain;
@@ -355,6 +357,7 @@ public final class MainWindowController implements IAudioTimer, TrayIconListener
         snpTrain.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("Train"));
         snpSlowMetronome.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("SlowMetronome"));
         snpFastMetronome.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("FastMetronome"));
+        snpFastestMetronome.getNameLabel().textProperty().bind(resourceFactory.getStringBinding("FastestMetronome"));
     }
 
     /**

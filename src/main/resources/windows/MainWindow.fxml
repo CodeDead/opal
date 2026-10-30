@@ -396,6 +396,7 @@
                             <RowConstraints vgrow="ALWAYS"/>
                             <RowConstraints vgrow="ALWAYS"/>
                             <RowConstraints vgrow="ALWAYS"/>
+                            <RowConstraints vgrow="ALWAYS"/>
                         </rowConstraints>
 
                         <columnConstraints>
@@ -431,6 +432,9 @@
                                    image="/images/metronome.png" resourceFile="true"/>
                         <SoundPane fx:id="snpFastMetronome" GridPane.rowIndex="9" name="%FastMetronome"
                                    mediaKey="fastmetronome" mediaPath="/audio/metronomefast.mp3"
+                                   image="/images/metronome.png" resourceFile="true"/>
+                        <SoundPane fx:id="snpFastestMetronome" GridPane.rowIndex="10" name="%FastestMetronome"
+                                   mediaKey="fastestmetronome" mediaPath="/audio/metronomefastest.mp3"
                                    image="/images/metronome.png" resourceFile="true"/>
                     </GridPane>
                 </TitledPane>

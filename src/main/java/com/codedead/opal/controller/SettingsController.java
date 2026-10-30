@@ -141,10 +141,25 @@ public final class SettingsController {
      * @throws IOException When the Properties object could not be stored
      */
     public void saveProperties() throws IOException {
+        saveProperties(properties);
+    }
+
+    /**
+     * Save the provided properties and replace the in-memory properties once the write succeeds
+     *
+     * @param newProperties The properties that should be stored
+     * @throws IOException When the Properties object could not be stored
+     */
+    public void saveProperties(final Properties newProperties) throws IOException {
+        if (newProperties == null)
+            throw new NullPointerException("Properties cannot be null!");
+
         logger.info("Storing the Properties object");
         try (final FileOutputStream fos = new FileOutputStream(getPropertiesFileLocation())) {
-            properties.store(fos, null);
+            newProperties.store(fos, null);
         }
+
+        properties = newProperties;
     }
 
     /**

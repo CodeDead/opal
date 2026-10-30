@@ -25,9 +25,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.security.GeneralSecurityException;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
@@ -268,79 +271,231 @@ public final class SettingsWindowController {
     private void saveSettingsAction() {
         logger.info("Attempting to save all settings");
 
+        final SettingsDraft draft;
+        final ResourceBundle newTranslationBundle;
+        try {
+            draft = readDraft();
+            final Locale locale = LanguageController.getLocaleFromLanguageTag(draft.localeTag());
+            newTranslationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
+        } catch (final SettingsValidationException ex) {
+            logger.warn("Settings validation failed: {}", ex.getMessageKey());
+            restoreSavedTheme();
+            showSaveError(translationBundle.getString(ex.getMessageKey()), ex.getCause());
+            return;
+        } catch (final MissingResourceException ex) {
+            restoreSavedTheme();
+            showSaveError(ex.toString(), ex);
+            return;
+        }
+
+        try {
+            settingsController.saveProperties(draft.toProperties(settingsController.getProperties()));
+        } catch (final IOException ex) {
+            restoreSavedTheme();
+            showSaveError(ex.toString(), ex);
+            return;
+        }
+
+        translationBundle = newTranslationBundle;
+        applySettings(draft, newTranslationBundle);
+
+        final Stage stage = (Stage) sldAudioBalance.getScene().getWindow();
+        stage.close();
+    }
+
+    /**
+     * Read and validate all settings without changing any application state
+     *
+     * @return The validated settings
+     * @throws SettingsValidationException When one of the settings is invalid
+     */
+    private SettingsDraft readDraft() throws SettingsValidationException {
         final boolean updateProxyEnabled = chbUpdateProxy.isSelected();
-        final String updateProxyHost = txtProxyHost.getText() == null ? "" : txtProxyHost.getText().trim();
-        final String updateProxyPortValue = numProxyPort.getText() == null ? "" : numProxyPort.getText().trim();
+        final String updateProxyHost = valueOrEmpty(txtProxyHost.getText()).trim();
+        final String updateProxyPortValue = valueOrEmpty(numProxyPort.getText()).trim();
         final boolean updateProxyAuthEnabled = chbProxyAuthentication.isSelected();
-        final String updateProxyUsername = txtProxyUsername.getText() == null ? "" : txtProxyUsername.getText().trim();
-        final String updateProxyPassword = pfProxyPassword.getText() == null ? "" : pfProxyPassword.getText();
-        int updateProxyPort = 8080;
+        final String updateProxyUsername = valueOrEmpty(txtProxyUsername.getText()).trim();
+        final String updateProxyPassword = valueOrEmpty(pfProxyPassword.getText());
 
-        if (!updateProxyPortValue.isBlank()) {
-            try {
-                updateProxyPort = Integer.parseInt(updateProxyPortValue);
-            } catch (final NumberFormatException ex) {
-                if (updateProxyEnabled) {
-                    logger.warn("Invalid proxy port: {}", updateProxyPortValue);
-                    FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), translationBundle.getString("InvalidProxySettings"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-                    return;
-                }
-            }
+        final int updateProxyPort = parseProxyPort(updateProxyPortValue, updateProxyEnabled);
+
+        if (updateProxyEnabled && updateProxyHost.isBlank()) {
+            throw new SettingsValidationException("InvalidProxySettings");
         }
 
-        if (updateProxyEnabled && (updateProxyHost.isBlank() || updateProxyPort < 1 || updateProxyPort > 65535)) {
-            logger.warn("Invalid proxy settings: {}:{}", updateProxyHost, updateProxyPort);
-            FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), translationBundle.getString("InvalidProxySettings"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-            return;
+        if (updateProxyEnabled && updateProxyAuthEnabled
+                && (updateProxyUsername.isBlank() || updateProxyPassword.isEmpty())) {
+            throw new SettingsValidationException("InvalidProxyAuthentication");
         }
 
-        if (updateProxyEnabled && updateProxyAuthEnabled && (updateProxyUsername.isBlank() || updateProxyPassword.isEmpty())) {
-            logger.warn("Invalid proxy authentication settings");
-            FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), translationBundle.getString("InvalidProxyAuthentication"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-            return;
+        final long delay = parseTimerDelay(numDelay.getText());
+        final int delayType = cboDelayType.getSelectionModel().getSelectedIndex();
+
+        if (delayType < 0 || delayType > 2) {
+            throw new SettingsValidationException("InvalidTimerDelay");
+        }
+
+        final long timerDelay = switch (delayType) {
+            case 0 -> TimeUnit.SECONDS.toMillis(delay);
+            case 1 -> TimeUnit.MINUTES.toMillis(delay);
+            case 2 -> TimeUnit.HOURS.toMillis(delay);
+            default -> throw new SettingsValidationException("InvalidTimerDelay");
+        };
+
+        final String languageTag = LanguageController.getLocaleFromLanguageIndex(cboLanguage.getSelectionModel().getSelectedIndex());
+        final String theme = cboTheme.getSelectionModel().getSelectedItem();
+        final String logLevel = cboLogLevel.getValue();
+
+        if (theme == null || logLevel == null) {
+            throw new SettingsValidationException("SaveSettingsError");
+        }
+
+        final double audioBalance = sldAudioBalance.getValue();
+        if (!Double.isFinite(audioBalance) || audioBalance < -1.0 || audioBalance > 1.0) {
+            throw new SettingsValidationException("SaveSettingsError");
         }
 
         final String storedProxyPassword;
         try {
             storedProxyPassword = passwordCipher.encrypt(updateProxyPassword);
         } catch (final IOException | GeneralSecurityException ex) {
-            logger.error("Unable to encrypt the proxy password", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-            return;
+            throw new SettingsValidationException("SaveSettingsError", ex);
         }
 
-        settingsController.getProperties().setProperty("autoUpdate", Boolean.toString(chbAutoUpdate.isSelected()));
-        settingsController.getProperties().setProperty("updateProxyEnabled", Boolean.toString(updateProxyEnabled));
-        settingsController.getProperties().setProperty("updateProxyHost", updateProxyHost);
-        settingsController.getProperties().setProperty("updateProxyPort", String.valueOf(updateProxyPort));
-        settingsController.getProperties().setProperty("updateProxyAuthEnabled", Boolean.toString(updateProxyAuthEnabled));
-        settingsController.getProperties().setProperty("updateProxyUsername", updateProxyUsername);
-        settingsController.getProperties().setProperty("updateProxyPassword", storedProxyPassword);
-        settingsController.getProperties().setProperty("mediaButtons", Boolean.toString(chbMediaButtons.isSelected()));
-        settingsController.getProperties().setProperty("dragDrop", Boolean.toString(chbDragDrop.isSelected()));
-        settingsController.getProperties().setProperty("trayIcon", Boolean.toString(chbTrayIcon.isSelected()));
+        return new SettingsDraft(
+                chbAutoUpdate.isSelected(),
+                updateProxyEnabled,
+                updateProxyHost,
+                updateProxyPort,
+                updateProxyAuthEnabled,
+                updateProxyUsername,
+                storedProxyPassword,
+                chbMediaButtons.isSelected(),
+                chbDragDrop.isSelected(),
+                chbTrayIcon.isSelected(),
+                languageTag,
+                theme,
+                logLevel,
+                timerDelay,
+                delayType,
+                chbTimerApplicationShutdown.isSelected(),
+                chbTimerComputerShutdown.isSelected(),
+                audioBalance
+        );
+    }
 
-        final String languageTag = LanguageController.getLocaleFromLanguageIndex(cboLanguage.getSelectionModel().getSelectedIndex());
-        final Locale locale = LanguageController.getLocaleFromLanguageTag(languageTag);
-        final ResourceBundle newTranslationBundle = ResourceBundle.getBundle("translations.OpalApplication", locale);
+    /**
+     * Parse a proxy port
+     *
+     * @param value        The value of the proxy port field
+     * @param proxyEnabled True if the proxy is enabled
+     * @return The proxy port, or the default port if the value is empty
+     * @throws SettingsValidationException When the port is invalid and the proxy is enabled
+     */
+    private int parseProxyPort(final String value, final boolean proxyEnabled) throws SettingsValidationException {
+        if (value.isBlank())
+            return 8080;
 
-        this.translationBundle = newTranslationBundle;
-        mainWindowController.updateResourceBundle(newTranslationBundle);
-
-        settingsController.getProperties().setProperty("locale", languageTag);
-
-        mainWindowController.loadMediaButtonVisibility(chbMediaButtons.isSelected());
         try {
-            mainWindowController.setTrayIconEnabled(chbTrayIcon.isSelected());
+            final int port = Integer.parseInt(value);
+
+            if (proxyEnabled && (port < 1 || port > 65535)) {
+                throw new SettingsValidationException("InvalidProxySettings");
+            }
+
+            return port;
+        } catch (final NumberFormatException ex) {
+            if (proxyEnabled) {
+                throw new SettingsValidationException("InvalidProxySettings", ex);
+            }
+
+            return 8080;
+        }
+    }
+
+    /**
+     * Parse the timer delay
+     *
+     * @param value The value of the timer delay field
+     * @return The timer delay
+     * @throws SettingsValidationException When the delay is missing, invalid or smaller than 1
+     */
+    private long parseTimerDelay(final String value) throws SettingsValidationException {
+        if (value == null || value.isBlank()) {
+            throw new SettingsValidationException("InvalidTimerDelay");
+        }
+
+        try {
+            final long delay = Long.parseLong(value.trim());
+
+            if (delay < 1) {
+                throw new SettingsValidationException("TimerDelayTooSmall");
+            }
+
+            return delay;
+        } catch (final NumberFormatException ex) {
+            throw new SettingsValidationException("InvalidTimerDelay", ex);
+        }
+    }
+
+    /**
+     * Display an error that occurred while saving settings
+     *
+     * @param message The message that should be displayed
+     * @param cause   The cause of the error, if any
+     */
+    private void showSaveError(final String message, final Throwable cause) {
+        if (cause != null) {
+            logger.error("Unable to save settings", cause);
+        }
+
+        FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), message, getClass().getResourceAsStream(SharedVariables.ICON_URL));
+    }
+
+    /**
+     * Restore the theme that is currently stored in the settings
+     */
+    private void restoreSavedTheme() {
+        final String savedTheme = settingsController.getProperties().getProperty("theme", "light");
+        final int savedThemeIndex = ThemeController.getThemeIndex(savedTheme);
+
+        if (cboTheme.getSelectionModel().getSelectedIndex() != savedThemeIndex) {
+            cboTheme.getSelectionModel().select(savedThemeIndex);
+        }
+
+        ThemeController.setTheme(savedTheme);
+    }
+
+    /**
+     * Apply the validated settings to the running application
+     *
+     * @param draft                The validated settings
+     * @param newTranslationBundle The translation bundle for the selected language
+     */
+    private void applySettings(final SettingsDraft draft, final ResourceBundle newTranslationBundle) {
+        mainWindowController.updateResourceBundle(newTranslationBundle);
+        mainWindowController.loadMediaButtonVisibility(draft.mediaButtons());
+        mainWindowController.setAudioBalance(draft.audioBalance());
+
+        ThemeController.setTheme(draft.theme());
+        Configurator.setAllLevels(LogManager.getRootLogger().getName(), toLogLevel(draft.logLevel()));
+
+        try {
+            mainWindowController.setTrayIconEnabled(draft.trayIcon());
         } catch (final IOException ex) {
             logger.error("Unable to create tray icon", ex);
             FxUtils.showErrorAlert(newTranslationBundle.getString("TrayIconError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
         }
+    }
 
-        settingsController.getProperties().setProperty("theme", cboTheme.getSelectionModel().getSelectedItem());
-        settingsController.getProperties().setProperty("loglevel", cboLogLevel.getValue());
-
-        final Level level = switch (cboLogLevel.getValue()) {
+    /**
+     * Convert a log level name to a {@link Level} object
+     *
+     * @param logLevel The name of the log level
+     * @return The {@link Level} object
+     */
+    private static Level toLogLevel(final String logLevel) {
+        return switch (logLevel) {
             case "OFF" -> Level.OFF;
             case "FATAL" -> Level.FATAL;
             case "ERROR" -> Level.ERROR;
@@ -350,39 +505,113 @@ public final class SettingsWindowController {
             case "ALL" -> Level.ALL;
             default -> Level.INFO;
         };
+    }
 
-        final int delayType = cboDelayType.getSelectionModel().getSelectedIndex();
-        final long delay = Long.parseLong(numDelay.getText());
+    /**
+     * Get a string value or an empty string when the value is null
+     *
+     * @param value The value
+     * @return The value or an empty string
+     */
+    private static String valueOrEmpty(final String value) {
+        return value == null ? "" : value;
+    }
 
-        if (delay < 1) {
-            FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), translationBundle.getString("TimerDelayTooSmall"), getClass().getResourceAsStream(SharedVariables.ICON_URL));
-            return;
+    /**
+     * A validated snapshot of all settings
+     */
+    private record SettingsDraft(
+            boolean autoUpdate,
+            boolean updateProxyEnabled,
+            String updateProxyHost,
+            int updateProxyPort,
+            boolean updateProxyAuthEnabled,
+            String updateProxyUsername,
+            String encryptedProxyPassword,
+            boolean mediaButtons,
+            boolean dragDrop,
+            boolean trayIcon,
+            String localeTag,
+            String theme,
+            String logLevel,
+            long timerDelay,
+            int timerDelayType,
+            boolean timerApplicationShutdown,
+            boolean timerComputerShutdown,
+            double audioBalance
+    ) {
+
+        /**
+         * Create a new {@link Properties} object based on the current settings and this draft
+         *
+         * @param base The current properties
+         * @return The new properties
+         */
+        private Properties toProperties(final Properties base) {
+            final Properties properties = new Properties();
+            properties.putAll(base);
+
+            properties.setProperty("autoUpdate", Boolean.toString(autoUpdate));
+            properties.setProperty("updateProxyEnabled", Boolean.toString(updateProxyEnabled));
+            properties.setProperty("updateProxyHost", updateProxyHost);
+            properties.setProperty("updateProxyPort", Integer.toString(updateProxyPort));
+            properties.setProperty("updateProxyAuthEnabled", Boolean.toString(updateProxyAuthEnabled));
+            properties.setProperty("updateProxyUsername", updateProxyUsername);
+            properties.setProperty("updateProxyPassword", encryptedProxyPassword);
+            properties.setProperty("mediaButtons", Boolean.toString(mediaButtons));
+            properties.setProperty("dragDrop", Boolean.toString(dragDrop));
+            properties.setProperty("trayIcon", Boolean.toString(trayIcon));
+            properties.setProperty("locale", localeTag);
+            properties.setProperty("theme", theme);
+            properties.setProperty("loglevel", logLevel);
+            properties.setProperty("timerDelay", Long.toString(timerDelay));
+            properties.setProperty("timerDelayType", Integer.toString(timerDelayType));
+            properties.setProperty("timerApplicationShutdown", Boolean.toString(timerApplicationShutdown));
+            properties.setProperty("timerComputerShutdown", Boolean.toString(timerComputerShutdown));
+            properties.setProperty("audioBalance", Double.toString(audioBalance));
+
+            return properties;
+        }
+    }
+
+    /**
+     * Exception that is thrown when a setting is invalid
+     */
+    private static final class SettingsValidationException extends Exception {
+
+        @Serial
+        private static final long serialVersionUID = 1L;
+
+        private final String messageKey;
+
+        /**
+         * Initialize a new SettingsValidationException
+         *
+         * @param messageKey The translation key of the error message
+         */
+        private SettingsValidationException(final String messageKey) {
+            super(messageKey);
+            this.messageKey = messageKey;
         }
 
-        final long correctDelay = switch (delayType) {
-            case 0 -> TimeUnit.SECONDS.toMillis(delay);
-            case 1 -> TimeUnit.MINUTES.toMillis(delay);
-            case 2 -> TimeUnit.HOURS.toMillis(delay);
-            default -> throw new IllegalStateException("Unexpected value: " + delayType);
-        };
+        /**
+         * Initialize a new SettingsValidationException
+         *
+         * @param messageKey The translation key of the error message
+         * @param cause      The cause of the exception
+         */
+        private SettingsValidationException(final String messageKey, final Throwable cause) {
+            super(messageKey, cause);
+            this.messageKey = messageKey;
+        }
 
-        settingsController.getProperties().setProperty("timerDelay", String.valueOf(correctDelay));
-        settingsController.getProperties().setProperty("timerDelayType", String.valueOf(delayType));
-        settingsController.getProperties().setProperty("timerApplicationShutdown", String.valueOf(chbTimerApplicationShutdown.isSelected()));
-        settingsController.getProperties().setProperty("timerComputerShutdown", String.valueOf(chbTimerComputerShutdown.isSelected()));
-
-        settingsController.getProperties().setProperty("audioBalance", String.valueOf(sldAudioBalance.getValue()));
-        mainWindowController.setAudioBalance(sldAudioBalance.getValue());
-
-        Configurator.setAllLevels(LogManager.getRootLogger().getName(), level);
-        try {
-            settingsController.saveProperties();
-
-            Stage stage = (Stage) sldAudioBalance.getScene().getWindow();
-            stage.close();
-        } catch (final IOException ex) {
-            logger.error("Unable to save all settings", ex);
-            FxUtils.showErrorAlert(translationBundle.getString("SaveSettingsError"), ex.toString(), getClass().getResourceAsStream(SharedVariables.ICON_URL));
+        /**
+         * Get the translation key of the error message
+         *
+         * @return The translation key
+         */
+        private String getMessageKey() {
+            return messageKey;
         }
     }
 

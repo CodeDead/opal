@@ -296,9 +296,12 @@ public final class SoundPane extends GridPane {
      */
     @FXML
     public void playPause() throws MediaPlayerException {
-        if (isPlaying()) {
+        if (sldVolume.getValue() <= 0) {
+            // The volume listener starts playback when the slider moves above zero
+            sldVolume.setValue(1.0);
+        } else if (isPlaying()) {
             pause();
-        } else if (sldVolume.getValue() > 0) {
+        } else {
             play();
         }
     }
