@@ -10,8 +10,10 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
-group 'com.codedead'
-version '1.5.1'
+group = 'com.codedead'
+version = '1.5.2'
+
+def appVersion = project.version.toString()
 
 def currentOS = DefaultNativePlatform.currentOperatingSystem
 def currentYear = Year.now().getValue()
@@ -31,8 +33,9 @@ tasks.named("updateDaemonJvm") {
 }
 
 tasks.named('processResources') {
+    inputs.property('version', appVersion)
     filesMatching('version.properties') {
-        expand(version: project.version)
+        expand(version: appVersion)
     }
 }
 
